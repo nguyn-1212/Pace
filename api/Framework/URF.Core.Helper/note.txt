@@ -1,0 +1,27 @@
+﻿Cách để chuyển toàn bộ TenantId của toàn bộ bảng trong Database
+Bước 1: Chạy lệnh để build câu lệnh update toàn bộ bảng
+
+SET @updateStatements = NULL;
+SET @databaseName = 'hrm_demo';
+SET @newTenantValue = 'hrm_demo';
+SET SESSION group_concat_max_len = 1000000;
+
+SELECT GROUP_CONCAT(
+    'UPDATE ', table_name, ' SET TenantId = ''', @newTenantValue, ''';'
+    SEPARATOR ' '
+) INTO @updateStatements
+FROM information_schema.tables
+WHERE table_type = 'BASE TABLE' AND 
+			table_schema = @databaseName AND 
+			table_name != '__efmigrationshistory' AND 
+			table_name != '__EFMigrationsHistory' AND 
+			table_name != 'AspNetUserLogins' AND 			
+			table_name != 'aspnetuserlogins' AND 
+			table_name != 'AspNetUserTokens' AND 
+			table_name != 'aspnetusertokens' AND 
+			table_name != 'userclaim' AND			
+			table_name != 'UserClaim' AND
+			table_name != 'RoleClaim';
+SELECT @updateStatements; -- In câu lệnh cập nhật để kiểm tra
+
+Bước 2: Copy câu lệnh được in ra và chạy
