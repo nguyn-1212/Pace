@@ -1,0 +1,20 @@
+﻿<div class="kt-portlet kt-portlet-edit-form">
+    <edit-header *ngIf="breadcrumbs && actions?.length" [breadcrumbs]="breadcrumbs" [actions]="actions" [processing]="processing"></edit-header>
+    <div class="kt-portlet__body">
+        <div class="row" *ngIf="item && !loading">
+            <div class="col-sm-12"><h5 class="form-section-title">📋 Thông tin mẫu</h5></div>
+            <div class="col-sm-1"><editor [(object)]="item" property="CoverEmoji" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-7"><editor [(object)]="item" property="Name" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="Destination" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><editor [(object)]="item" property="Description" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><editor [(object)]="item" property="Tags" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><h5 class="form-section-title">💰 Chi phí & Cài đặt</h5></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="Duration" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="EstCostPerPerson" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="Currency" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="IsOfficial" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="UsedCount" [decorator]="{readonly: viewer}"></editor></div>
+        </div>
+        <div class="row row-loading" *ngIf="loading"><loading></loading></div>
+    </div>
+</div>

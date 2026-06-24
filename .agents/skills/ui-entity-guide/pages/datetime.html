@@ -1,0 +1,291 @@
+<!-- ═══════════════ @DateTimeDecorator ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-editor">✦ Editor</div>
+  <div class="page-title">@DateTimeDecorator</div>
+  <div class="page-desc">Decorator cho tất cả input dạng ngày giờ: Date, DateTime, Time, Month, Year, DayMonth, DateRange picker.</div>
+  <div class="page-meta">core/decorators/datetime.decorator.ts &nbsp;·&nbsp; DataType.DateTime &nbsp;·&nbsp; DateTimeEx extends ObjectEx</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('dt','opts')">⚙ Options</button>
+  <button class="tab-btn" onclick="switchTab('dt','types')">◈ DateTimeType</button>
+  <button class="tab-btn" onclick="switchTab('dt','examples')">{ } Examples</button>
+  <button class="tab-btn" onclick="switchTab('dt','gen')">⚡ Code Generator</button>
+</div>
+
+<!-- ─── OPTIONS TAB ─── -->
+<div class="tab-panel active" id="dt-tab-opts">
+  <div class="opts-toolbar">
+    <div class="opts-count"><strong>13</strong> / 30 thuộc tính (cơ bản)</div>
+    <div class="opts-level-btns">
+      <button class="opts-level-btn active" onclick="toggleLevel('dt-opts','basic',this)">Cơ bản</button>
+      <button class="opts-level-btn" onclick="toggleLevel('dt-opts','advanced',this)">Nâng cao</button>
+      <button class="opts-level-btn" onclick="toggleLevel('dt-opts','all',this)">Tất cả</button>
+    </div>
+  </div>
+  <div class="opts-table-wrap">
+    <table class="opts-table" id="dt-opts">
+      <thead>
+        <tr><th>Property</th><th>Type</th><th>Default</th><th>Mô tả</th></tr>
+      </thead>
+      <tbody>
+        <tr class="group-row"><td colspan="4"><span>📦 ObjectEx — chung cho mọi decorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">label</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Nhãn hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">required <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Bắt buộc nhập. Tự thêm validator <code>PatternType.Required</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">allowSearch</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép lọc theo cột này trong grid/table.</td></tr>
+        <tr data-level="basic"><td class="p-name">readonly</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Hiển thị nhưng không cho chỉnh sửa.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowClear</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Cho phép xoá giá trị.</td></tr>
+        <tr data-level="advanced"><td class="p-name">unique <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span> | <span class="t-enum type-link" onclick="showModal('modal-lookupuniquedata')">LookupUniqueData</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểm tra trùng.</td></tr>
+        <tr data-level="basic"><td class="p-name">columnClass</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-columnclass')">ColumnClassFormat</span></td><td class="p-default">undefined</td><td class="p-desc">Độ rộng cột form.</td></tr>
+        <tr data-level="basic"><td class="p-name">tooltip</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Tooltip hiển thị khi hover vào label.</td></tr>
+        <tr data-level="basic"><td class="p-name">placeholder</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">= label + format</td><td class="p-desc">Placeholder. Mặc định: <code>label (dd/mm/yyyy)</code>.</td></tr>
+        <tr data-level="advanced"><td class="p-name">icon</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">la la-calendar</td><td class="p-desc">Icon class. Mặc định là icon lịch.</td></tr>
+        <tr data-level="advanced"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Mô tả hiển thị dưới input.</td></tr>
+        <tr data-level="advanced"><td class="p-name">defaultValue</td><td class="p-type"><span class="t-str">any</span></td><td class="p-default">undefined</td><td class="p-desc">Giá trị mặc định ban đầu.</td></tr>
+        <tr data-level="advanced"><td class="p-name">index</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Thứ tự hiển thị trên form.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép filter column trên Grid.</td></tr>
+        <tr data-level="advanced"><td class="p-name">compareType</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-comparetype')">CompareType</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểu so sánh khi filter. VD: <code>D_Between</code>, <code>D_Equals</code>.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customValidators</td><td class="p-type"><span class="t-arr">Validator[]</span></td><td class="p-default">undefined</td><td class="p-desc">Mảng custom validator.</td></tr>
+
+        <tr class="group-row"><td colspan="4"><span>📅 DateTimeEx — riêng cho @DateTimeDecorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">type</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-datetimetype')">DateTimeType</span></td><td class="p-default">DateTimeType.DateTime</td><td class="p-desc">Loại picker. Xem tab <strong>DateTimeType</strong>.</td></tr>
+        <tr data-level="basic"><td class="p-name">format</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-datetimeformat')">DateTimeFormat</span></td><td class="p-default">auto theo type</td><td class="p-desc">Format hiển thị. Tự gán từ type: Date→<code>dd/mm/yyyy</code>, DateTime→<code>dd/mm/yyyy hh:ii</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">min <span class="badge-v">validate</span></td><td class="p-type"><span class="t-str">Date</span></td><td class="p-default">1900-01-01</td><td class="p-desc">Ngày nhỏ nhất có thể chọn.</td></tr>
+        <tr data-level="basic"><td class="p-name">max <span class="badge-v">validate</span></td><td class="p-type"><span class="t-str">Date</span></td><td class="p-default">now + 100 năm</td><td class="p-desc">Ngày lớn nhất có thể chọn.</td></tr>
+        <tr data-level="basic"><td class="p-name">minCurent <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Min = ngày hiện tại. Không cho chọn ngày trong quá khứ.</td></tr>
+        <tr data-level="basic"><td class="p-name">maxCurent <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Max = ngày hiện tại. Không cho chọn ngày trong tương lai.</td></tr>
+        <tr data-level="basic"><td class="p-name">minDepend <span class="badge-v">validate</span></td><td class="p-type"><span class="t-str">string</span> | <span class="t-arr">string[]</span></td><td class="p-default">undefined</td><td class="p-desc">Tên property phụ thuộc làm ngày min. VD: <code>'StartDate'</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">maxDepend <span class="badge-v">validate</span></td><td class="p-type"><span class="t-str">string</span> | <span class="t-arr">string[]</span></td><td class="p-default">undefined</td><td class="p-desc">Tên property phụ thuộc làm ngày max. VD: <code>'EndDate'</code>.</td></tr>
+        <tr data-level="advanced"><td class="p-name">editable</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true (Date)</td><td class="p-desc">Cho phép nhập trực tiếp vào ô input (không chỉ chọn từ picker).</td></tr>
+        <tr data-level="advanced"><td class="p-name">inline</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Hiển thị calendar inline thay vì popup.</td></tr>
+        <tr data-level="advanced"><td class="p-name">time</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-timedata')">TimeData</span></td><td class="p-default">new TimeData()</td><td class="p-desc">Cấu hình bước giờ/phút cho time picker.</td></tr>
+        <tr data-level="advanced"><td class="p-name">multiple</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Cho phép chọn nhiều ngày cùng lúc.</td></tr>
+        <tr data-level="advanced"><td class="p-name">maxRange</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Số ngày tối đa cho DateRange picker.</td></tr>
+        <tr data-level="advanced"><td class="p-name">ranges</td><td class="p-type"><span class="t-str">any</span></td><td class="p-default">undefined</td><td class="p-desc">Preset ranges cho DateRange. VD: "7 ngày", "30 ngày", "Tháng này".</td></tr>
+        <tr data-level="advanced"><td class="p-name">view</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Chế độ xem ban đầu của calendar (days/months/years).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:16px">
+    <span>⚠️</span>
+    <span><code>@DateTimeDecorator()</code> không truyền options → mặc định <code>DateTimeType.DateTime</code>, format=<code>dd/mm/yyyy hh:ii</code>, icon=<code>la-calendar</code>.</span>
+  </div>
+</div>
+
+<!-- ─── DATETIMETYPE TAB ─── -->
+<div class="tab-panel" id="dt-tab-types">
+  <div class="types-grid2">
+    <div class="type-card2 common"><div class="tc2-name">DateTimeType.Date</div><div class="tc2-em">Chỉ chọn ngày. Format mặc định: <code style="font-family:var(--mono);font-size:11px">dd/mm/yyyy</code>.</div><div class="tc2-note">Ngày sinh, ngày tạo, deadline</div></div>
+    <div class="type-card2 common"><div class="tc2-name">DateTimeType.DateTime</div><div class="tc2-em">Chọn ngày + giờ. Format: <code style="font-family:var(--mono);font-size:11px">dd/mm/yyyy hh:ii</code>.</div><div class="tc2-note">Mặc định — thời gian chính xác</div></div>
+    <div class="type-card2 common"><div class="tc2-name">DateTimeType.Time</div><div class="tc2-em">Chỉ chọn giờ/phút. Format: <code style="font-family:var(--mono);font-size:11px">hh:ii</code>.</div><div class="tc2-note">Giờ bắt đầu, giờ kết thúc</div></div>
+    <div class="type-card2 common"><div class="tc2-name">DateTimeType.Month</div><div class="tc2-em">Chọn tháng/năm. Format: <code style="font-family:var(--mono);font-size:11px">mm/yyyy</code>.</div><div class="tc2-note">Báo cáo theo tháng</div></div>
+    <div class="type-card2 special"><div class="tc2-name">DateTimeType.Year</div><div class="tc2-em">Chỉ chọn năm. Format: <code style="font-family:var(--mono);font-size:11px">yyyy</code>.</div><div class="tc2-note">Năm tài chính, năm học</div></div>
+    <div class="type-card2 special"><div class="tc2-name">DateTimeType.DayMonth</div><div class="tc2-em">Chọn ngày/tháng (không năm). Format: <code style="font-family:var(--mono);font-size:11px">dd/mm</code>.</div><div class="tc2-note">Ngày lễ, sinh nhật hàng năm</div></div>
+    <div class="type-card2 special"><div class="tc2-name">DateTimeType.DateRange</div><div class="tc2-em">Chọn khoảng ngày (từ — đến). Dùng <code style="font-family:var(--mono);font-size:11px">maxRange</code>.</div><div class="tc2-note">Kỳ báo cáo, thời gian áp dụng</div></div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLES TAB ─── -->
+<div class="tab-panel" id="dt-tab-examples">
+  <div class="code-tabs">
+    <div class="code-tab active" onclick="switchCode('dt','basic',this)">Basic</div>
+    <div class="code-tab" onclick="switchCode('dt','range',this)">DateRange</div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-panel active" id="dt-cp-basic"><pre class="flat">
+<span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Task'</span> })
+<span class="kw">export class</span> <span class="cls">TaskEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Date — không cho chọn quá khứ</span>
+  <span class="dec">@DateTimeDecorator</span>({ <span class="prop">label</span>: <span class="str">'Deadline'</span>, <span class="prop">type</span>: <span class="cls">DateTimeType</span>.Date, <span class="prop">minCurent</span>: <span class="kw">true</span> })
+  <span class="prop">Deadline</span>: <span class="kw">Date</span>;
+
+  <span class="cm">// DateTime mặc định</span>
+  <span class="dec">@DateTimeDecorator</span>({ <span class="prop">label</span>: <span class="str">'Ngày tạo'</span>, <span class="prop">readonly</span>: <span class="kw">true</span> })
+  <span class="prop">CreatedDate</span>: <span class="kw">Date</span>;
+
+  <span class="cm">// Chỉ chọn giờ — bước 15 phút</span>
+  <span class="dec">@DateTimeDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Giờ bắt đầu'</span>, <span class="prop">type</span>: <span class="cls">DateTimeType</span>.Time,
+    <span class="prop">time</span>: { <span class="prop">minuteStep</span>: <span class="num">15</span>, <span class="prop">minHours</span>: <span class="num">8</span>, <span class="prop">maxHours</span>: <span class="num">18</span> }
+  })
+  <span class="prop">StartTime</span>: <span class="kw">Date</span>;
+
+  <span class="cm">// StartDate → EndDate phụ thuộc</span>
+  <span class="dec">@DateTimeDecorator</span>({ <span class="prop">label</span>: <span class="str">'Từ ngày'</span>, <span class="prop">type</span>: <span class="cls">DateTimeType</span>.Date })
+  <span class="prop">StartDate</span>: <span class="kw">Date</span>;
+
+  <span class="dec">@DateTimeDecorator</span>({ <span class="prop">label</span>: <span class="str">'Đến ngày'</span>, <span class="prop">type</span>: <span class="cls">DateTimeType</span>.Date,
+    <span class="prop">minDepend</span>: <span class="str">'StartDate'</span> })
+  <span class="prop">EndDate</span>: <span class="kw">Date</span>;
+}</pre></div>
+    <div class="code-panel" id="dt-cp-range"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">ReportEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// DateRange — tối đa 90 ngày</span>
+  <span class="dec">@DateTimeDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Kỳ báo cáo'</span>,
+    <span class="prop">type</span>: <span class="cls">DateTimeType</span>.DateRange,
+    <span class="prop">maxRange</span>: <span class="num">90</span>,
+    <span class="prop">columnClass</span>: <span class="cls">ColumnClassFormat</span>.Column6
+  })
+  <span class="prop">ReportPeriod</span>: <span class="kw">Date</span>;
+
+  <span class="cm">// Month picker</span>
+  <span class="dec">@DateTimeDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Tháng'</span>, <span class="prop">type</span>: <span class="cls">DateTimeType</span>.Month,
+    <span class="prop">required</span>: <span class="kw">true</span>,
+    <span class="prop">columnClass</span>: <span class="cls">ColumnClassFormat</span>.Column3
+  })
+  <span class="prop">ReportMonth</span>: <span class="kw">Date</span>;
+
+  <span class="cm">// Year picker</span>
+  <span class="dec">@DateTimeDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Năm'</span>, <span class="prop">type</span>: <span class="cls">DateTimeType</span>.Year,
+    <span class="prop">columnClass</span>: <span class="cls">ColumnClassFormat</span>.Column3
+  })
+  <span class="prop">ReportYear</span>: <span class="kw">Date</span>;
+}</pre></div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span><strong>Import:</strong> <code>DateTimeDecorator</code>, <code>DateTimeType</code>, <code>DateTimeFormat</code> từ <code>core/decorators/datetime.decorator</code></span></div>
+</div>
+
+<!-- ─── CODE GENERATOR TAB ─── -->
+<div class="tab-panel" id="dt-tab-gen">
+  <div class="gen-layout">
+
+    <!-- LEFT: Form -->
+    <div class="gen-form-panel">
+      <div class="gen-form-header">⚡ Tham số decorator</div>
+      <div class="gen-form-body">
+
+        <div class="gen-field">
+          <label class="gen-label">Property name <span class="gl-type">string</span></label>
+          <input id="dg-propname" class="gen-input mono" placeholder="VD: CreatedDate, Deadline..." oninput="genDtCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">type <span class="gl-type">DateTimeType</span></label>
+          <select id="dg-type" class="gen-select" onchange="genDtCode()">
+            <option value="DateTime">DateTimeType.DateTime</option>
+            <option value="Date">DateTimeType.Date</option>
+            <option value="Time">DateTimeType.Time</option>
+            <option value="Month">DateTimeType.Month</option>
+            <option value="Year">DateTimeType.Year</option>
+            <option value="DayMonth">DateTimeType.DayMonth</option>
+            <option value="DateRange">DateTimeType.DateRange</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">label <span class="gl-type">string</span></label>
+          <input id="dg-label" class="gen-input" placeholder="Để trống = auto từ tên property" oninput="genDtCode()">
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label" style="margin-bottom:2px">Flags</label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genDtCode,0)"><input type="checkbox" id="dg-required" onchange="genDtCode()"><span class="gc-label">required</span><span class="gc-desc" style="color:var(--rose);font-size:10px;font-weight:700">validate</span></label>
+            <label class="gen-check" onclick="setTimeout(genDtCode,0)"><input type="checkbox" id="dg-allowSearch" onchange="genDtCode()"><span class="gc-label">allowSearch</span><span class="gc-desc">filter grid</span></label>
+            <label class="gen-check" onclick="setTimeout(genDtCode,0)"><input type="checkbox" id="dg-readonly" onchange="genDtCode()"><span class="gc-label">readonly</span><span class="gc-desc">chỉ xem</span></label>
+            <label class="gen-check" onclick="setTimeout(genDtCode,0)"><input type="checkbox" id="dg-minCurent" onchange="genDtCode()"><span class="gc-label">minCurent</span><span class="gc-desc">min = hôm nay</span></label>
+            <label class="gen-check" onclick="setTimeout(genDtCode,0)"><input type="checkbox" id="dg-maxCurent" onchange="genDtCode()"><span class="gc-label">maxCurent</span><span class="gc-desc">max = hôm nay</span></label>
+          </div>
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label">minDepend <span class="gl-type">string</span></label>
+          <input id="dg-minDepend" class="gen-input mono" placeholder="VD: StartDate" oninput="genDtCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">maxDepend <span class="gl-type">string</span></label>
+          <input id="dg-maxDepend" class="gen-input mono" placeholder="VD: EndDate" oninput="genDtCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">columnClass <span class="gl-type">ColumnClassFormat</span></label>
+          <select id="dg-column" class="gen-select" onchange="genDtCode()">
+            <option value="">— auto</option>
+            <option value="Column3">Column3 (25%)</option>
+            <option value="Column4">Column4 (33%)</option>
+            <option value="Column6">Column6 (50%)</option>
+            <option value="Column8">Column8 (67%)</option>
+            <option value="Column12">Column12 (100%)</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">tooltip <span class="gl-type">string</span></label>
+          <input id="dg-tooltip" class="gen-input" placeholder="Tooltip khi hover label..." oninput="genDtCode()">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: Output -->
+    <div class="gen-output-panel">
+      <div class="gen-output-header">
+        <span class="gen-output-title">📋 Generated code</span>
+        <button class="copy-btn" id="copy-btn-dt" onclick="doCopy('_genDtPlain','copy-btn-dt')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="gen-preview-code" id="gen-dt-output"></div>
+      <div class="gen-hint">
+        <span>💡</span>
+        <span>Import: <code>DateTimeDecorator</code>, <code>DateTimeType</code> từ core decorator.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── DATETIME-SPECIFIC JS ── */
+function genDtCode() {
+  const propName     = document.getElementById('dg-propname').value.trim() || 'PropertyName';
+  const type         = document.getElementById('dg-type').value;
+  const label        = document.getElementById('dg-label').value.trim();
+  const required     = document.getElementById('dg-required').checked;
+  const allowSearch  = document.getElementById('dg-allowSearch').checked;
+  const readonly     = document.getElementById('dg-readonly').checked;
+  const minCurent    = document.getElementById('dg-minCurent').checked;
+  const maxCurent    = document.getElementById('dg-maxCurent').checked;
+  const minDepend    = document.getElementById('dg-minDepend').value.trim();
+  const maxDepend    = document.getElementById('dg-maxDepend').value.trim();
+  const column       = document.getElementById('dg-column').value;
+  const tooltip      = document.getElementById('dg-tooltip').value.trim();
+
+  const opts = [];
+  if (label)        opts.push(`label: '${label}'`);
+  if (required)     opts.push(`required: true`);
+  if (allowSearch)  opts.push(`allowSearch: true`);
+  if (readonly)     opts.push(`readonly: true`);
+  if (type !== 'DateTime') opts.push(`type: DateTimeType.${type}`);
+  if (minCurent)    opts.push(`minCurent: true`);
+  if (maxCurent)    opts.push(`maxCurent: true`);
+  if (minDepend)    opts.push(`minDepend: '${minDepend}'`);
+  if (maxDepend)    opts.push(`maxDepend: '${maxDepend}'`);
+  if (column)       opts.push(`columnClass: ColumnClassFormat.${column}`);
+  if (tooltip)      opts.push(`tooltip: '${tooltip}'`);
+
+  const decoratorStr = renderDecorator('@DateTimeDecorator', opts);
+  const pname = propName || 'PropertyName';
+  const propStr = `${pname}: Date;`;
+  window._genDtPlain = decoratorStr + '\n' + propStr;
+  const hlDec  = syntaxHL(decoratorStr);
+  const hlProp = `<span class="prop">${pname}</span>: <span class="cls">Date</span>;`;
+  document.getElementById('gen-dt-output').innerHTML = hlDec + '<br>' + hlProp;
+}
+
+// Init
+genDtCode();
+</script>

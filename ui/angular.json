@@ -1,0 +1,206 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "lazy.travel": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:component": {
+                    "style": "css"
+                },
+                "@schematics/angular:application": {
+                    "strict": true
+                }
+            },
+            "root": "",
+            "sourceRoot": "src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "aot": false,
+                        "sourceMap": true,
+                        "main": "src/main.ts",
+                        "optimization": false,
+                        "buildOptimizer": false,
+                        "index": "src/index.html",
+                        "outputPath": "dist/lazy.travel",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "tsconfig.app.json",
+                        "assets": [
+                            "src/favicon.ico",
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets",
+                                "output": "/assets"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets/plugins/line-awesome/fonts",
+                                "output": "/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets/plugins/flaticon/fonts",
+                                "output": "/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets/plugins/flaticon2/fonts",
+                                "output": "/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets/plugins/tinymce/icons",
+                                "output": "/icons"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets/plugins/tinymce/langs",
+                                "output": "/langs"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets/plugins/tinymce/skins",
+                                "output": "/skins"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets/plugins/tinymce/plugins",
+                                "output": "/plugins"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "src/assets/plugins/tinymce/themes",
+                                "output": "/themes"
+                            }
+                        ],
+                        "styles": [
+                            "./src/styles.scss",
+                            "./src/assets/plugins/fancyapps/fancybox.css",
+                            "./src/assets/plugins/code-editor/codemirror.css",
+                            "./src/assets/plugins/color-picker/coloris.min.css",
+                            "./src/assets/plugins/datetime/css/datepicker.min.css",
+                            "./src/assets/plugins/custom/jstree/jstree.bundle.min.css",
+                            "./src/assets/plugins/jquery-signature/jquery.signaturepad.css",
+                            "./src/assets/plugins/tui-color-picker/dist/tui-color-picker.min.css",
+                            "./src/assets/plugins/tui-image-editor/dist/tui-image-editor.min.css",
+                            "./src/assets/plugins/bootstrap-phone/build/css/intlTelInput.min.css"
+                        ],
+                        "scripts": [
+                            "./src/assets/plugins/jquery/dist/jquery-3.4.1.min.js",
+                            "./src/assets/plugins/select2/select2.min.js",
+                            "./src/assets/plugins/tinymce/tinymce.min.js",
+                            "./src/assets/plugins/color-picker/coloris.js",
+                            "./src/assets/plugins/docx-reader/jszip.min.js",
+                            "./src/assets/plugins/code-editor/codemirror.js",
+                            "./src/assets/plugins/code-editor/javascript.js",
+                            "./src/assets/plugins/toastr/build/toastr.min.js",
+                            "./src/assets/plugins/docx-reader/docx-preview.js",
+                            "./src/assets/plugins/global/plugins.bundle.min.js",
+                            "./src/assets/plugins/datetime/js/datepicker.min.js",
+                            "./src/assets/plugins/draggabilly/draggabilly.min.js",
+                            "./src/assets/plugins/bootstrap-daterangepicker/moment.min.js",
+                            "./src/assets/plugins/table.resizable/colResizable-1.6.min.js",
+                            "./src/assets/plugins/jquery-signature/jquery.signaturepad.js",
+                            "./src/assets/plugins/tui-code-snippet/dist/tui-code-snippet.min.js",
+                            "./src/assets/plugins/tui-color-picker/dist/tui-color-picker.min.js",
+                            "./src/assets/plugins/tui-image-editor/dist/tui-image-editor.min.js",
+                            "./src/assets/plugins/bootstrap-phone/build/js/intlTelInput-jquery.min.js",
+                            "./src/assets/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js",
+                            "./src/assets/plugins/bootstrap-daterangepicker/bootstrap-daterangepicker.min.js"
+                        ],
+                        "allowedCommonJsDependencies": [
+                            "lodash",
+                            "moment",
+                            "pizzip",
+                            "numbro",
+                            "sysend",
+                            "exceljs",
+                            "drawflow",
+                            "dom-to-image",
+                            "docxtemplater",
+                            "core-js/modules/es.array.at.js",
+                            "core-js/modules/web.immediate.js",
+                            "core-js/modules/es.array.push.js",
+                            "core-js/modules/es.error.cause.js",
+                            "core-js/modules/es.json.stringify.js",
+                            "core-js/modules/es.object.from-entries.js",
+                            "core-js/modules/es.array.unscopables.flat.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "aot": true,
+                            "sourceMap": false,
+                            "namedChunks": true,
+                            "vendorChunk": true,
+                            "optimization": {
+                                "styles": true,
+                                "scripts": false
+                            },
+                            "outputHashing": "all",
+                            "buildOptimizer": true,
+                            "extractLicenses": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "30mb",
+                                    "maximumError": "50mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "30mb",
+                                    "maximumError": "50mb"
+                                }
+                            ]
+                        },
+                        "development": {
+                            "aot": false,
+                            "sourceMap": true,
+                            "namedChunks": true,
+                            "vendorChunk": true,
+                            "optimization": {
+                                "styles": false,
+                                "scripts": false
+                            },
+                            "outputHashing": "all",
+                            "buildOptimizer": false,
+                            "extractLicenses": false
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "hmr": true,
+                        "port": 8080,
+                        "liveReload": true,
+                        "buildTarget": "lazy.travel:build:development"
+                    },
+                    "configurations": {
+                        "production": {
+                            "buildTarget": "lazy.travel:build:production"
+                        },
+                        "development": {
+                            "buildTarget": "lazy.travel:build:development"
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                }
+            }
+        }
+    },
+    "cli": {
+        "analytics": "02b96fa2-55c0-45ee-87f4-6cdbf0417220"
+    }
+}

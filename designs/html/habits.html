@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Thói quen</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--f:'Be Vietnam Pro',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--f);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px;}
+.phone{width:375px;background:var(--rw);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.18);position:relative;}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp);}
+/* HEADER */
+.hd{background:var(--wb);padding:18px 22px 30px;position:relative;}
+.hd::after{content:'';position:absolute;bottom:-26px;left:-10px;right:-10px;height:52px;background:var(--rw);border-radius:50%;z-index:0;}
+.hd-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.hd-title{font-size:22px;font-weight:600;color:var(--rw);}
+.hd-sub{font-size:12px;color:var(--mu);}
+.add-btn-sm{width:34px;height:34px;border-radius:50%;background:var(--ch);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.add-btn-sm svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;}
+/* Stats row */
+.stats-row{display:flex;gap:8px;position:relative;z-index:1;margin-top:6px;}
+.stat-pill{flex:1;background:rgba(255,246,237,.08);border:1px solid rgba(255,246,237,.12);border-radius:12px;padding:8px 10px;text-align:center;}
+.stat-val{font-size:18px;font-weight:600;color:var(--rw);}
+.stat-label{font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;margin-top:2px;}
+/* VIEW TABS */
+.view-tabs{display:flex;gap:0;margin:0 20px;margin-top:36px;background:var(--cr);border-radius:12px;padding:3px;}
+.vtab{flex:1;padding:8px 0;border-radius:9px;font-family:var(--f);font-size:12px;font-weight:600;color:var(--mu);border:none;background:transparent;cursor:pointer;transition:all .15s;}
+.vtab.active{background:var(--rw);color:var(--wb);box-shadow:0 1px 4px rgba(43,15,4,.1);}
+/* SCREEN */
+.screen{padding:12px 20px 110px;display:flex;flex-direction:column;gap:20px;}
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.col-wrap{border-radius:14px;overflow:hidden;border:1px solid rgba(186,84,28,.1);}
+.col-head{padding:10px 12px;font-size:11px;font-weight:600;border-bottom:1px solid rgba(186,84,28,.08);}
+.col-bad .col-head{background:#FEF3EE;color:#7A2D10;}
+.col-good .col-head{background:#EDF7E6;color:#205C12;}
+.col-head-sub{font-size:9px;font-weight:500;opacity:.65;margin-top:1px;}
+/* Habit item in cols */
+.habit-item{padding:9px 12px;border-bottom:1px solid rgba(186,84,28,.06);background:var(--rw);}
+.habit-item:last-child{border-bottom:none;}
+.hi-name{font-size:12px;font-weight:600;color:var(--wb);margin-bottom:4px;line-height:1.3;}
+.hi-streak{display:flex;gap:2px;margin-bottom:4px;}
+.sd{width:13px;height:13px;border-radius:3px;font-size:7px;font-weight:600;display:flex;align-items:center;justify-content:center;}
+.sd-ok{background:#EAF3DE;color:var(--gd);}
+.sd-no{background:#FCE8E8;color:var(--rs);}
+.sd-na{background:var(--cr);color:var(--mu);}
+.hi-meta{font-size:9px;color:var(--mu);}
+.hi-meta.warn{color:var(--rs);}
+.hi-meta.good{color:var(--gd);}
+/* Before/after badge */
+.before-after{display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap;}
+.ba-tag{font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;}
+.ba-before{background:#FCE8E8;color:#7A1010;}
+.ba-after{background:#EAF3DE;color:#205C12;}
+.ba-arrow{font-size:9px;color:var(--mu);}
+.col-add{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:9px;background:var(--cr);border:none;font-family:var(--f);font-size:11px;font-weight:600;color:var(--mu);cursor:pointer;}
+.col-add svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
+/* LIST VIEW */
+.habit-full-row{background:var(--rw);border:1px solid rgba(186,84,28,.1);border-radius:14px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
+.habit-full-row:hover{border-color:rgba(186,84,28,.28);}
+.hfr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.hfr-left{display:flex;align-items:center;gap:10px;}
+.hfr-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hfr-icon svg{width:16px;height:16px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.hfr-name{font-size:13px;font-weight:600;color:var(--wb);}
+.hfr-sub{font-size:10px;color:var(--mu);margin-top:1px;}
+.hfr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.tg-sm{width:38px;height:21px;border-radius:11px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s;}
+.tg-sm.on{background:var(--gd);}
+.tg-sm::after{content:'';position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s;}
+.tg-sm.on::after{left:19.5px;}
+.week-streak{display:flex;gap:3px;}
+.ws{width:16px;height:16px;border-radius:4px;font-size:8px;font-weight:600;display:flex;align-items:center;justify-content:center;}
+.ws.ok{background:#EAF3DE;color:var(--gd);}
+.ws.no{background:#FCE8E8;color:var(--rs);}
+.ws.na{background:var(--cr);color:var(--mu);}
+.hfr-prog{margin-top:4px;}
+.hfr-prog-bar{height:3px;border-radius:2px;background:rgba(186,84,28,.1);overflow:hidden;margin-bottom:3px;}
+.hfr-prog-fill{height:3px;border-radius:2px;background:var(--gd);}
+.hfr-prog-label{font-size:9px;color:var(--mu);}
+/* Monthly progress */
+.monthly-card{background:var(--cr);border-radius:14px;padding:14px 16px;}
+.mc-title{font-size:12px;font-weight:600;color:var(--wb);margin-bottom:12px;}
+.mc-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.mc-row:last-child{margin-bottom:0;}
+.mc-name{font-size:11px;font-weight:600;color:var(--wb);width:90px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mc-bar-wrap{flex:1;height:6px;background:rgba(186,84,28,.1);border-radius:3px;overflow:hidden;}
+.mc-bar-fill{height:6px;border-radius:3px;}
+.mc-pct{font-size:10px;font-weight:600;color:var(--mu);width:28px;text-align:right;}
+/* Section head */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);}
+.sa{font-size:11px;color:var(--ch);font-weight:600;cursor:pointer;}
+/* Tab bar */
+.tab-bar{display:flex;justify-content:space-around;padding:10px 8px 20px;border-top:1px solid rgba(186,84,28,.1);background:var(--rw);}
+.ti{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1;}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.ti.a .tic svg{stroke:var(--ch);}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;}
+.tl{font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;}
+.ti.a .tl{color:var(--ch);}
+/* Sheet */
+.sheet-bd{display:none;position:absolute;inset:0;background:rgba(43,15,4,.5);z-index:30;border-radius:44px;align-items:flex-end;}
+.sheet-bd.open{display:flex;}
+.sheet{background:var(--rw);border-radius:24px 24px 0 0;width:100%;padding:0 20px 36px;max-height:88vh;overflow-y:auto;}
+.sh-handle{width:36px;height:4px;border-radius:2px;background:rgba(186,84,28,.2);margin:14px auto 18px;}
+.sh-title{font-size:17px;font-weight:600;color:var(--wb);margin-bottom:4px;}
+.sh-sub{font-size:12px;color:var(--mu);margin-bottom:20px;line-height:1.5;}
+.inp-label{font-size:11px;font-weight:600;color:var(--mu);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;margin-top:14px;}
+.inp{width:100%;border:1px solid rgba(186,84,28,.2);border-radius:12px;padding:12px 14px;font-family:var(--f);font-size:14px;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s;}
+.inp:focus{border-color:var(--ch);}
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+.type-opt{padding:12px;border-radius:12px;border:1px solid rgba(186,84,28,.12);cursor:pointer;text-align:center;transition:all .15s;background:var(--rw);}
+.type-opt:hover,.type-opt.sel{border-color:var(--ch);background:#FFF3E0;}
+.type-opt-icon{font-size:22px;margin-bottom:4px;}
+.type-opt-name{font-size:12px;font-weight:600;color:var(--wb);}
+.type-opt.sel .type-opt-name{color:var(--ch);}
+.type-opt-desc{font-size:10px;color:var(--mu);margin-top:2px;}
+.btn-primary{width:100%;padding:14px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--f);font-size:15px;font-weight:600;cursor:pointer;margin-top:16px;}
+.btn-cancel{width:100%;padding:12px;border-radius:14px;border:none;background:transparent;color:var(--mu);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;}
+/* Improve sheet */
+.improve-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.improve-inp{flex:1;border:1px solid rgba(186,84,28,.2);border-radius:10px;padding:10px 12px;font-family:var(--f);font-size:13px;color:var(--wb);background:var(--rw);outline:none;}
+.improve-inp:focus{border-color:var(--ch);}
+.improve-arrow{font-size:16px;color:var(--mu);}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+
+<div class="hd">
+  <div class="hd-top">
+    <div><div class="hd-title">Thói quen</div><div class="hd-sub">Tháng 6 · 22 ngày theo dõi</div></div>
+    <button class="add-btn-sm" onclick="document.getElementById('add-sheet').classList.add('open')">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill"><div class="stat-val">4</div><div class="stat-label">Đang theo dõi</div></div>
+    <div class="stat-pill"><div class="stat-val">3</div><div class="stat-label">Đã cải thiện</div></div>
+    <div class="stat-pill"><div class="stat-val">67%</div><div class="stat-label">Tháng này</div></div>
+  </div>
+</div>
+
+<div class="view-tabs">
+  <button class="vtab active" id="vt-compare" onclick="switchView('compare')">So sánh</button>
+  <button class="vtab" id="vt-list" onclick="switchView('list')">Danh sách</button>
+  <button class="vtab" id="vt-stats" onclick="switchView('stats')">Thống kê</button>
+</div>
+
+<!-- COMPARE VIEW -->
+<div class="screen" id="view-compare">
+  <div class="two-col">
+    <!-- Cột trái: thói quen xấu -->
+    <div class="col-wrap col-bad">
+      <div class="col-head">
+        Cần bỏ
+        <div class="col-head-sub">Check-in mỗi ngày</div>
+      </div>
+      <div class="habit-item">
+        <div class="hi-name">Ngủ sau 1h sáng</div>
+        <div class="hi-streak">
+          <div class="sd sd-no">T2</div><div class="sd sd-no">T3</div>
+          <div class="sd sd-ok">T4</div><div class="sd sd-ok">T5</div>
+          <div class="sd sd-no">T6</div><div class="sd sd-ok">T7</div>
+          <div class="sd sd-na">CN</div>
+        </div>
+        <div class="hi-meta warn">3/6 lần phạm tuần này</div>
+      </div>
+      <div class="habit-item">
+        <div class="hi-name">MXH hơn 2h</div>
+        <div class="hi-streak">
+          <div class="sd sd-no">T2</div><div class="sd sd-ok">T3</div>
+          <div class="sd sd-ok">T4</div><div class="sd sd-ok">T5</div>
+          <div class="sd sd-no">T6</div><div class="sd sd-ok">T7</div>
+          <div class="sd sd-na">CN</div>
+        </div>
+        <div class="hi-meta">Đang cải thiện tốt</div>
+      </div>
+      <div class="habit-item">
+        <div class="hi-name">Ăn vặt sau 10pm</div>
+        <div class="hi-streak">
+          <div class="sd sd-no">T2</div><div class="sd sd-no">T3</div>
+          <div class="sd sd-no">T4</div><div class="sd sd-ok">T5</div>
+          <div class="sd sd-ok">T6</div><div class="sd sd-ok">T7</div>
+          <div class="sd sd-na">CN</div>
+        </div>
+        <div class="hi-meta warn">3 ngày liên tiếp phạm</div>
+      </div>
+      <button class="col-add" onclick="document.getElementById('add-sheet').classList.add('open')">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Thêm
+      </button>
+    </div>
+
+    <!-- Cột phải: đã cải thiện -->
+    <div class="col-wrap col-good">
+      <div class="col-head">
+        Đã cải thiện
+        <div class="col-head-sub">Trước → Sau</div>
+      </div>
+      <div class="habit-item">
+        <div class="hi-name">Giờ ngủ</div>
+        <div class="before-after">
+          <span class="ba-tag ba-before">Sau 1h</span>
+          <span class="ba-arrow">→</span>
+          <span class="ba-tag ba-after">Trước 12h</span>
+        </div>
+        <div class="hi-meta good">Duy trì 18 ngày ✓</div>
+      </div>
+      <div class="habit-item">
+        <div class="hi-name">Tập thể dục</div>
+        <div class="before-after">
+          <span class="ba-tag ba-before">0 buổi</span>
+          <span class="ba-arrow">→</span>
+          <span class="ba-tag ba-after">3 buổi/tuần</span>
+        </div>
+        <div class="hi-meta good">Streak 12 ngày ✓</div>
+      </div>
+      <div class="habit-item">
+        <div class="hi-name">Đọc sách</div>
+        <div class="before-after">
+          <span class="ba-tag ba-before">Không đọc</span>
+          <span class="ba-arrow">→</span>
+          <span class="ba-tag ba-after">10 trang/ngày</span>
+        </div>
+        <div class="hi-meta good">Duy trì 25 ngày ✓</div>
+      </div>
+      <button class="col-add" onclick="document.getElementById('improve-sheet').classList.add('open')">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Đánh dấu
+      </button>
+    </div>
+  </div>
+
+  <!-- Monthly progress -->
+  <div class="sh"><span class="sl">Tiến độ tháng 6</span></div>
+  <div class="monthly-card">
+    <div class="mc-row">
+      <div class="mc-name">Ngủ trước 12h</div>
+      <div class="mc-bar-wrap"><div class="mc-bar-fill" style="width:72%;background:var(--gd)"></div></div>
+      <div class="mc-pct">72%</div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-name">MXH dưới 2h</div>
+      <div class="mc-bar-wrap"><div class="mc-bar-fill" style="width:58%;background:var(--ch)"></div></div>
+      <div class="mc-pct">58%</div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-name">Ăn vặt</div>
+      <div class="mc-bar-wrap"><div class="mc-bar-fill" style="width:45%;background:var(--rs)"></div></div>
+      <div class="mc-pct">45%</div>
+    </div>
+  </div>
+</div>
+
+<!-- LIST VIEW -->
+<div class="screen" id="view-list" style="display:none">
+  <div class="sh"><span class="sl">Đang theo dõi · 4 habits</span></div>
+  <div class="habit-full-row">
+    <div class="hfr-top">
+      <div class="hfr-left">
+        <div class="hfr-icon" style="background:#FFF3E0"><svg style="stroke:#BA541C" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+        <div><div class="hfr-name">Ngủ trước 12h</div><div class="hfr-sub">Thói xấu cần bỏ · Hàng ngày</div></div>
+      </div>
+      <div class="hfr-right">
+        <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+      </div>
+    </div>
+    <div class="week-streak">
+      <div class="ws no">T2</div><div class="ws no">T3</div><div class="ws ok">T4</div>
+      <div class="ws ok">T5</div><div class="ws no">T6</div><div class="ws ok">T7</div><div class="ws na">CN</div>
+    </div>
+    <div class="hfr-prog">
+      <div class="hfr-prog-bar"><div class="hfr-prog-fill" style="width:72%"></div></div>
+      <div class="hfr-prog-label">72% tháng này · 3/6 lần phạm tuần này</div>
+    </div>
+  </div>
+  <div class="habit-full-row">
+    <div class="hfr-top">
+      <div class="hfr-left">
+        <div class="hfr-icon" style="background:#FCE8E8"><svg style="stroke:#993C1D" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div><div class="hfr-name">MXH dưới 2h</div><div class="hfr-sub">Thói xấu cần bỏ · Hàng ngày</div></div>
+      </div>
+      <div class="hfr-right">
+        <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+      </div>
+    </div>
+    <div class="week-streak">
+      <div class="ws no">T2</div><div class="ws ok">T3</div><div class="ws ok">T4</div>
+      <div class="ws ok">T5</div><div class="ws no">T6</div><div class="ws ok">T7</div><div class="ws na">CN</div>
+    </div>
+    <div class="hfr-prog">
+      <div class="hfr-prog-bar"><div class="hfr-prog-fill" style="width:58%;background:var(--ch)"></div></div>
+      <div class="hfr-prog-label">58% tháng này · đang cải thiện</div>
+    </div>
+  </div>
+  <div class="habit-full-row">
+    <div class="hfr-top">
+      <div class="hfr-left">
+        <div class="hfr-icon" style="background:#E6F1FB"><svg style="stroke:#185FA5" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+        <div><div class="hfr-name">Uống đủ 2L nước</div><div class="hfr-sub">Thói quen tốt · Hàng ngày</div></div>
+      </div>
+      <div class="hfr-right">
+        <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+      </div>
+    </div>
+    <div class="week-streak">
+      <div class="ws ok">T2</div><div class="ws ok">T3</div><div class="ws ok">T4</div>
+      <div class="ws ok">T5</div><div class="ws ok">T6</div><div class="ws ok">T7</div><div class="ws na">CN</div>
+    </div>
+    <div class="hfr-prog">
+      <div class="hfr-prog-bar"><div class="hfr-prog-fill" style="width:90%"></div></div>
+      <div class="hfr-prog-label">90% tháng này · 6 ngày liên tiếp ✓</div>
+    </div>
+  </div>
+  <div class="habit-full-row">
+    <div class="hfr-top">
+      <div class="hfr-left">
+        <div class="hfr-icon" style="background:#E1F5EE"><svg style="stroke:#085041" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div><div class="hfr-name">Tập thể dục 30 phút</div><div class="hfr-sub">Thói quen tốt · T2, T4, T6</div></div>
+      </div>
+      <div class="hfr-right">
+        <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+      </div>
+    </div>
+    <div class="week-streak">
+      <div class="ws ok">T2</div><div class="ws na">T3</div><div class="ws ok">T4</div>
+      <div class="ws na">T5</div><div class="ws ok">T6</div><div class="ws na">T7</div><div class="ws na">CN</div>
+    </div>
+    <div class="hfr-prog">
+      <div class="hfr-prog-bar"><div class="hfr-prog-fill" style="width:100%"></div></div>
+      <div class="hfr-prog-label">100% tuần này · streak 12 ngày 🔥</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS VIEW -->
+<div class="screen" id="view-stats" style="display:none">
+  <div class="sh"><span class="sl">Tổng quan tháng 6</span></div>
+  <div class="monthly-card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="text-align:center">
+        <div style="font-size:32px;font-weight:600;color:var(--wb)">67%</div>
+        <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.05em">Tỉ lệ hoàn thành</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:32px;font-weight:600;color:var(--gd)">12</div>
+        <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.05em">Ngày tốt nhất</div>
+      </div>
+    </div>
+    <div style="height:1px;background:rgba(186,84,28,.08);margin-bottom:14px;"></div>
+    <div class="mc-row">
+      <div class="mc-name">Uống đủ nước</div>
+      <div class="mc-bar-wrap"><div class="mc-bar-fill" style="width:90%;background:var(--gd)"></div></div>
+      <div class="mc-pct" style="color:var(--gd)">90%</div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-name">Tập thể dục</div>
+      <div class="mc-bar-wrap"><div class="mc-bar-fill" style="width:85%;background:var(--gd)"></div></div>
+      <div class="mc-pct" style="color:var(--gd)">85%</div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-name">Ngủ trước 12h</div>
+      <div class="mc-bar-wrap"><div class="mc-bar-fill" style="width:72%;background:var(--ch)"></div></div>
+      <div class="mc-pct">72%</div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-name">MXH dưới 2h</div>
+      <div class="mc-bar-wrap"><div class="mc-bar-fill" style="width:58%;background:var(--ch)"></div></div>
+      <div class="mc-pct">58%</div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-name">Không ăn vặt</div>
+      <div class="mc-bar-wrap"><div class="mc-bar-fill" style="width:45%;background:var(--rs)"></div></div>
+      <div class="mc-pct" style="color:var(--rs)">45%</div>
+    </div>
+  </div>
+  <div style="background:var(--wb);border-radius:14px;padding:16px;text-align:center;">
+    <div style="font-size:13px;font-weight:600;color:var(--rw);margin-bottom:4px;">Điểm sáng</div>
+    <div style="font-size:12px;color:var(--mu);line-height:1.6;">3 habits cải thiện thành công · Streak 12 ngày tập thể dục · 90% uống đủ nước</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="tl">Home</span></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div><span class="tl">Goals</span></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Habits</span></div>
+  <div class="ti" onclick="location.href='more.html'"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><span class="tl">More</span></div>
+</div>
+</div>
+</div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Thói quen</span></div>
+  <div class="ti" onclick="location.href='journey.html'"><div class="tic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><span class="tl">Journey</span></div>
+</div>
+
+<!-- ADD HABIT SHEET -->
+<div class="sheet-bd" id="add-sheet" onclick="if(event.target===this)this.classList.remove('open')">
+<div class="sheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Thêm habit mới</div>
+  <div class="sh-sub">Chọn loại habit bạn muốn theo dõi.</div>
+  <div class="type-row">
+    <div class="type-opt sel" onclick="selType(this)">
+      <div class="type-opt-icon">🚫</div>
+      <div class="type-opt-name">Cần bỏ</div>
+      <div class="type-opt-desc">Theo dõi thói xấu</div>
+    </div>
+    <div class="type-opt" onclick="selType(this)">
+      <div class="type-opt-icon">✅</div>
+      <div class="type-opt-name">Cần làm</div>
+      <div class="type-opt-desc">Xây thói quen tốt</div>
+    </div>
+  </div>
+  <div class="inp-label" style="margin-top:16px">Tên habit</div>
+  <input class="inp" type="text" placeholder="VD: Không dùng điện thoại sau 10pm">
+  <div class="inp-label">Tần suất</div>
+  <input class="inp" type="text" placeholder="Hàng ngày / T2-T6 / ..." value="Hàng ngày">
+  <button class="btn-primary">Thêm habit ✓</button>
+  <button class="btn-cancel" onclick="document.getElementById('add-sheet').classList.remove('open')">Huỷ</button>
+</div>
+</div>
+
+<!-- MARK IMPROVED SHEET -->
+<div class="sheet-bd" id="improve-sheet" onclick="if(event.target===this)this.classList.remove('open')">
+<div class="sheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Đánh dấu đã cải thiện</div>
+  <div class="sh-sub">Ghi lại sự thay đổi — trước và sau khi cải thiện.</div>
+  <div class="inp-label">Chọn habit đã cải thiện</div>
+  <input class="inp" type="text" placeholder="Ngủ sau 1h sáng">
+  <div class="inp-label">Từ → Đến</div>
+  <div class="improve-row">
+    <input class="improve-inp" type="text" placeholder="Trước (VD: Sau 1h)">
+    <span class="improve-arrow">→</span>
+    <input class="improve-inp" type="text" placeholder="Sau (VD: Trước 12h)">
+  </div>
+  <button class="btn-primary">Lưu cải thiện ✓</button>
+  <button class="btn-cancel" onclick="document.getElementById('improve-sheet').classList.remove('open')">Huỷ</button>
+</div>
+</div>
+
+<script>
+function switchView(v){
+  ['compare','list','stats'].forEach(function(k){
+    document.getElementById('view-'+k).style.display=k===v?'flex':'none';
+    document.getElementById('vt-'+k).classList.toggle('active',k===v);
+  });
+}
+function selType(el){document.querySelectorAll('.type-opt').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!-- ═══════════════ Backend — Documentation ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-api">⚙ Backend</div>
+  <div class="page-title">Backend — Tạo module API mới</div>
+  <div class="page-desc">Entity → LazyContext → Program.cs → Controller. Kế thừa AdminBaseController để có CRUD tự động.</div>
+  <div class="page-meta">ASP.NET Core &nbsp;·&nbsp; BaseEntity &nbsp;·&nbsp; LazyContext &nbsp;·&nbsp; AdminBaseController</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('be','guide')">📝 Hướng dẫn</button>
+  <button class="tab-btn" onclick="switchTab('be','endpoint')">🔗 Endpoints</button>
+  <button class="tab-btn" onclick="switchTab('be','advanced')">⚡ Nâng cao</button>
+</div>
+
+<!-- ═══════════ TAB 1: Hướng dẫn Step-by-step ═══════════ -->
+<div class="tab-panel active" id="be-tab-guide">
+
+  <div class="be-step-bar">
+    <div class="grd-step-item active" onclick="beShowStep(0, this)"><span class="grd-step-num">1</span><span class="grd-step-lbl">Entity</span></div>
+    <div class="grd-step-line"></div>
+    <div class="grd-step-item" onclick="beShowStep(1, this)"><span class="grd-step-num">2</span><span class="grd-step-lbl">LazyContext</span></div>
+    <div class="grd-step-line"></div>
+    <div class="grd-step-item" onclick="beShowStep(2, this)"><span class="grd-step-num">3</span><span class="grd-step-lbl">Program.cs</span></div>
+    <div class="grd-step-line"></div>
+    <div class="grd-step-item" onclick="beShowStep(3, this)"><span class="grd-step-num">4</span><span class="grd-step-lbl">Controller</span></div>
+  </div>
+
+  <!-- STEP 0: Entity -->
+  <div class="be-step-panel active" id="be-sp-0">
+    <div class="grd-sp-title">① Tạo Entity</div>
+    <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">
+      File: <code>Data/Entities/{Feature}.cs</code> &nbsp;—&nbsp; kế thừa <code>BaseEntity</code>.
+    </p>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">using</span> URF.Core.EF.Trackable;
+
+<span class="kw">namespace</span> <span class="cls">Lazy.Flow.Api.Data.Entities</span>
+{
+    <span class="kw">public class</span> <span class="cls">Product</span> : <span class="cls">BaseEntity</span>
+    {
+        <span class="kw">public string</span> <span class="prop">Name</span> { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public string</span> <span class="prop">Code</span> { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public string</span> <span class="prop">Description</span> { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public int?</span> <span class="prop">CategoryId</span> { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+        <span class="cm">// Navigation property (nếu có FK)</span>
+        [<span class="dec">ForeignKey</span>(<span class="str">"CategoryId"</span>)]
+        <span class="kw">public virtual</span> <span class="cls">Category</span> <span class="prop">Category</span> { <span class="kw">get</span>; <span class="kw">set</span>; }
+    }
+}</pre></div></div>
+    <div class="callout callout-blue" style="margin-top:8px">
+      <span>ℹ️</span><span><strong>BaseEntity</strong> đã có sẵn: <code>Id</code>, <code>IsActive</code>, <code>IsDelete</code>, <code>CreatedDate</code>, <code>UpdatedDate</code>, <code>CreatedBy</code>, <code>UpdatedBy</code>, <code>CreatedByUser</code>, <code>UpdatedByUser</code>, <code>TenantId</code>.</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: LazyContext -->
+  <div class="be-step-panel" id="be-sp-1">
+    <div class="grd-sp-title">② Đăng ký trong LazyContext</div>
+    <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">
+      File: <code>Data/LazyContext.cs</code> &nbsp;—&nbsp; thêm 2 chỗ: DbSet + OnModelCreating.
+    </p>
+    <div class="file-label">2a. Thêm DbSet property</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">public</span> <span class="cls">DbSet</span>&lt;<span class="cls">Product</span>&gt; <span class="prop">Products</span> { <span class="kw">get</span>; <span class="kw">set</span>; }</pre></div></div>
+
+    <div class="file-label" style="margin-top:12px">2b. Config trong OnModelCreating</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat">modelBuilder.<span class="prop">Entity</span>&lt;<span class="cls">Product</span>&gt;(entity =>
+{
+    entity.<span class="fn">ToTable</span>(<span class="str">"product"</span>);       <span class="cm">// tên bảng lowercase</span>
+    entity.<span class="fn">HasKey</span>(e => e.Id);
+    entity.<span class="fn">HasIndex</span>(e => e.Name);
+    entity.<span class="fn">HasIndex</span>(e => e.Code);
+    entity.<span class="fn">Property</span>(e => e.Name).<span class="fn">IsRequired</span>().<span class="fn">HasMaxLength</span>(<span class="num">250</span>);
+    entity.<span class="fn">Property</span>(e => e.Code).<span class="fn">HasMaxLength</span>(<span class="num">50</span>);
+    entity.<span class="fn">Property</span>(e => e.Description).<span class="fn">HasMaxLength</span>(<span class="num">1000</span>);
+
+    <span class="cm">// FK (nếu có)</span>
+    entity.<span class="fn">HasOne</span>(d => d.Category)
+        .<span class="fn">WithMany</span>(p => p.Products)
+        .<span class="fn">HasForeignKey</span>(d => d.CategoryId)
+        .<span class="fn">HasConstraintName</span>(<span class="str">"FK_Products_CategoryId"</span>);
+
+    <span class="cm">// ⚠️ Luôn thêm 2 dòng này cuối cùng</span>
+    entity.<span class="fn">HasOne</span>(d => d.CreatedByUser).<span class="fn">WithMany</span>().<span class="fn">HasForeignKey</span>(c => c.CreatedBy);
+    entity.<span class="fn">HasOne</span>(d => d.UpdatedByUser).<span class="fn">WithMany</span>().<span class="fn">HasForeignKey</span>(c => c.UpdatedBy);
+});</pre></div></div>
+
+    <div class="callout callout-yellow" style="margin-top:8px">
+      <span>⚠️</span><span><strong>Quy tắc bắt buộc:</strong> <code>ToTable</code> tên bảng <strong>lowercase</strong>, luôn <code>HasKey(Id)</code>, <code>HasMaxLength</code> cho mọi string, constraint đặt tên <code>FK_[Table]_[Column]</code>, 2 dòng <code>CreatedByUser/UpdatedByUser</code> ở cuối.</span>
+    </div>
+  </div>
+
+  <!-- STEP 2: Program.cs -->
+  <div class="be-step-panel" id="be-sp-2">
+    <div class="grd-sp-title">③ Đăng ký Repository trong Program.cs</div>
+    <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">
+      File: <code>Program.cs</code> &nbsp;—&nbsp; thêm 1 dòng.
+    </p>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// CRM</span>
+builder.Services.<span class="fn">AddScoped</span>&lt;<span class="cls">IRepositoryX</span>&lt;<span class="cls">Product</span>&gt;, <span class="cls">RepositoryX</span>&lt;<span class="cls">Product</span>&gt;&gt;();</pre></div></div>
+
+    <div class="callout callout-blue" style="margin-top:8px">
+      <span>ℹ️</span><span>Chỉ cần đăng ký repository. <strong>Không cần service</strong> nếu controller chỉ dùng CRUD cơ bản.</span>
+    </div>
+  </div>
+
+  <!-- STEP 3: Controller -->
+  <div class="be-step-panel" id="be-sp-3">
+    <div class="grd-sp-title">④ Tạo Controller</div>
+    <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">
+      File: <code>Controllers/Admin/{Feature}Controller.cs</code>
+    </p>
+
+    <div class="file-label">CRUD thuần — chỉ 5 dòng</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat">[<span class="dec">ApiController</span>]
+[<span class="dec">Route</span>(<span class="str">"api/admin/[controller]"</span>)]
+[<span class="dec">ApiExplorerSettings</span>(IgnoreApi = <span class="kw">true</span>)]
+<span class="kw">public class</span> <span class="cls">ProductController</span> : <span class="cls">AdminBaseController</span>&lt;<span class="cls">Product</span>&gt;
+{
+    <span class="kw">public</span> <span class="fn">ProductController</span>(<span class="cls">IServiceProvider</span> sp) : <span class="kw">base</span>(sp) { }
+}</pre></div></div>
+
+    <div class="callout callout-blue" style="margin-top:8px">
+      <span>ℹ️</span><span>Kế thừa <code>AdminBaseController&lt;T&gt;</code> → tự động có <strong>10+ endpoints</strong> CRUD. Xem tab Endpoints.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 2: Endpoints ═══════════ -->
+<div class="tab-panel" id="be-tab-endpoint">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🔗 Endpoints tự động từ AdminBaseController</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Kế thừa <code>AdminBaseController&lt;T&gt;</code> → các endpoint sau tự động có, <strong>không cần code thêm</strong>.
+  </p>
+
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Method</th><th>Route</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">POST</td><td class="p-type"><span class="t-str">/Items</span></td><td class="p-desc">Lấy danh sách có phân trang + filter + sort.</td></tr>
+        <tr data-level="basic"><td class="p-name">GET</td><td class="p-type"><span class="t-str">/{id}</span></td><td class="p-desc">Lấy 1 bản ghi theo ID.</td></tr>
+        <tr data-level="basic"><td class="p-name">POST</td><td class="p-type"><span class="t-str">/</span></td><td class="p-desc">Thêm mới entity.</td></tr>
+        <tr data-level="basic"><td class="p-name">PUT</td><td class="p-type"><span class="t-str">/</span></td><td class="p-desc">Cập nhật toàn bộ hoặc partial (<code>?columns=A,B</code>).</td></tr>
+        <tr data-level="basic"><td class="p-name">DELETE</td><td class="p-type"><span class="t-str">/{id}</span></td><td class="p-desc">Xóa hẳn (hard delete).</td></tr>
+        <tr data-level="basic"><td class="p-name">DELETE</td><td class="p-type"><span class="t-str">/Trash/{id}</span></td><td class="p-desc">Soft delete — toggle <code>IsDelete</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">POST</td><td class="p-type"><span class="t-str">/Active/{id}</span></td><td class="p-desc">Toggle <code>IsActive</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">GET</td><td class="p-type"><span class="t-str">/Exists/{id?}</span></td><td class="p-desc">Kiểm tra unique (<code>?property=&value=</code>).</td></tr>
+        <tr data-level="basic"><td class="p-name">GET</td><td class="p-type"><span class="t-str">/Lookup</span></td><td class="p-desc">Dropdown data (Id, Name).</td></tr>
+        <tr data-level="basic"><td class="p-name">POST</td><td class="p-type"><span class="t-str">/Export</span></td><td class="p-desc">Export CSV/Excel.</td></tr>
+        <tr data-level="basic"><td class="p-name">POST</td><td class="p-type"><span class="t-str">/Import</span></td><td class="p-desc">Import từ Excel.</td></tr>
+        <tr data-level="basic"><td class="p-name">GET</td><td class="p-type"><span class="t-str">/ResetCache</span></td><td class="p-desc">Reset server cache.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span>Tất cả endpoint đều yêu cầu <strong>Bearer token</strong> (JWT). Route prefix: <code>/api/admin/{controllerName}</code>.</span>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">📋 UI gọi endpoint như thế nào?</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// items() → POST /api/admin/product/items</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.items(tableData);
+
+<span class="cm">// item() → GET /api/admin/product/123</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.item(<span class="str">'product'</span>, <span class="num">123</span>);
+
+<span class="cm">// save() → POST (new) hoặc PUT (update)</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.save(<span class="str">'product'</span>, obj);
+
+<span class="cm">// delete() → DELETE /api/admin/product/123</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.delete(<span class="str">'product'</span>, <span class="num">123</span>);</pre></div></div>
+</div>
+
+<!-- ═══════════ TAB 3: Nâng cao ═══════════ -->
+<div class="tab-panel" id="be-tab-advanced">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">⚡ Nâng cao — Custom endpoint & Service</h3>
+
+  <div class="file-label">🔧 Thêm endpoint custom</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Vẫn kế thừa <code>AdminBaseController&lt;T&gt;</code>, thêm action riêng. Dùng <code>Repository</code> (protected).</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">public class</span> <span class="cls">ProductController</span> : <span class="cls">AdminBaseController</span>&lt;<span class="cls">Product</span>&gt;
+{
+    <span class="kw">public</span> <span class="fn">ProductController</span>(<span class="cls">IServiceProvider</span> sp) : <span class="kw">base</span>(sp) { }
+
+    <span class="cm">// GET /api/admin/Product/Lookup</span>
+    [<span class="dec">HttpGet</span>(<span class="str">"Lookup"</span>)]
+    [<span class="dec">Authorize</span>(AuthenticationSchemes = <span class="str">"Bearer"</span>)]
+    <span class="kw">public</span> <span class="cls">IActionResult</span> <span class="fn">Lookup</span>()
+    {
+        <span class="kw">var</span> result = <span class="prop">Repository</span>.<span class="fn">Queryable</span>()
+            .<span class="fn">Where</span>(c => c.IsActive == <span class="kw">true</span>)
+            .<span class="fn">Select</span>(c => <span class="kw">new</span> { c.Id, c.Name, c.Code })
+            .<span class="fn">ToList</span>();
+        <span class="kw">return</span> <span class="fn">Ok</span>(<span class="cls">ResultApi</span>.<span class="fn">ToEntity</span>(result));
+    }
+}</pre></div></div>
+
+  <div class="file-label" style="margin-top:14px">📊 Override /Items (custom select + join)</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat">[<span class="dec">HttpPost</span>(<span class="str">"Items"</span>)]
+[<span class="dec">Authorize</span>(AuthenticationSchemes = <span class="str">"Bearer"</span>)]
+<span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">IActionResult</span>&gt; <span class="fn">GetAllAsync</span>([<span class="dec">FromBody</span>] <span class="cls">TableData</span> obj)
+{
+    <span class="kw">var</span> result = <span class="kw">await</span> <span class="prop">Repository</span>.<span class="fn">Queryable</span>().<span class="fn">AsNoTracking</span>()
+        .<span class="fn">Select</span>(c => <span class="kw">new</span>
+        {
+            c.Id, c.Name, c.Code,
+            c.IsActive, c.IsDelete,
+            c.CreatedDate, c.UpdatedDate,
+            <span class="cm">// Join navigation</span>
+            CategoryName = c.Category != <span class="kw">null</span> ? c.Category.Name : <span class="str">""</span>,
+            CreatedBy = c.CreatedByUser != <span class="kw">null</span> ? c.CreatedByUser.UserName : <span class="str">""</span>,
+        })
+        .<span class="fn">ToQueryAsync</span>(obj); <span class="cm">// paging+filter+sort tự động</span>
+    <span class="kw">return</span> <span class="fn">Ok</span>(result);
+}</pre></div></div>
+
+  <div class="callout callout-yellow" style="margin-top:8px">
+    <span>⚠️</span><span><code>ToQueryAsync(obj)</code> tự áp dụng paging, filter, sort từ <code>TableData</code> (do Grid gửi lên). Chỉ cần <code>Select</code> dữ liệu, phần còn lại tự xử lý.</span>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">🧩 Khi nào cần tạo Service?</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Scenario</th><th>Cần Service?</th><th>Giải thích</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">CRUD cơ bản</td><td class="p-type"><span class="t-bool">❌ Không</span></td><td class="p-desc">AdminBaseController đã có sẵn tất cả.</td></tr>
+        <tr data-level="basic"><td class="p-name">Custom lookup / endpoint đơn</td><td class="p-type"><span class="t-bool">❌ Không</span></td><td class="p-desc">Thêm action trực tiếp vào Controller.</td></tr>
+        <tr data-level="basic"><td class="p-name">Business logic phức tạp</td><td class="p-type"><span class="t-bool">✅ Có</span></td><td class="p-desc">Tạo Service riêng, inject trong Controller.</td></tr>
+        <tr data-level="basic"><td class="p-name">Dùng nhiều Repository</td><td class="p-type"><span class="t-bool">✅ Có</span></td><td class="p-desc">Service inject nhiều IRepositoryX&lt;T&gt; để thao tác cross-entity.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">📋 Checklist tạo module mới</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>✓</th><th>File / Config</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-desc">Entity có kế thừa <code>BaseEntity</code></td><td class="p-name">Data/Entities/{Feature}.cs</td></tr>
+        <tr data-level="basic"><td class="p-desc">LazyContext → <code>DbSet</code> property</td><td class="p-name">Data/LazyContext.cs</td></tr>
+        <tr data-level="basic"><td class="p-desc">LazyContext → <code>OnModelCreating</code></td><td class="p-name">Data/LazyContext.cs</td></tr>
+        <tr data-level="basic"><td class="p-desc">Program.cs → <code>AddScoped&lt;IRepositoryX&gt;</code></td><td class="p-name">Program.cs</td></tr>
+        <tr data-level="basic"><td class="p-desc">Controller → <code>AdminBaseController&lt;T&gt;</code></td><td class="p-name">Controllers/Admin/{Feature}Controller.cs</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+.be-step-bar { display:flex; align-items:center; gap:0; margin-bottom:20px; padding:12px 8px; background:var(--surface); border:1px solid var(--border); border-radius:10px }
+.be-step-panel { display:none }
+.be-step-panel.active { display:block }
+.grd-step-item { display:flex; align-items:center; gap:6px; padding:6px 14px; border-radius:8px; cursor:pointer; transition:all .15s; user-select:none }
+.grd-step-item:hover { background:rgba(255,255,255,.06) }
+.grd-step-item.active { background:linear-gradient(135deg,#059669,#10b981); color:#fff; box-shadow:0 2px 8px rgba(16,185,129,.35) }
+.grd-step-item.active .grd-step-num { background:rgba(255,255,255,.25); color:#fff }
+.grd-step-num { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:var(--border); font-size:11px; font-weight:700; color:var(--text-2) }
+.grd-step-lbl { font-size:13px; font-weight:500; color:var(--text-2) }
+.grd-step-item.active .grd-step-lbl { color:#fff }
+.grd-step-line { flex:1; height:2px; background:var(--border); margin:0 2px }
+.grd-sp-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:10px }
+</style>
+
+<script>
+function beShowStep(idx, el) {
+  document.querySelectorAll('.be-step-bar .grd-step-item').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.be-step-panel').forEach(e => e.classList.remove('active'));
+  if (el) el.classList.add('active');
+  var p = document.getElementById('be-sp-' + idx);
+  if (p) p.classList.add('active');
+}
+</script>

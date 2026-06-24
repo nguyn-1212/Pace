@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — More</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;
+  --gd:#4A7C59;--rs:#E8593C;--f:'Be Vietnam Pro',sans-serif;
+  --bg:var(--rw);--bg2:var(--cr);--text:var(--wb);--text2:var(--sp);--border:rgba(186,84,28,.12);
+}
+[data-theme="dark"]{
+  --rw:#1A1008;--cr:#231408;--wb:#F5EDE0;--sp:#E0C9A6;--mu:#8C6A44;
+  --bg:#1A1008;--bg2:#231408;--text:#F5EDE0;--text2:#C4A882;--border:rgba(255,220,180,.1);
+  --ch:#D4652A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--f);background:var(--bg2);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px 48px;transition:background .3s;}
+.phone{width:375px;background:var(--bg);border-radius:44px;overflow:hidden;border:1.5px solid var(--border);position:relative;transition:background .3s,border-color .3s;}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp);}
+/* HEADER */
+.hd{background:var(--wb);padding:18px 22px 28px;position:relative;transition:background .3s;}
+.hd::after{content:'';position:absolute;bottom:-24px;left:-10px;right:-10px;height:48px;background:var(--bg);border-radius:50%;z-index:0;transition:background .3s;}
+.hd-title{font-size:22px;font-weight:600;color:var(--rw);transition:color .3s;}
+.hd-sub{font-size:12px;color:var(--mu);}
+[data-theme="dark"] .hd{background:#3D1F08;}
+[data-theme="dark"] .hd-title{color:#F5EDE0;}
+/* SCREEN */
+.screen{padding:30px 20px 110px;display:flex;flex-direction:column;gap:20px;transition:background .3s;}
+/* USER CARD */
+.user-card{background:var(--wb);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:opacity .15s,background .3s;}
+.user-card:hover{opacity:.9;}
+[data-theme="dark"] .user-card{background:#3D1F08;}
+.user-avatar{width:48px;height:48px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:#FFF6ED;flex-shrink:0;position:relative;}
+.user-avatar-edit{position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;background:var(--cr);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--wb);}
+.user-avatar-edit svg{width:10px;height:10px;fill:none;stroke:var(--sp);stroke-width:2;stroke-linecap:round;}
+.user-name{font-size:15px;font-weight:600;color:var(--rw);transition:color .3s;}
+.user-sub{font-size:11px;color:var(--mu);margin-top:2px;}
+[data-theme="dark"] .user-name{color:#F5EDE0;}
+.user-arrow{margin-left:auto;font-size:18px;color:var(--mu);}
+/* SECTION */
+.section-label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:8px;}
+.list-wrap{background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:background .3s,border-color .3s;}
+.list-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.list-row:last-child{border-bottom:none;}
+.list-row:hover{background:rgba(186,84,28,.04);}
+.lr-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lr-icon svg{width:16px;height:16px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.lr-body{flex:1;}
+.lr-name{font-size:13px;font-weight:600;color:var(--text);}
+.lr-sub{font-size:10px;color:var(--mu);margin-top:1px;}
+.lr-right{display:flex;align-items:center;gap:8px;}
+.lr-badge{font-size:9px;font-weight:600;padding:3px 8px;border-radius:10px;}
+.lr-arrow{font-size:16px;color:var(--mu);}
+/* TOGGLE */
+.tg{width:42px;height:23px;border-radius:12px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s;flex-shrink:0;}
+.tg.on{background:var(--gd);}
+.tg::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);}
+.tg.on::after{left:22px;}
+/* TAB BAR */
+.tab-bar{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 8px 20px;transition:background .3s;}
+.ti{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1;}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.ti.a .tic svg{stroke:var(--ch);}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;}
+.tl{font-size:9px;font-weight:600;color:#C4A882;letter-spacing:.04em;text-transform:uppercase;}
+.ti.a .tl{color:var(--ch);}
+/* SHEETS */
+.sheet-bd{display:none;position:absolute;inset:0;background:rgba(43,15,4,.5);z-index:30;border-radius:44px;align-items:flex-end;}
+.sheet-bd.open{display:flex;}
+.sheet{background:var(--bg);border-radius:24px 24px 0 0;width:100%;padding:0 20px 36px;max-height:90vh;overflow-y:auto;transition:background .3s;}
+.sh-handle{width:36px;height:4px;border-radius:2px;background:rgba(186,84,28,.2);margin:14px auto 18px;}
+.sh-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.sh-sub{font-size:12px;color:var(--mu);margin-bottom:20px;line-height:1.5;}
+/* SUB SCREENS */
+.sub-screen{display:none;position:absolute;inset:0;background:var(--bg);border-radius:44px;z-index:20;overflow-y:auto;transition:background .3s;}
+.sub-screen.open{display:block;}
+.sub-top{display:flex;align-items:center;gap:12px;padding:50px 20px 16px;border-bottom:1px solid var(--border);}
+.sub-back{width:36px;height:36px;border-radius:50%;background:var(--bg2);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .3s;}
+.sub-back svg{width:16px;height:16px;fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round;}
+.sub-heading{font-size:17px;font-weight:600;color:var(--text);}
+.sub-body{padding:20px;}
+/* INPUTS */
+.inp-label{font-size:10px;font-weight:600;color:var(--mu);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;margin-top:14px;}
+.inp-label:first-child{margin-top:0;}
+.inp{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-family:var(--f);font-size:14px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s,background .3s,color .3s;}
+.inp:focus{border-color:var(--ch);}
+.btn-primary{width:100%;padding:14px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--f);font-size:14px;font-weight:600;cursor:pointer;margin-top:16px;transition:opacity .15s;}
+.btn-primary:hover{opacity:.88;}
+.btn-cancel{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;}
+/* THEME PICKER */
+.theme-options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px;}
+.theme-opt{padding:14px 10px;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;text-align:center;transition:all .15s;background:var(--bg);}
+.theme-opt.sel{border-color:var(--ch);background:rgba(186,84,28,.06);}
+.theme-opt-icon{font-size:22px;margin-bottom:5px;}
+.theme-opt-name{font-size:12px;font-weight:600;color:var(--text);}
+.theme-opt.sel .theme-opt-name{color:var(--ch);}
+/* LANG PICKER */
+.lang-list{display:flex;flex-direction:column;gap:0;border-radius:14px;overflow:hidden;border:1px solid var(--border);}
+.lang-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--bg);border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.lang-row:last-child{border-bottom:none;}
+.lang-row:hover{background:rgba(186,84,28,.04);}
+.lang-name{font-size:13px;font-weight:600;color:var(--text);}
+.lang-native{font-size:11px;color:var(--mu);margin-top:1px;}
+.lang-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.lang-check.on{background:var(--ch);border-color:var(--ch);}
+.lang-check.on::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff;}
+/* NAVBAR CUSTOMIZE */
+.navbar-preview{display:flex;justify-content:space-around;align-items:center;background:var(--bg2);border-radius:12px;padding:10px 8px;margin-bottom:16px;}
+.nb-item{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.nb-item svg{width:20px;height:20px;fill:none;stroke:var(--mu);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.nb-label-sm{font-size:8px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;}
+.drag-list{display:flex;flex-direction:column;gap:8px;}
+.drag-item{display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:grab;}
+.drag-item.active-tab{border-color:var(--ch);background:rgba(186,84,28,.05);}
+.drag-icon-sm{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.drag-icon-sm svg{width:14px;height:14px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.drag-name{flex:1;font-size:13px;font-weight:600;color:var(--text);}
+.drag-sub{font-size:10px;color:var(--mu);margin-top:1px;}
+.drag-handle{color:var(--mu);font-size:16px;cursor:grab;}
+.tg-vis{width:38px;height:21px;border-radius:11px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s;flex-shrink:0;}
+.tg-vis.on{background:var(--gd);}
+.tg-vis::after{content:'';position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s;}
+.tg-vis.on::after{left:19.5px;}
+/* PROFILE avatar large */
+.profile-avatar-wrap{text-align:center;padding:20px 0 10px;}
+.profile-avatar-lg{width:80px;height:80px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;color:#FFF6ED;margin:0 auto 10px;position:relative;cursor:pointer;}
+.profile-avatar-badge{position:absolute;bottom:2px;right:2px;width:24px;height:24px;background:var(--bg2);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);}
+.profile-avatar-badge svg{width:12px;height:12px;fill:none;stroke:var(--sp);stroke-width:2;stroke-linecap:round;}
+.profile-name-display{font-size:18px;font-weight:600;color:var(--text);}
+.profile-since{font-size:11px;color:var(--mu);margin-top:4px;}
+.stats-mini{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 0;}
+.stat-m{background:var(--bg2);border-radius:12px;padding:10px;text-align:center;transition:background .3s;}
+.stat-m-val{font-size:18px;font-weight:600;color:var(--text);}
+.stat-m-label{font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+
+<!-- HEADER -->
+<div class="hd">
+  <div class="hd-title">More</div>
+  <div class="hd-sub">Tài chính · Nhật ký · Cài đặt</div>
+</div>
+
+<!-- MAIN SCREEN -->
+<div class="screen">
+
+  <!-- User card -->
+  <div class="user-card" onclick="openSub('profile')">
+    <div class="user-avatar">
+      A
+      <div class="user-avatar-edit"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+    </div>
+    <div>
+      <div class="user-name" id="display-name">An Nguyễn</div>
+      <div class="user-sub" id="display-bday">Sinh ngày 15/03/1999 · Thành viên từ T6/2026</div>
+    </div>
+    <div class="user-arrow">›</div>
+  </div>
+
+  <!-- Finance -->
+  <div>
+    <div class="section-label">Tài chính</div>
+    <div class="list-wrap">
+      <div class="list-row" onclick="location.href='finance.html'">
+        <div class="lr-icon" style="background:#FFF3E0"><svg style="stroke:#BA541C" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Chi tiêu & Ngân sách</div><div class="lr-sub">3.8tr đã chi · còn 1.8tr tháng này</div></div>
+        <div class="lr-right"><span class="lr-badge" style="background:#FFF3E0;color:#BA541C">68%</span><span class="lr-arrow">›</span></div>
+      </div>
+      <div class="list-row" onclick="openSheet('debt-sheet')">
+        <div class="lr-icon" style="background:#EAF3DE"><svg style="stroke:#4A7C59" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Khoản nợ</div><div class="lr-sub">3 khoản đang theo dõi</div></div>
+        <div class="lr-right"><span class="lr-badge" style="background:#FCE8E8;color:#7A1010">3</span><span class="lr-arrow">›</span></div>
+      </div>
+      <div class="list-row" onclick="openSheet('saving-sheet')">
+        <div class="lr-icon" style="background:#E8E7FC"><svg style="stroke:#534AB7" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Goal tiết kiệm</div><div class="lr-sub">3.2tr / 5tr · 64% hoàn thành</div></div>
+        <div class="lr-right"><span class="lr-arrow">›</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nhật ký & Tổng kết -->
+  <div>
+    <div class="section-label">Nhật ký & Tổng kết</div>
+    <div class="list-wrap">
+      <div class="list-row" onclick="location.href='journey.html'">
+        <div class="lr-icon" style="background:#FAEEDA"><svg style="stroke:#854F0B" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Tổng quan & Tổng kết</div><div class="lr-sub">Lịch · Charts · Tiến độ goals</div></div>
+        <div class="lr-right"><span class="lr-arrow">›</span></div>
+      </div>
+      <div class="list-row" onclick="openSub('notes')">
+        <div class="lr-icon" style="background:#FBEAF0"><svg style="stroke:#993556" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Ghi chú</div><div class="lr-sub">12 ghi chú đã lưu</div></div>
+        <div class="lr-right"><span class="lr-arrow">›</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cài đặt -->
+  <div>
+    <div class="section-label">Cài đặt</div>
+    <div class="list-wrap">
+      <div class="list-row" onclick="openSub('theme')">
+        <div class="lr-icon" style="background:#F5EDE0"><svg style="stroke:#6A3C16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M18.36 5.64l1.41-1.41"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Giao diện</div><div class="lr-sub">Sáng · Tối · Theo hệ thống</div></div>
+        <div class="lr-right"><span class="lr-badge" id="theme-badge" style="background:#F5EDE0;color:#6A3C16">Sáng</span><span class="lr-arrow">›</span></div>
+      </div>
+      <div class="list-row" onclick="openSub('lang')">
+        <div class="lr-icon" style="background:#E6F1FB"><svg style="stroke:#185FA5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Ngôn ngữ</div><div class="lr-sub" id="lang-sub">Tiếng Việt</div></div>
+        <div class="lr-right"><span class="lr-badge" id="lang-badge" style="background:#E6F1FB;color:#185FA5">VI</span><span class="lr-arrow">›</span></div>
+      </div>
+      <div class="list-row" onclick="location.href='notifications.html'">
+        <div class="lr-icon" style="background:#E1F5EE"><svg style="stroke:#4A7C59" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Nhắc nhở</div><div class="lr-sub">5 goals đang được nhắc</div></div>
+        <div class="lr-right">
+          <button class="tg on" id="notif-tg" onclick="event.stopPropagation();this.classList.toggle('on')" aria-label="bật tắt nhắc nhở"></button>
+        </div>
+      </div>
+      <div class="list-row" onclick="openSub('navbar')">
+        <div class="lr-icon" style="background:#FFF3E0"><svg style="stroke:#BA541C" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Tuỳ chỉnh navbar</div><div class="lr-sub">Đổi thứ tự · ẩn hiện tab</div></div>
+        <div class="lr-right"><span class="lr-badge" style="background:#FFF3E0;color:#BA541C">Mới</span><span class="lr-arrow">›</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiet hours -->
+  <div>
+    <div class="section-label">Giờ yên tĩnh</div>
+    <div class="list-wrap">
+      <div class="list-row">
+        <div class="lr-icon" style="background:#2B0F04"><svg style="stroke:#C4A882" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+        <div class="lr-body"><div class="lr-name">Không làm phiền</div><div class="lr-sub">22:00 → 7:00 sáng</div></div>
+        <div class="lr-right"><button class="tg on" onclick="this.classList.toggle('on')" aria-label="bật tắt không làm phiền"></button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="tl">Home</span></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div><span class="tl">Goals</span></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Habits</span></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><span class="tl">More</span></div>
+</div>
+
+<!-- ═══════════ SUB SCREENS ═══════════ -->
+
+<!-- PROFILE -->
+<div class="sub-screen" id="sub-profile">
+  <div class="sub-top">
+    <button class="sub-back" onclick="closeSub('profile')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="sub-heading">Hồ sơ cá nhân</div>
+  </div>
+  <div class="sub-body">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar-lg">
+        <span id="avatar-letter">A</span>
+        <div class="profile-avatar-badge"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      </div>
+      <div class="profile-name-display" id="profile-name-display">An Nguyễn</div>
+      <div class="profile-since">Thành viên từ tháng 6, 2026</div>
+    </div>
+    <div class="stats-mini">
+      <div class="stat-m"><div class="stat-m-val">48</div><div class="stat-m-label">Goals xong</div></div>
+      <div class="stat-m"><div class="stat-m-val">22</div><div class="stat-m-label">Ngày active</div></div>
+      <div class="stat-m"><div class="stat-m-val">74%</div><div class="stat-m-label">Tỉ lệ HT</div></div>
+    </div>
+    <div style="height:1px;background:var(--border);margin-bottom:16px;"></div>
+    <div class="inp-label">Tên hiển thị</div>
+    <input class="inp" id="name-inp" type="text" value="An Nguyễn">
+    <div class="inp-label">Ngày sinh</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px;">
+      <div>
+        <div style="font-size:10px;color:var(--mu);text-align:center;margin-bottom:4px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">Ngày</div>
+        <input class="inp" type="number" value="15" min="1" max="31" style="text-align:center;font-size:16px;font-weight:600;">
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--mu);text-align:center;margin-bottom:4px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">Tháng</div>
+        <input class="inp" type="number" value="03" min="1" max="12" style="text-align:center;font-size:16px;font-weight:600;">
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--mu);text-align:center;margin-bottom:4px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">Năm</div>
+        <input class="inp" type="number" value="1999" min="1940" max="2015" style="text-align:center;font-size:16px;font-weight:600;">
+      </div>
+    </div>
+    <button class="btn-primary" onclick="saveProfile()">Lưu thay đổi ✓</button>
+    <button class="btn-cancel" onclick="closeSub('profile')">Huỷ</button>
+  </div>
+</div>
+
+<!-- THEME -->
+<div class="sub-screen" id="sub-theme">
+  <div class="sub-top">
+    <button class="sub-back" onclick="closeSub('theme')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="sub-heading">Giao diện</div>
+  </div>
+  <div class="sub-body">
+    <div style="font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:20px;">Chọn chế độ hiển thị phù hợp với bạn. "Theo hệ thống" sẽ tự động chuyển theo cài đặt điện thoại.</div>
+    <div class="theme-options">
+      <div class="theme-opt sel" id="th-light" onclick="setTheme('light',this)">
+        <div class="theme-opt-icon">☀️</div>
+        <div class="theme-opt-name">Sáng</div>
+      </div>
+      <div class="theme-opt" id="th-dark" onclick="setTheme('dark',this)">
+        <div class="theme-opt-icon">🌙</div>
+        <div class="theme-opt-name">Tối</div>
+      </div>
+      <div class="theme-opt" id="th-system" onclick="setTheme('system',this)">
+        <div class="theme-opt-icon">⚙️</div>
+        <div class="theme-opt-name">Hệ thống</div>
+      </div>
+    </div>
+    <!-- Preview -->
+    <div style="margin-top:20px;border-radius:14px;overflow:hidden;border:1px solid var(--border);">
+      <div style="background:var(--wb);padding:14px 16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;">A</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--rw);transition:color .3s;">Chào buổi sáng</div>
+          <div style="font-size:10px;color:var(--mu);">Preview giao diện</div>
+        </div>
+      </div>
+      <div style="background:var(--bg);padding:12px 16px;transition:background .3s;">
+        <div style="background:var(--bg2);border-radius:10px;padding:10px 12px;transition:background .3s;">
+          <div style="font-size:12px;font-weight:600;color:var(--text);transition:color .3s;">Chạy bộ 20 phút</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:2px;">Health · 6:30 sáng</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="closeSub('theme')">Xác nhận</button>
+  </div>
+</div>
+
+<!-- LANGUAGE -->
+<div class="sub-screen" id="sub-lang">
+  <div class="sub-top">
+    <button class="sub-back" onclick="closeSub('lang')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="sub-heading">Ngôn ngữ</div>
+  </div>
+  <div class="sub-body">
+    <div style="font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:20px;">Chọn ngôn ngữ hiển thị trong app.</div>
+    <div class="lang-list">
+      <div class="lang-row" onclick="setLang('vi',this)">
+        <div style="font-size:20px;margin-right:4px;">🇻🇳</div>
+        <div style="flex:1"><div class="lang-name">Tiếng Việt</div><div class="lang-native">Vietnamese</div></div>
+        <div class="lang-check on" id="lc-vi"></div>
+      </div>
+      <div class="lang-row" onclick="setLang('en',this)">
+        <div style="font-size:20px;margin-right:4px;">🇬🇧</div>
+        <div style="flex:1"><div class="lang-name">English</div><div class="lang-native">Tiếng Anh</div></div>
+        <div class="lang-check" id="lc-en"></div>
+      </div>
+      <div class="lang-row" onclick="setLang('jp',this)" style="opacity:.5;pointer-events:none;">
+        <div style="font-size:20px;margin-right:4px;">🇯🇵</div>
+        <div style="flex:1"><div class="lang-name">日本語</div><div class="lang-native">Tiếng Nhật · Sắp ra mắt</div></div>
+        <div class="lang-check" id="lc-jp"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div class="sub-screen" id="sub-notes">
+  <div class="sub-top">
+    <button class="sub-back" onclick="closeSub('notes')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="sub-heading">Ghi chú</div>
+  </div>
+  <div class="sub-body">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="background:var(--bg2);border-radius:12px;padding:12px 14px;cursor:pointer;transition:background .12s;" onclick="">
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;">Kế hoạch học tiếng Anh tháng 6</div>
+        <div style="font-size:10px;color:var(--mu);">Gắn với: Goal Study · 20/06</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:12px;padding:12px 14px;cursor:pointer;">
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;">Cần mua sách Don't Make Me Think</div>
+        <div style="font-size:10px;color:var(--mu);">Không gắn · 18/06</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:12px;padding:12px 14px;cursor:pointer;">
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;">Nhắc nhở: gọi điện cho ba</div>
+        <div style="font-size:10px;color:var(--mu);">Gắn với: Personal · 15/06</div>
+      </div>
+    </div>
+    <button class="btn-primary" style="margin-top:16px;">+ Thêm ghi chú mới</button>
+  </div>
+</div>
+
+<!-- NAVBAR CUSTOMISE -->
+<div class="sub-screen" id="sub-navbar">
+  <div class="sub-top">
+    <button class="sub-back" onclick="closeSub('navbar')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="sub-heading">Tuỳ chỉnh navbar</div>
+  </div>
+  <div class="sub-body">
+    <div style="font-size:12px;color:var(--mu);line-height:1.6;margin-bottom:16px;">Bật/tắt từng tab. 4 tab đang bật sẽ hiển thị trên thanh điều hướng.</div>
+    <!-- Preview -->
+    <div style="font-size:10px;font-weight:600;color:var(--mu);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Preview</div>
+    <div class="navbar-preview">
+      <div class="nb-item"><svg viewBox="0 0 24 24" style="stroke:var(--ch)"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nb-label-sm" style="color:var(--ch)">Home</div></div>
+      <div class="nb-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg><div class="nb-label-sm">Goals</div></div>
+      <div class="nb-item"><div style="width:34px;height:34px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;margin-top:-6px;"><svg style="width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+      <div class="nb-item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><div class="nb-label-sm">Thói quen</div></div>
+      <div class="nb-item"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg><div class="nb-label-sm">More</div></div>
+    </div>
+    <div style="font-size:10px;font-weight:600;color:var(--mu);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;margin-top:4px;">Quản lý tab</div>
+    <div class="drag-list">
+      <div class="drag-item active-tab">
+        <div class="drag-icon-sm" style="background:#FFF3E0"><svg style="stroke:#BA541C" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div style="flex:1"><div class="drag-name">Home</div><div class="drag-sub">Màn hình chính</div></div>
+        <span style="font-size:10px;background:#FFF3E0;color:#BA541C;padding:2px 7px;border-radius:8px;font-weight:600;margin-right:6px;">Cố định</span>
+      </div>
+      <div class="drag-item active-tab">
+        <div class="drag-icon-sm" style="background:#E8E7FC"><svg style="stroke:#534AB7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div>
+        <div style="flex:1"><div class="drag-name">Goals</div><div class="drag-sub">Mục tiêu hàng ngày</div></div>
+        <button class="tg-vis on" onclick="this.classList.toggle('on')" aria-label="toggle Goals tab"></button>
+      </div>
+      <div class="drag-item active-tab">
+        <div class="drag-icon-sm" style="background:#E1F5EE"><svg style="stroke:#4A7C59" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div style="flex:1"><div class="drag-name">Thói quen</div><div class="drag-sub">Check-in thói quen</div></div>
+        <button class="tg-vis on" onclick="this.classList.toggle('on')" aria-label="toggle Thói quen tab"></button>
+      </div>
+      <div class="drag-item">
+        <div class="drag-icon-sm" style="background:#FAEEDA"><svg style="stroke:#854F0B" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div style="flex:1"><div class="drag-name">Tổng quan</div><div class="drag-sub">Tiến độ & Tổng kết</div></div>
+        <button class="tg-vis" onclick="this.classList.toggle('on')" aria-label="toggle Journey tab"></button>
+      </div>
+      <div class="drag-item">
+        <div class="drag-icon-sm" style="background:#FAEEDA"><svg style="stroke:#854F0B" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div style="flex:1"><div class="drag-name">Tài chính</div><div class="drag-sub">Chi tiêu & Ngân sách</div></div>
+        <button class="tg-vis" onclick="this.classList.toggle('on')" aria-label="toggle Finance tab"></button>
+      </div>
+      <div class="drag-item active-tab">
+        <div class="drag-icon-sm" style="background:#F5EDE0"><svg style="stroke:#6A3C16" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+        <div style="flex:1"><div class="drag-name">More</div><div class="drag-sub">Tài chính · Nhật ký · Cài đặt</div></div>
+        <span style="font-size:10px;background:#F5EDE0;color:#6A3C16;padding:2px 7px;border-radius:8px;font-weight:600;margin-right:6px;">Cố định</span>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="closeSub('navbar')" style="margin-top:16px;">Lưu cài đặt navbar ✓</button>
+  </div>
+</div>
+
+<!-- ═══════ SHEETS ═══════ -->
+<!-- Debt sheet -->
+<div class="sheet-bd" id="debt-sheet" onclick="if(event.target===this)closeSheet('debt-sheet')">
+<div class="sheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Khoản nợ</div>
+  <div class="sh-sub" style="margin-bottom:14px">Theo dõi tiền bạn nợ và người nợ bạn.</div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg2);border-radius:12px;">
+      <div><div style="font-size:13px;font-weight:600;color:var(--text);">Minh nợ bạn</div><div style="font-size:10px;color:var(--mu);margin-top:1px;">Hạn 30/06 · Bia hôm qua</div></div>
+      <div style="font-size:14px;font-weight:600;color:#4A7C59;">+500k</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg2);border-radius:12px;">
+      <div><div style="font-size:13px;font-weight:600;color:var(--text);">Bạn nợ mẹ</div><div style="font-size:10px;color:var(--mu);margin-top:1px;">Hạn 15/07 · Tiền thuê</div></div>
+      <div style="font-size:14px;font-weight:600;color:var(--rs);">-1.2tr</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg2);border-radius:12px;">
+      <div><div style="font-size:13px;font-weight:600;color:var(--text);">Hà nợ bạn</div><div style="font-size:10px;color:var(--mu);margin-top:1px;">Hạn 05/07 · Đi chơi</div></div>
+      <div style="font-size:14px;font-weight:600;color:#4A7C59;">+200k</div>
+    </div>
+  </div>
+  <button class="btn-primary">+ Thêm khoản nợ</button>
+  <button class="btn-cancel" onclick="closeSheet('debt-sheet')">Đóng</button>
+</div>
+</div>
+
+<!-- Saving sheet -->
+<div class="sheet-bd" id="saving-sheet" onclick="if(event.target===this)closeSheet('saving-sheet')">
+<div class="sheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Goal tiết kiệm</div>
+  <div class="sh-sub" style="margin-bottom:14px">Theo dõi tiến độ tiết kiệm tháng này.</div>
+  <div style="background:var(--wb);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-size:13px;font-weight:600;color:var(--rw);">Tiết kiệm tháng 6</span>
+      <span style="font-size:12px;color:var(--mu);">64%</span>
+    </div>
+    <div style="height:6px;background:rgba(255,246,237,.12);border-radius:3px;overflow:hidden;margin-bottom:8px;">
+      <div style="height:6px;width:64%;background:#6FCF97;border-radius:3px;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mu);">
+      <span>3.2tr đã tiết kiệm</span><span style="color:#A3D9B1;font-weight:600;">Mục tiêu 5tr</span>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="closeSheet('saving-sheet')">Chỉnh mục tiêu</button>
+  <button class="btn-cancel" onclick="closeSheet('saving-sheet')">Đóng</button>
+</div>
+</div>
+
+</div><!-- /phone -->
+
+<script>
+function openSub(id){document.getElementById('sub-'+id).classList.add('open');}
+function closeSub(id){document.getElementById('sub-'+id).classList.remove('open');}
+function openSheet(id){document.getElementById(id).classList.add('open');}
+function closeSheet(id){document.getElementById(id).classList.remove('open');}
+
+var currentTheme='light';
+function setTheme(t,el){
+  currentTheme=t;
+  document.querySelectorAll('.theme-opt').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');
+  var phone=document.getElementById('phone');
+  var body=document.body;
+  if(t==='dark'){body.setAttribute('data-theme','dark');phone.setAttribute('data-theme','dark');}
+  else{body.removeAttribute('data-theme');phone.removeAttribute('data-theme');}
+  var labels={light:'Sáng',dark:'Tối',system:'Hệ thống'};
+  var badge=document.getElementById('theme-badge');
+  if(badge){badge.textContent=labels[t];}
+}
+function setLang(code,row){
+  ['vi','en','jp'].forEach(function(c){
+    var el=document.getElementById('lc-'+c);
+    if(el)el.classList.remove('on');
+  });
+  var el=document.getElementById('lc-'+code);
+  if(el)el.classList.add('on');
+  var labels={vi:{badge:'VI',sub:'Tiếng Việt'},en:{badge:'EN',sub:'English'}};
+  if(labels[code]){
+    var b=document.getElementById('lang-badge');
+    var s=document.getElementById('lang-sub');
+    if(b)b.textContent=labels[code].badge;
+    if(s)s.textContent=labels[code].sub;
+  }
+}
+function saveProfile(){
+  var name=document.getElementById('name-inp').value.trim();
+  if(!name)return;
+  document.getElementById('display-name').textContent=name;
+  document.getElementById('profile-name-display').textContent=name;
+  var letter=name.charAt(0).toUpperCase();
+  document.getElementById('avatar-letter').textContent=letter;
+  closeSub('profile');
+}
+</script>
+</body>
+</html>

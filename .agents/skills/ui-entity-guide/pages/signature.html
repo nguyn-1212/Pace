@@ -1,0 +1,265 @@
+<!-- ═══════════════ @SignatureDecorator ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-editor">✦ Editor</div>
+  <div class="page-title">@SignatureDecorator</div>
+  <div class="page-desc">Decorator cho input chữ ký: vẽ tay, upload ảnh, nhập text. Hỗ trợ upload lên Cloud hoặc lưu Database.</div>
+  <div class="page-meta">core/decorators/signature.decorator.ts &nbsp;·&nbsp; DataType.Signature &nbsp;·&nbsp; SignatureEx extends ObjectEx</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('sig','opts')">⚙ Options</button>
+  <button class="tab-btn" onclick="switchTab('sig','types')">◈ SignatureType</button>
+  <button class="tab-btn" onclick="switchTab('sig','examples')">{ } Examples</button>
+  <button class="tab-btn" onclick="switchTab('sig','gen')">⚡ Code Generator</button>
+</div>
+
+<!-- ─── OPTIONS TAB ─── -->
+<div class="tab-panel active" id="sig-tab-opts">
+  <div class="opts-toolbar">
+    <div class="opts-count"><strong>10</strong> / 24 thuộc tính (cơ bản)</div>
+    <div class="opts-level-btns">
+      <button class="opts-level-btn active" onclick="toggleLevel('sig-opts','basic',this)">Cơ bản</button>
+      <button class="opts-level-btn" onclick="toggleLevel('sig-opts','advanced',this)">Nâng cao</button>
+      <button class="opts-level-btn" onclick="toggleLevel('sig-opts','all',this)">Tất cả</button>
+    </div>
+  </div>
+  <div class="opts-table-wrap">
+    <table class="opts-table" id="sig-opts">
+      <thead>
+        <tr><th>Property</th><th>Type</th><th>Default</th><th>Mô tả</th></tr>
+      </thead>
+      <tbody>
+        <tr class="group-row"><td colspan="4"><span>📦 ObjectEx — chung cho mọi decorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">label</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Nhãn hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">required <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Bắt buộc nhập.</td></tr>
+        <tr data-level="basic"><td class="p-name">readonly</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Hiển thị nhưng không cho chỉnh sửa.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowClear</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Cho phép xoá giá trị.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowSearch</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép lọc theo cột này.</td></tr>
+        <tr data-level="basic"><td class="p-name">columnClass</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-columnclass')">ColumnClassFormat</span></td><td class="p-default">undefined</td><td class="p-desc">Độ rộng cột form.</td></tr>
+        <tr data-level="basic"><td class="p-name">tooltip</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Tooltip hiển thị khi hover vào label.</td></tr>
+        <tr data-level="basic"><td class="p-name">placeholder</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">= label</td><td class="p-desc">Placeholder mặc định lấy từ label.</td></tr>
+        <tr data-level="advanced"><td class="p-name">icon</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Icon class (Line Awesome).</td></tr>
+        <tr data-level="advanced"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto (format: png...)</td><td class="p-desc">Mô tả hiển thị dưới input. Mặc định tự tạo từ accept.</td></tr>
+        <tr data-level="advanced"><td class="p-name">defaultValue</td><td class="p-type"><span class="t-str">any</span></td><td class="p-default">undefined</td><td class="p-desc">Giá trị mặc định ban đầu.</td></tr>
+        <tr data-level="advanced"><td class="p-name">index</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Thứ tự hiển thị trên form.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép filter column trên Grid.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customValidators</td><td class="p-type"><span class="t-arr">Validator[]</span></td><td class="p-default">undefined</td><td class="p-desc">Mảng custom validator.</td></tr>
+
+        <tr class="group-row"><td colspan="4"><span>▾ SignatureEx — riêng cho @SignatureDecorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">type</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-signaturetype')">SignatureType</span></td><td class="p-default">SignatureType.All</td><td class="p-desc">Loại chữ ký. Xem tab <strong>SignatureType</strong>.</td></tr>
+        <tr data-level="basic"><td class="p-name">size</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">5 (MB)</td><td class="p-desc">Kích thước file tối đa (MB) khi upload ảnh.</td></tr>
+        <tr data-level="basic"><td class="p-name">accept</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">image/jpg,jpeg,png</td><td class="p-desc">MIME types hoặc extensions cho phép upload. Tự tạo regex.</td></tr>
+        <tr data-level="basic"><td class="p-name">store</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-storetype')">StoreType</span></td><td class="p-default">StoreType.Cloud</td><td class="p-desc">Nơi lưu trữ: Cloud, DatabaseByte, DatabaseBase64.</td></tr>
+        <tr data-level="advanced"><td class="p-name">url</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">upload/uploadimage</td><td class="p-desc">API endpoint upload ảnh.</td></tr>
+        <tr data-level="advanced"><td class="p-name">imageUrl</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">upload/uploadsignature</td><td class="p-desc">API endpoint upload chữ ký vẽ tay (canvas → image).</td></tr>
+        <tr data-level="advanced"><td class="p-name">private</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Ảnh private — cần authentication để xem.</td></tr>
+        <tr data-level="advanced"><td class="p-name">dimension</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-dimensiondata')">DimensionData</span></td><td class="p-default">undefined</td><td class="p-desc">Validate kích thước ảnh (width × height).</td></tr>
+        <tr data-level="advanced"><td class="p-name">regexTypes</td><td class="p-type"><span class="t-str">RegExp</span></td><td class="p-default">auto</td><td class="p-desc">Regex validate file type. Tự tạo từ <code>accept</code>.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customUpload</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-customupload')">CustomUploadData</span></td><td class="p-default">undefined</td><td class="p-desc">Cấu hình upload tuỳ chỉnh: URL, headers, authorization riêng.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:16px">
+    <span>⚠️</span>
+    <span><code>@SignatureDecorator()</code> không truyền options → mặc định <code>SignatureType.All</code>, size=5MB, store=Cloud, accept=jpg/jpeg/png.</span>
+  </div>
+</div>
+
+<!-- ─── SIGNATURETYPE TAB ─── -->
+<div class="tab-panel" id="sig-tab-types">
+  <div class="types-grid2">
+    <div class="type-card2 common"><div class="tc2-name">SignatureType.All</div><div class="tc2-em">Tất cả phương thức: vẽ tay, upload ảnh, nhập text.</div><div class="tc2-note">Mặc định — linh hoạt nhất</div></div>
+    <div class="type-card2 special"><div class="tc2-name">SignatureType.Draw</div><div class="tc2-em">Chỉ cho phép vẽ tay trên canvas.</div><div class="tc2-note">Chữ ký tay thật sự</div></div>
+    <div class="type-card2 special"><div class="tc2-name">SignatureType.Image</div><div class="tc2-em">Chỉ cho phép upload ảnh chữ ký.</div><div class="tc2-note">Scan chữ ký có sẵn</div></div>
+    <div class="type-card2 special"><div class="tc2-name">SignatureType.Text</div><div class="tc2-em">Nhập text — tự render font chữ ký.</div><div class="tc2-note">Chữ ký nhanh từ tên</div></div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLES TAB ─── -->
+<div class="tab-panel" id="sig-tab-examples">
+  <div class="code-tabs">
+    <div class="code-tab active" onclick="switchCode('sig','basic',this)">Basic</div>
+    <div class="code-tab" onclick="switchCode('sig','advanced',this)">Advanced</div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-panel active" id="sig-cp-basic"><pre class="flat">
+<span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Contract'</span> })
+<span class="kw">export class</span> <span class="cls">ContractEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Chữ ký — tất cả phương thức</span>
+  <span class="dec">@SignatureDecorator</span>({ <span class="prop">label</span>: <span class="str">'Chữ ký'</span>, <span class="prop">required</span>: <span class="kw">true</span> })
+  <span class="prop">Signature</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Chỉ vẽ tay</span>
+  <span class="dec">@SignatureDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Chữ ký tay'</span>,
+    <span class="prop">type</span>: <span class="cls">SignatureType</span>.Draw,
+    <span class="prop">required</span>: <span class="kw">true</span>
+  })
+  <span class="prop">HandSignature</span>: <span class="kw">string</span>;
+}</pre></div>
+    <div class="code-panel" id="sig-cp-advanced"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">ApprovalEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Upload ảnh private — max 2MB</span>
+  <span class="dec">@SignatureDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Chữ ký xác nhận'</span>,
+    <span class="prop">type</span>: <span class="cls">SignatureType</span>.Image,
+    <span class="prop">size</span>: <span class="num">2</span>,
+    <span class="prop">private</span>: <span class="kw">true</span>,
+    <span class="prop">store</span>: <span class="cls">StoreType</span>.DatabaseBase64
+  })
+  <span class="prop">ApprovalSign</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Text — chữ ký nhanh</span>
+  <span class="dec">@SignatureDecorator</span>({
+    <span class="prop">type</span>: <span class="cls">SignatureType</span>.Text,
+    <span class="prop">columnClass</span>: <span class="cls">ColumnClassFormat</span>.Column6
+  })
+  <span class="prop">QuickSign</span>: <span class="kw">string</span>;
+}</pre></div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span><strong>Import:</strong> <code>SignatureDecorator</code> từ <code>core/decorators/signature.decorator</code>. Type: <code>SignatureType</code>, <code>StoreType</code> từ <code>core/domains/enums/data.type</code>.</span></div>
+</div>
+
+<!-- ─── CODE GENERATOR TAB ─── -->
+<div class="tab-panel" id="sig-tab-gen">
+  <div class="gen-layout">
+
+    <!-- LEFT: Form -->
+    <div class="gen-form-panel">
+      <div class="gen-form-header">⚡ Tham số decorator</div>
+      <div class="gen-form-body">
+
+        <div class="gen-field">
+          <label class="gen-label">Property name <span class="gl-type">string</span></label>
+          <input id="sigg-propname" class="gen-input mono" placeholder="VD: Signature, ApprovalSign..." oninput="genSigCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">type <span class="gl-type">SignatureType</span></label>
+          <select id="sigg-type" class="gen-select" onchange="genSigCode()">
+            <option value="All">SignatureType.All</option>
+            <option value="Draw">SignatureType.Draw</option>
+            <option value="Image">SignatureType.Image</option>
+            <option value="Text">SignatureType.Text</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">label <span class="gl-type">string</span></label>
+          <input id="sigg-label" class="gen-input" placeholder="Để trống = auto từ tên property" oninput="genSigCode()">
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label" style="margin-bottom:2px">Flags</label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genSigCode,0)"><input type="checkbox" id="sigg-required" onchange="genSigCode()"><span class="gc-label">required</span><span class="gc-desc" style="color:var(--rose);font-size:10px;font-weight:700">validate</span></label>
+            <label class="gen-check" onclick="setTimeout(genSigCode,0)"><input type="checkbox" id="sigg-readonly" onchange="genSigCode()"><span class="gc-label">readonly</span><span class="gc-desc">chỉ xem</span></label>
+            <label class="gen-check" onclick="setTimeout(genSigCode,0)"><input type="checkbox" id="sigg-private" onchange="genSigCode()"><span class="gc-label">private</span><span class="gc-desc">cần auth để xem</span></label>
+          </div>
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label">size — max file MB <span class="gl-type">number</span></label>
+          <input id="sigg-size" class="gen-input mono" type="number" min="1" placeholder="5" oninput="genSigCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">accept <span class="gl-type">string</span></label>
+          <input id="sigg-accept" class="gen-input mono" placeholder="Mặc định: image/jpg,image/jpeg,image/png" oninput="genSigCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">store <span class="gl-type">StoreType</span></label>
+          <select id="sigg-store" class="gen-select" onchange="genSigCode()">
+            <option value="">StoreType.Cloud (mặc định)</option>
+            <option value="DatabaseByte">StoreType.DatabaseByte</option>
+            <option value="DatabaseBase64">StoreType.DatabaseBase64</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">columnClass <span class="gl-type">ColumnClassFormat</span></label>
+          <select id="sigg-column" class="gen-select" onchange="genSigCode()">
+            <option value="">— auto</option>
+            <option value="Column3">Column3 (25%)</option>
+            <option value="Column4">Column4 (33%)</option>
+            <option value="Column6">Column6 (50%)</option>
+            <option value="Column8">Column8 (67%)</option>
+            <option value="Column12">Column12 (100%)</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">tooltip <span class="gl-type">string</span></label>
+          <input id="sigg-tooltip" class="gen-input" placeholder="Tooltip khi hover label..." oninput="genSigCode()">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: Output -->
+    <div class="gen-output-panel">
+      <div class="gen-output-header">
+        <span class="gen-output-title">📋 Generated code</span>
+        <button class="copy-btn" id="copy-btn-sig" onclick="doCopy('_genSigPlain','copy-btn-sig')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="gen-preview-code" id="gen-sig-output"></div>
+      <div class="gen-hint">
+        <span>💡</span>
+        <span>Import: <code>SignatureDecorator</code> từ <code>core/decorators/signature.decorator</code>. Type: <code>SignatureType</code>, <code>StoreType</code>.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── SIGNATURE CODE GENERATOR ── */
+function genSigCode() {
+  const propName  = document.getElementById('sigg-propname').value.trim() || 'PropertyName';
+  const type      = document.getElementById('sigg-type').value;
+  const label     = document.getElementById('sigg-label').value.trim();
+  const required  = document.getElementById('sigg-required').checked;
+  const readonly  = document.getElementById('sigg-readonly').checked;
+  const isPrivate = document.getElementById('sigg-private').checked;
+  const size      = document.getElementById('sigg-size').value.trim();
+  const accept    = document.getElementById('sigg-accept').value.trim();
+  const store     = document.getElementById('sigg-store').value;
+  const column    = document.getElementById('sigg-column').value;
+  const tooltip   = document.getElementById('sigg-tooltip').value.trim();
+
+  const opts = [];
+  if (label)      opts.push(`label: '${label}'`);
+  if (required)   opts.push(`required: true`);
+  if (readonly)   opts.push(`readonly: true`);
+  if (type !== 'All') opts.push(`type: SignatureType.${type}`);
+  if (size && size !== '5') opts.push(`size: ${size}`);
+  if (accept)     opts.push(`accept: '${accept}'`);
+  if (store)      opts.push(`store: StoreType.${store}`);
+  if (isPrivate)  opts.push(`private: true`);
+  if (column)     opts.push(`columnClass: ColumnClassFormat.${column}`);
+  if (tooltip)    opts.push(`tooltip: '${tooltip}'`);
+
+  const decoratorStr = renderDecorator('@SignatureDecorator', opts);
+  const pname = propName || 'PropertyName';
+  const propStr = `${pname}: string;`;
+  window._genSigPlain = decoratorStr + '\n' + propStr;
+  const hlDec  = syntaxHL(decoratorStr);
+  const hlProp = `<span class="prop">${pname}</span>: <span class="kw">string</span>;`;
+  document.getElementById('gen-sig-output').innerHTML = hlDec + '<br>' + hlProp;
+}
+
+// Init
+genSigCode();
+</script>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Nhắc nhở</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--f:'Be Vietnam Pro',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--f);background:var(--cr);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px 48px;}
+.phone{width:375px;background:var(--rw);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.18);position:relative;}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp);}
+.hd{background:var(--wb);padding:18px 22px 30px;position:relative;}
+.hd::after{content:'';position:absolute;bottom:-26px;left:-10px;right:-10px;height:52px;background:var(--rw);border-radius:50%;z-index:0;}
+.hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.hd-title{font-size:22px;font-weight:600;color:var(--rw);}
+.hd-sub{font-size:12px;color:var(--mu);}
+.master-toggle{display:flex;align-items:center;gap:10px;}
+.mt-label{font-size:12px;color:var(--mu);}
+.tg{width:44px;height:24px;border-radius:12px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s;}
+.tg.on{background:var(--gd);}
+.tg::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;}
+.tg.on::after{left:23px;}
+.screen{padding:36px 20px 110px;display:flex;flex-direction:column;gap:20px;}
+.notif-preview{background:var(--cr);border-radius:16px;padding:0;overflow:hidden;}
+.np-header{background:#2B0F04;padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.np-app{font-size:11px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;}
+.np-time{font-size:10px;color:rgba(255,246,237,.4);margin-left:auto;}
+.np-body{padding:14px 16px;}
+.np-title{font-size:14px;font-weight:600;color:var(--wb);margin-bottom:3px;}
+.np-msg{font-size:12px;color:var(--mu);line-height:1.5;}
+.np-actions{display:flex;border-top:1px solid rgba(186,84,28,.1);}
+.np-action{flex:1;padding:11px;font-family:var(--f);font-size:13px;font-weight:600;border:none;background:transparent;cursor:pointer;transition:background .15s;}
+.np-action:first-child{color:var(--ch);border-right:1px solid rgba(186,84,28,.1);}
+.np-action:last-child{color:var(--sp);}
+.np-action:hover{background:rgba(186,84,28,.05);}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);}
+.sa{font-size:11px;color:var(--ch);font-weight:600;cursor:pointer;}
+.notif-list{display:flex;flex-direction:column;gap:0;background:var(--rw);border:1px solid rgba(186,84,28,.1);border-radius:14px;overflow:hidden;}
+.notif-row{padding:14px 16px;border-bottom:1px solid rgba(186,84,28,.07);cursor:pointer;transition:background .15s;}
+.notif-row:last-child{border-bottom:none;}
+.notif-row:hover{background:rgba(186,84,28,.03);}
+.nr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.nr-left{display:flex;align-items:center;gap:10px;}
+.nr-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nr-icon svg{width:16px;height:16px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.nr-name{font-size:13px;font-weight:600;color:var(--wb);}
+.nr-sub{font-size:10px;color:var(--mu);margin-top:1px;}
+.nr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.nr-time{font-size:12px;font-weight:600;color:var(--ch);}
+.tg-sm{width:38px;height:21px;border-radius:11px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s;flex-shrink:0;}
+.tg-sm.on{background:var(--gd);}
+.tg-sm::after{content:'';position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s;}
+.tg-sm.on::after{left:19.5px;}
+.nr-schedule{display:flex;flex-wrap:wrap;gap:4px;}
+.day-tag{font-size:9px;font-weight:600;padding:2px 6px;border-radius:6px;}
+.day-on{background:#E1F5EE;color:#085041;}
+.day-off{background:var(--cr);color:var(--mu);}
+.day-diff{background:#FFF3E0;color:#7A4000;}
+.nr-expand{background:var(--cr);border-radius:10px;padding:10px 12px;margin-top:8px;display:none;}
+.nr-expand.open{display:block;}
+.per-day-grid{display:flex;flex-direction:column;gap:6px;}
+.pd-row{display:flex;align-items:center;justify-content:space-between;}
+.pd-day{font-size:12px;font-weight:500;color:var(--wb);width:36px;}
+.pd-time{font-size:13px;font-weight:600;color:var(--ch);}
+.pd-toggle{width:32px;height:18px;border-radius:9px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s;}
+.pd-toggle.on{background:var(--gd);}
+.pd-toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .2s;}
+.pd-toggle.on::after{left:16px;}
+.quiet-card{background:var(--wb);border-radius:14px;padding:16px 18px;}
+.qc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.qc-title{font-size:14px;font-weight:600;color:var(--rw);}
+.qc-sub{font-size:12px;color:var(--mu);line-height:1.5;margin-bottom:14px;}
+.qc-range{display:flex;align-items:center;gap:10px;}
+.qc-time-box{flex:1;background:rgba(255,246,237,.08);border:1px solid rgba(255,246,237,.15);border-radius:10px;padding:8px 12px;text-align:center;}
+.qc-time-label{font-size:9px;font-weight:600;color:rgba(255,246,237,.4);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;}
+.qc-time-val{font-size:16px;font-weight:600;color:var(--rw);}
+.qc-separator{font-size:14px;color:var(--mu);}
+.morning-card{background:var(--cr);border-radius:14px;padding:14px 16px;}
+.mc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.mc-title{font-size:13px;font-weight:600;color:var(--wb);}
+.mc-sub{font-size:11px;color:var(--mu);line-height:1.5;}
+.mc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.mc-chip{padding:6px 12px;border-radius:20px;border:1px solid rgba(186,84,28,.2);background:var(--rw);font-family:var(--f);font-size:12px;color:var(--sp);cursor:pointer;transition:all .15s;}
+.mc-chip.sel{background:var(--ch);border-color:var(--ch);color:#fff;}
+.tab-bar{display:flex;justify-content:space-around;padding:10px 8px 20px;border-top:1px solid rgba(186,84,28,.1);background:var(--rw);}
+.ti{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1;}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.ti.a .tic svg{stroke:var(--ch);}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;}
+.tl{font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;}
+.ti.a .tl{color:var(--ch);}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+
+<div class="hd">
+  <div class="hd-row">
+    <div>
+      <div class="hd-title">Nhắc nhở</div>
+      <div class="hd-sub">Quản lý thông báo cho tất cả goals</div>
+    </div>
+    <div class="master-toggle">
+      <span class="mt-label">Tất cả</span>
+      <button class="tg on" id="master-tg" onclick="toggleMaster(this)" aria-label="Bật tắt tất cả thông báo"></button>
+    </div>
+  </div>
+</div>
+
+<div class="screen">
+
+  <!-- Preview notification -->
+  <section>
+    <div class="section-head"><span class="sl">Thông báo trông như thế này</span></div>
+    <div class="notif-preview">
+      <div class="np-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C4A882" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="np-app">Pace</span>
+        <span class="np-time">7:00 sáng</span>
+      </div>
+      <div class="np-body">
+        <div class="np-title">Chào buổi sáng! Đã đến lúc rồi.</div>
+        <div class="np-msg">Chạy bộ 20 phút đang chờ bạn — chỉ cần bắt đầu thôi.</div>
+      </div>
+      <div class="np-actions">
+        <button class="np-action">Xong ngay ✓</button>
+        <button class="np-action">Dời 30 phút</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Goals notification list -->
+  <section>
+    <div class="section-head"><span class="sl">Goals đang nhắc</span><span class="sa">5 goals</span></div>
+    <div class="notif-list">
+
+      <!-- Hàng ngày -->
+      <div class="notif-row">
+        <div class="nr-top">
+          <div class="nr-left">
+            <div class="nr-icon" style="background:#E8E7FC"><svg style="stroke:#3C3489" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <div>
+              <div class="nr-name">Đọc 10 trang sách</div>
+              <div class="nr-sub">Hàng ngày</div>
+            </div>
+          </div>
+          <div class="nr-right">
+            <div class="nr-time">7:00 sáng</div>
+            <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+          </div>
+        </div>
+        <div class="nr-schedule">
+          <span class="day-tag day-on">T2</span><span class="day-tag day-on">T3</span><span class="day-tag day-on">T4</span><span class="day-tag day-on">T5</span><span class="day-tag day-on">T6</span><span class="day-tag day-on">T7</span><span class="day-tag day-on">CN</span>
+        </div>
+      </div>
+
+      <!-- Chọn thứ -->
+      <div class="notif-row">
+        <div class="nr-top">
+          <div class="nr-left">
+            <div class="nr-icon" style="background:#E1F5EE"><svg style="stroke:#085041" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+            <div>
+              <div class="nr-name">Chạy bộ 20 phút</div>
+              <div class="nr-sub">Chọn thứ</div>
+            </div>
+          </div>
+          <div class="nr-right">
+            <div class="nr-time">6:30 sáng</div>
+            <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+          </div>
+        </div>
+        <div class="nr-schedule">
+          <span class="day-tag day-on">T2</span><span class="day-tag day-off">T3</span><span class="day-tag day-on">T4</span><span class="day-tag day-off">T5</span><span class="day-tag day-on">T6</span><span class="day-tag day-off">T7</span><span class="day-tag day-on">CN</span>
+        </div>
+      </div>
+
+      <!-- Từng ngày khác giờ — có expand -->
+      <div class="notif-row" id="perday-row">
+        <div class="nr-top">
+          <div class="nr-left">
+            <div class="nr-icon" style="background:#FFF3E0"><svg style="stroke:#BA541C" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <div>
+              <div class="nr-name">Học từ vựng tiếng Anh</div>
+              <div class="nr-sub">Từng ngày khác giờ</div>
+            </div>
+          </div>
+          <div class="nr-right">
+            <div class="nr-time" style="font-size:10px;color:var(--mu)">Nhiều giờ</div>
+            <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+          </div>
+        </div>
+        <div class="nr-schedule">
+          <span class="day-tag day-diff" title="7:00">T2</span>
+          <span class="day-tag day-off">T3</span>
+          <span class="day-tag day-diff" title="8:00">T4</span>
+          <span class="day-tag day-off">T5</span>
+          <span class="day-tag day-diff" title="9:00">T6</span>
+          <span class="day-tag day-off">T7</span>
+          <span class="day-tag day-diff" title="10:00">CN</span>
+        </div>
+        <div class="nr-expand open" id="perday-detail">
+          <div class="per-day-grid">
+            <div class="pd-row"><span class="pd-day">Thứ 2</span><span class="pd-time">7:00 sáng</span><button class="pd-toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div>
+            <div class="pd-row"><span class="pd-day">Thứ 3</span><span class="pd-time" style="color:var(--mu)">Tắt</span><button class="pd-toggle" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div>
+            <div class="pd-row"><span class="pd-day">Thứ 4</span><span class="pd-time">8:00 sáng</span><button class="pd-toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div>
+            <div class="pd-row"><span class="pd-day">Thứ 5</span><span class="pd-time" style="color:var(--mu)">Tắt</span><button class="pd-toggle" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div>
+            <div class="pd-row"><span class="pd-day">Thứ 6</span><span class="pd-time">9:00 sáng</span><button class="pd-toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div>
+            <div class="pd-row"><span class="pd-day">Thứ 7</span><span class="pd-time" style="color:var(--mu)">Tắt</span><button class="pd-toggle" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div>
+            <div class="pd-row"><span class="pd-day">Chủ nhật</span><span class="pd-time">10:00 sáng</span><button class="pd-toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notif-row">
+        <div class="nr-top">
+          <div class="nr-left">
+            <div class="nr-icon" style="background:#FCE8E8"><svg style="stroke:#993C1D" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+            <div>
+              <div class="nr-name">Thiền 10 phút</div>
+              <div class="nr-sub">Hàng ngày</div>
+            </div>
+          </div>
+          <div class="nr-right">
+            <div class="nr-time">6:00 sáng</div>
+            <button class="tg-sm" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+          </div>
+        </div>
+        <div class="nr-schedule">
+          <span class="day-tag day-on">T2</span><span class="day-tag day-on">T3</span><span class="day-tag day-on">T4</span><span class="day-tag day-on">T5</span><span class="day-tag day-on">T6</span><span class="day-tag day-on">T7</span><span class="day-tag day-on">CN</span>
+        </div>
+      </div>
+
+      <div class="notif-row">
+        <div class="nr-top">
+          <div class="nr-left">
+            <div class="nr-icon" style="background:#FFF3E0"><svg style="stroke:#7A4000" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+            <div>
+              <div class="nr-name">Tiết kiệm 500k tuần này</div>
+              <div class="nr-sub">Hàng tuần · Thứ 2</div>
+            </div>
+          </div>
+          <div class="nr-right">
+            <div class="nr-time">8:00 sáng</div>
+            <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle"></button>
+          </div>
+        </div>
+        <div class="nr-schedule">
+          <span class="day-tag day-on">T2</span><span class="day-tag day-off">T3</span><span class="day-tag day-off">T4</span><span class="day-tag day-off">T5</span><span class="day-tag day-off">T6</span><span class="day-tag day-off">T7</span><span class="day-tag day-off">CN</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Quiet hours -->
+  <section>
+    <div class="section-head"><span class="sl">Giờ yên tĩnh</span></div>
+    <div class="quiet-card">
+      <div class="qc-top">
+        <div class="qc-title">Không làm phiền</div>
+        <button class="tg on" onclick="this.classList.toggle('on')" aria-label="toggle yên tĩnh"></button>
+      </div>
+      <div class="qc-sub">Pace sẽ không gửi thông báo trong khung giờ này.</div>
+      <div class="qc-range">
+        <div class="qc-time-box">
+          <div class="qc-time-label">Từ</div>
+          <div class="qc-time-val">22:00</div>
+        </div>
+        <div class="qc-separator">→</div>
+        <div class="qc-time-box">
+          <div class="qc-time-label">Đến</div>
+          <div class="qc-time-val">7:00</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Morning digest -->
+  <section>
+    <div class="section-head"><span class="sl">Điểm tin buổi sáng</span></div>
+    <div class="morning-card">
+      <div class="mc-top">
+        <div class="mc-title">Tóm tắt đầu ngày</div>
+        <button class="tg-sm on" onclick="this.classList.toggle('on')" aria-label="toggle điểm tin"></button>
+      </div>
+      <div class="mc-sub">1 thông báo duy nhất vào buổi sáng, tóm tắt tất cả goals cần làm hôm nay.</div>
+      <div class="mc-chips">
+        <div class="mc-chip sel" onclick="selMC(this)">6:00</div>
+        <div class="mc-chip" onclick="selMC(this)">6:30</div>
+        <div class="mc-chip" onclick="selMC(this)">7:00</div>
+        <div class="mc-chip" onclick="selMC(this)">7:30</div>
+        <div class="mc-chip" onclick="selMC(this)">8:00</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="tl">Home</span></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div><span class="tl">Goals</span></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Habits</span></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><span class="tl">More</span></div>
+</div>
+</div>
+</div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="tl">Nhắc nhở</span></div>
+  <div class="ti" onclick="location.href='finance.html'"><div class="tic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><span class="tl">Finance</span></div>
+</div>
+
+<script>
+function toggleMaster(btn){
+  btn.classList.toggle('on');
+  var isOn=btn.classList.contains('on');
+  document.querySelectorAll('.tg-sm,.pd-toggle').forEach(function(t){
+    if(isOn)t.classList.add('on');else t.classList.remove('on');
+  });
+}
+function selMC(el){
+  document.querySelectorAll('.mc-chip').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+}
+</script>
+</div>
+</body>
+</html>

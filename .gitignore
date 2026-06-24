@@ -1,0 +1,19 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.log
+
+## Secrets
+**/firebase.json
+**/appsettings.Production.json
+
+## Archives
+*.rar
+*.zip
+
+## OS
+.DS_Store
+Thumbs.db

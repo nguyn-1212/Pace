@@ -1,0 +1,66 @@
+.kt-portlet-edit-form {
+    box-shadow: none;
+    >.kt-portlet__body {
+        overflow: hidden;
+        background-color: #ecedf3;
+    }
+}
+
+.nav-link {
+    cursor: pointer;
+}
+
+html,
+body {
+    overflow-x: hidden;
+    font-size: smaller;
+}
+
+#kt_footer {
+    margin: 0;
+    padding: 0;
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+    .kt-login__fluid {
+        background-color: #fff;
+        .kt-grid--ver {
+            display: none !important;
+        }
+        .kt-login__body {
+            margin: 0 !important;
+        }
+        .kt-login__head {
+            margin: -15px 0 15px 0;
+        }
+    }
+    .kt-portlet-edit-form {
+        >.kt-portlet__body {
+            height: auto;
+            padding: 10px !important;
+        }
+    }
+    .kt-portlet {
+        .kt-portlet__head {
+            .kt-portlet__head-toolbar {
+                gap: 5px;
+                display: flex;
+                flex-wrap: wrap;
+                span {
+                    margin: 0 !important;
+                    button {
+                        i {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .btn i {
+        padding: 0 !important;
+    }
+}

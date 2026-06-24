@@ -1,0 +1,14 @@
+﻿<div class="kt-portlet kt-portlet-edit-form">
+    <div class="kt-portlet__body">
+        <div class="row" *ngIf="item && !loading">
+        <div class="col-sm-6"><editor [(object)]="item" property="UserId" [decorator]="{readonly: viewer}"></editor></div>
+        <div class="col-sm-12"><editor [(object)]="item" property="Bio" [decorator]="{readonly: viewer}"></editor></div>
+        <div class="col-sm-6"><editor [(object)]="item" property="TravelStyle" [decorator]="{readonly: viewer}"></editor></div>
+        <div class="col-sm-6"><editor [(object)]="item" property="HomeCity" [decorator]="{readonly: viewer}"></editor></div>
+        <div class="col-sm-3"><editor [(object)]="item" property="TotalTrips" [decorator]="{readonly: viewer}"></editor></div>
+        <div class="col-sm-3"><editor [(object)]="item" property="TotalKm" [decorator]="{readonly: viewer}"></editor></div>
+        <div class="col-sm-3"><editor [(object)]="item" property="IsPublic" [decorator]="{readonly: viewer}"></editor></div>
+        </div>
+        <div class="row row-loading" *ngIf="loading"><loading></loading></div>
+    </div>
+</div>

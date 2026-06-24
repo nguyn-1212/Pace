@@ -1,0 +1,418 @@
+﻿.kt-login__fluid {
+    height: 100vh;
+    background-color: #f8f9fa;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -10%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: rgba(0, 110, 220, 0.05);
+        z-index: 0;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -10%;
+        left: -10%;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: rgba(0, 110, 220, 0.03);
+        z-index: 0;
+    }
+
+    .kt-login__form {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        max-width: 420px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+
+        .kt-login__title {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            
+            h3 {
+                font-weight: 700;
+                color: #2c3e50;
+                font-size: 1.8rem;
+                letter-spacing: -0.5px;
+                position: relative;
+                display: inline-block;
+                
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 40px;
+                    height: 3px;
+                    background: #FF2D78;
+                    border-radius: 3px;
+                }
+            }
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.8rem;
+        }
+    }
+
+    // Đã loại bỏ phần kt-login__divider và kt-login__options
+
+    .kt-login__subtitle {
+        li {
+            opacity: 0.7;
+            margin: 5px 0;
+            transition: opacity 0.3s;
+
+            &.active {
+                opacity: 1;
+            }
+        }
+    }
+
+    a {
+        cursor: pointer;
+        transition: all 0.2s;
+        
+        &:hover {
+            opacity: 0.85;
+        }
+    }
+
+    .login-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 25px;
+        margin-bottom: 5px;
+        padding-top: 5px;
+        
+        .remember-me {
+            ::ng-deep label {
+                display: flex;
+                align-items: center;
+                font-size: 14px;
+                color: #718096;
+                
+                input[type="checkbox"] {
+                    margin-right: 6px;
+                }
+            }
+        }
+        
+        .forgot-password {
+            a {
+                color: #FF2D78;
+                font-size: 14px;
+                font-weight: 500;
+                
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+    
+    .security-note {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 13px;
+        color: #718096;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .kt-login__actions {
+        margin-top: 2rem;
+        
+        ::ng-deep button {
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 110, 220, 0.2);
+            }
+            
+            i {
+                margin-right: 8px;
+            }
+        }
+        
+        .kt-link {
+            color: #718096;
+            font-weight: 500;
+            transition: all 0.2s;
+            
+            &:hover {
+                color: #FF2D78;
+            }
+        }
+    }
+
+    .kt-login__signup-label {
+        color: #718096;
+        font-weight: 500;
+    }
+
+    .kt-login__signup-link {
+        color: #FF2D78;
+        font-weight: 600;
+        
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    // Styles cho phần bên trái
+    .kt-login__aside {
+        padding: 3rem;
+        position: relative;
+        overflow: hidden;
+        
+        &::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+        
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -30%;
+            width: 80%;
+            height: 80%;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+        }
+
+        .kt-login__logo {
+            overflow: hidden;
+            border-radius: 20px;
+            display: inline-block;
+            
+            img {
+                transition: all 0.3s;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                
+                &:hover {
+                    transform: scale(1.05);
+                }
+            }
+        }
+
+        .kt-login__title {
+            color: white;
+            margin-bottom: 0.8rem;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .kt-login__subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .kt-login__features {
+            margin-top: 2rem;
+            
+            .feature-item {
+                display: flex;
+                align-items: center;
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 1rem;
+                margin-bottom: 12px;
+                padding: 10px 15px;
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(5px);
+                transition: all 0.3s;
+                
+                &:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                    transform: translateX(5px);
+                }
+                
+                i {
+                    font-size: 1.1rem;
+                    margin-right: 10px;
+                }
+            }
+        }
+
+        .kt-login__info {
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 1;
+            
+            .kt-login__copyright {
+                font-size: 14px;
+            }
+            
+            .kt-login__menu {
+                display: flex;
+                gap: 15px;
+                
+                a {
+                    color: rgba(255, 255, 255, 0.8);
+                    font-weight: 500;
+                    transition: all 0.2s;
+                    display: flex;
+                    align-items: center;
+                    
+                    i {
+                        margin-right: 5px;
+                    }
+                    
+                    &:hover {
+                        color: white;
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+}
+
+::ng-deep .loginOtp button {
+    margin: auto;
+}
+
+@media (max-width: 991px) {
+    .kt-login__fluid {
+        .kt-login__aside {
+            padding: 2rem;
+            
+            .kt-login__title {
+                font-size: 1.6rem;
+            }
+            
+            .kt-login__subtitle {
+                font-size: 1rem;
+            }
+            
+            .kt-login__features {
+                display: none;
+            }
+        }
+        
+        .kt-login__form {
+            padding: 2rem;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .kt-login__fluid {
+        .kt-login__logo {
+            margin: 0 !important;
+            text-align: center;
+            
+            img {
+                width: 70px;
+                height: 70px;
+                margin: 0 auto;
+            }
+        }
+        
+        .kt-login__aside {
+            padding: 1.5rem;
+            text-align: center;
+            
+            .kt-login__info {
+                .kt-login__menu {
+                    justify-content: center;
+                }
+            }
+        }
+        
+        .kt-login__form {
+            margin: 1rem !important;
+            padding: 1.5rem;
+            
+            .kt-login__title h3 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        // Đã loại bỏ phần kt-login__options
+        
+        .login-options {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            
+            .forgot-password {
+                align-self: flex-end;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .kt-login__fluid {
+        .kt-login__head {
+            padding: 1rem;
+            text-align: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .kt-login__form {
+            padding: 1.2rem;
+        }
+    }
+}
+
+// Lazy Travel - Aside gradient
+.kt-login__aside {
+    background: linear-gradient(160deg, #FF2D78 0%, #FF6B35 60%, #FFD600 100%) !important;
+}
+
+.kt-login__title {
+    color: #fff !important;
+    font-weight: 900 !important;
+}
+
+::ng-deep .btn-primary {
+    background: linear-gradient(135deg, #FF2D78, #FF6B35) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+
+    &:hover {
+        background: linear-gradient(135deg, #e0245e, #e55a25) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 45, 120, 0.35) !important;
+    }
+}

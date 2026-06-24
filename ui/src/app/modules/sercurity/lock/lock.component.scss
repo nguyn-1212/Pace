@@ -1,0 +1,46 @@
+﻿.kt-login__fluid {
+    height: 100vh;
+    .kt-login__divider,
+    .kt-login__options {
+        display: none !important;
+    }
+
+    .kt-login__subtitle {
+        li {
+            opacity: 0.6;
+            margin: 5px 0;
+            &.active {
+                opacity: 1;
+            }
+        }
+    }
+
+    a {
+        cursor: pointer;
+    }
+}
+
+.kt-login__logo {
+    img {
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .kt-login__logo {
+        margin: 0 !important;
+        img {
+            width: auto;
+            margin: 0 auto;
+            max-height: 100px;
+        }
+    }
+}// Lazy Travel
+.kt-login__aside {
+    background: linear-gradient(160deg, #0C0C14 0%, #2B5BFF 100%) !important;
+}
+.kt-login__title h3 { color: #fff !important; }
+::ng-deep .btn-primary {
+    background: linear-gradient(135deg, #FF2D78, #FF6B35) !important;
+    border: none !important; border-radius: 10px !important; font-weight: 700 !important;
+}

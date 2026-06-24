@@ -1,0 +1,185 @@
+declare var require: any
+import * as signalR from '@microsoft/signalr';
+import { routerTransition } from "../app.animation";
+import { UserIdleService } from "angular-user-idle";
+import { AppConfig } from '../core/helpers/app.config';
+import { HubDto } from '../core/domains/objects/hub.dto';
+import { VersionService } from "../services/version.service";
+import { ToastrHelper } from '../core/helpers/toastr.helper';
+import { DialogData } from '../core/domains/data/dialog.data';
+import { NotifyType } from '../core/domains/enums/notify.type';
+import { MessageDto } from '../core/domains/objects/message.dto';
+import { Component, ViewEncapsulation, OnInit } from "@angular/core";
+import { NotifyEntity } from '../core/domains/entities/notify.entity';
+import { AdminAuthService } from "../core/services/admin.auth.service";
+import { AdminDataService } from '../core/services/admin.data.service';
+import { AdminEventService } from '../core/services/admin.event.service';
+import { AdminDialogService } from "../core/services/admin.dialog.service";
+
+@Component({
+  animations: [routerTransition],
+  encapsulation: ViewEncapsulation.None,
+  templateUrl: './layout.component.html',
+  styleUrls: [
+    '../../assets/plugins/global/plugins.bundle.css', '../../assets/css/style.bundle.css',
+    '../../assets/plugins/custom/datatables/datatables.bundle.css',
+    '../../assets/css/skins/header/base/dark.css',
+    '../../assets/css/skins/header/menu/dark.css',
+    '../../assets/css/skins/brand/dark.css',
+    '../../assets/css/skins/aside/dark.css',
+    '../../assets/css/tooltip.css',
+    '../../assets/css/wizard.scss',
+    '../../assets/css/icons.scss',
+    '../../assets/css/grid.scss',
+    '../../assets/css/app.scss',
+    './layout.component.scss'
+  ]
+})
+export class LayoutComponent implements OnInit {
+  loading: boolean = true;
+  dialogRestrict: DialogData;
+
+  constructor(
+    public data: AdminDataService,
+    public event: AdminEventService,
+    public authen: AdminAuthService,
+    public userIdle: UserIdleService,
+    public dialog: AdminDialogService,
+    public versionService: VersionService) {
+
+  }
+
+  async ngOnInit() {
+    require('../../assets/plugins/custom/jstree/jstree.bundle.js');
+    if (this.authen.account) this.signlar();
+    await this.data.loadCountryIp();
+    this.loading = false;
+    setTimeout(() => {
+      let url = window.location.href;
+      if (url.indexOf('localhost') < 0) {
+        this.versionService.initVersionCheck('version.json', 60000, (version: string) => {
+          this.dialog.ConfirmAsync('Đã có phiên bản mới, bạn có muốn cập nhật không?<p>Phiên bản: <b>' + version + '</b></p>', async () => {
+            location.reload();
+          });
+        });
+      }
+      this.dialog.Timeout(this.userIdle, () => { });
+    }, 1000);
+    // sysend.on('notification', (type: string) => {
+    //   if (type == 'new') {
+    //     sysend.broadcast('notification', 'close');
+    //     if (this.dialogRestrict)
+    //       this.dialog.EventHideDialog.emit(this.dialogRestrict);
+    //   } else {
+    //     this.dialogRestrict = this.dialog.Alert('Hạn chế', 'Bạn đang sử dụng website ở trên một tab khác', true);
+    //   }
+    // });
+    // sysend.broadcast('notification', 'new');
+  }
+
+
+  getState(outlet: any) {
+    return outlet.activatedRouteData.state;
+  }
+
+  private play() {
+    try {
+      let audio = new Audio();
+      audio.src = './assets/soundfiles/all-eyes-on-me.mp3';
+      audio.load();
+      audio.play();
+    }
+    catch { }
+  }
+  private signlar() {
+    // Signlar
+    let email = this.authen.account.Email;
+    let signlarUrl = AppConfig.SignalrUrl + '?email=' + email;
+    this.data.connection = new signalR.HubConnectionBuilder()
+      .withUrl(signlarUrl,)
+      .withAutomaticReconnect()
+      .build();
+    this.connectionStart();
+    this.data.connection.onclose(() => {
+      //'disconected';
+    });
+    this.data.connection.on('refreshData', (item: any) => {
+      this.event.RefreshUpdateGrids.emit(item.Key);
+    });
+    this.data.connection.on('online', (item: HubDto) => {
+      this.event.SignalrNotify.emit({
+        type: 'online',
+        object: item,
+      });
+    });
+    this.data.connection.on('offline', (item: HubDto) => {
+      this.event.SignalrNotify.emit({
+        type: 'offline',
+        object: item,
+      });
+    });
+    this.data.connection.on('chat', async (item: MessageDto) => {
+      this.play();
+      this.event.SignalrNotify.emit({
+        type: 'chat',
+        object: item,
+      });
+    });
+    this.data.connection.on('notify', (notify: NotifyEntity) => {
+      this.play();
+      if (notify) {
+        let needShow: boolean = true;
+        switch (notify.Type) {
+          case NotifyType.Logout: {
+            this.authen.logout(false);
+            this.dialog.AlertTimeOut('Thông báo', '<p>' + notify.Title + '</p><br /><p>' + notify.Content + '</p><br /><p>Hệ thống sẽ đăng xuất sau <b> 10 giây </b>', 10, true);
+            setTimeout(() => {
+              this.authen.logout();
+            }, 10000);
+          }
+            break;
+          case NotifyType.LockUser: {
+            this.authen.logout(false);
+            this.dialog.AlertTimeOut('Thông báo', '<p>' + notify.Title + '</p><br /><p>' + notify.Content + '</p><br /><p>Hệ thống sẽ đăng xuất sau <b> 10 giây </b>', 10, true);
+            setTimeout(() => {
+              this.authen.logout();
+            }, 10000);
+          }
+            break;
+          case NotifyType.UpdateRole: {
+            this.authen.logout(false);
+            this.dialog.AlertTimeOut('Thông báo', '<p>' + notify.Title + '</p><br /><p>Hệ thống sẽ đăng xuất sau <b> 10 giây </b>', 10, true);
+            setTimeout(() => {
+              this.authen.logout();
+            }, 10000);
+          }
+            break;
+          case NotifyType.ChangePassword: {
+            this.authen.logout(false);
+            this.dialog.AlertTimeOut('Thông báo', '<p>' + notify.Title + '</p><br /><p>' + notify.Content + '</p><br /><p>Hệ thống sẽ đăng xuất sau <b> 10 giây </b>', 10, true);
+            setTimeout(() => {
+              this.authen.logout();
+            }, 10000);
+          }
+            break;
+        }
+
+        // show notify
+        if (needShow && notify.Title) {
+          ToastrHelper.Success(notify.Title);
+        }
+      }
+    });
+  }
+  private connectionStart() {
+    this.data.connection.start().then(async () => {
+      console.log('CONNECTED');
+    }).catch((err: any) => {
+      console.error(err);
+      setTimeout(() => {
+        if (this.data.connection)
+          this.data.connection.start();
+      }, 10000);
+    });
+  }
+}

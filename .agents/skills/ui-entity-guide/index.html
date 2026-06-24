@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lazy Core Tutorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Content */
+  --bg:        #ffffff;
+  --bg2:       #ffffff;
+  --bg3:       #f4f5f7;
+  --bg4:       #e8eaed;
+  --border:    #dde1e9;
+  --border2:   #c4cad6;
+
+  /* Text — v2-style sharp */
+  --text:      #0d1117;
+  --text-2:    #24292f;
+  --text-3:    #57606a;
+  --text-4:    #8c959f;
+
+  /* Accent indigo */
+  --violet:    #4338ca;
+  --violet-bg: #eef2ff;
+  --violet-bd: #a5b4fc;
+
+  /* Teal */
+  --teal:      #0369a1;
+  --teal-bg:   #e0f2fe;
+  --teal-bd:   #7dd3fc;
+
+  /* Green */
+  --green:     #166534;
+  --green-bg:  #dcfce7;
+  --green-bd:  #4ade80;
+
+  /* Amber */
+  --amber:     #92400e;
+  --amber-bg:  #fef9c3;
+  --amber-bd:  #fde047;
+
+  /* Rose */
+  --rose:      #9f1239;
+  --rose-bg:   #fff1f2;
+  --rose-bd:   #fda4af;
+
+  /* Sidebar dark navy */
+  --sb-bg:       #1c2033;
+  --sb-bg2:      #232840;
+  --sb-border:   #2c3254;
+  --sb-text:     #c9d1e0;
+  --sb-muted:    #5c6480;
+  --sb-active-bg:#2a3158;
+  --sb-accent:   #818cf8;
+
+  --sidebar-w: 240px;
+  --font:      'Instrument Sans', system-ui, sans-serif;
+  --mono:      'IBM Plex Mono', 'Cascadia Code', monospace;
+}
+
+html { font-size: 15px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+/* ── SIDEBAR ── */
+#sidebar { width: var(--sidebar-w); flex-shrink: 0; background: var(--sb-bg); border-right: none; display: flex; flex-direction: column; overflow-y: auto; }
+.sb-logo { padding: 20px 16px 18px; border-bottom: 1px solid var(--sb-border); display: flex; align-items: center; gap: 10px; }
+.sb-logo-mark { width: 30px; height: 30px; background: var(--sb-accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff; font-weight: 700; font-family: var(--mono); flex-shrink: 0; letter-spacing: -1px; }
+.sb-logo-text strong { display: block; font-size: 14px; font-weight: 700; letter-spacing: -.3px; color: #ffffff; }
+.sb-logo-text small { font-size: 11px; color: var(--sb-muted); }
+.sb-group { padding: 16px 0 4px; }
+.sb-group-title { padding: 0 14px 5px; font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--sb-muted); }
+.sb-item { display: flex; align-items: center; gap: 8px; padding: 6px 14px; cursor: pointer; color: var(--sb-text); font-size: 13px; font-weight: 500; transition: all .12s; position: relative; }
+.sb-item:hover { background: var(--sb-bg2); color: #ffffff; }
+.sb-item.active { color: var(--sb-accent); background: var(--sb-active-bg); font-weight: 600; }
+.sb-item.active::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px; background: var(--sb-accent); border-radius: 0 3px 3px 0; }
+.sb-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 13px; opacity: .5; flex-shrink: 0; font-family: var(--mono); }
+.sb-item.active .sb-icon { opacity: 1; }
+.sb-footer { margin-top: auto; padding: 14px 16px; border-top: 1px solid var(--sb-border); font-size: 11px; color: var(--sb-muted); }
+
+/* ── CONTENT ── */
+#content { flex: 1; overflow-y: auto; padding: 40px 52px 80px; background: #ffffff; }
+
+/* ── PAGE HEADER ── */
+.page-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.page-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-bottom: 12px; }
+.tag-editor { background: var(--violet-bg); color: var(--violet); }
+.tag-module { background: var(--green-bg); color: var(--green); }
+.tag-api    { background: var(--teal-bg);  color: var(--teal); }
+.page-title { font-size: 30px; font-weight: 700; color: var(--text); margin-bottom: 10px; letter-spacing: -.5px; font-family: var(--mono); }
+.page-desc  { font-size: 14.5px; color: var(--text-2); line-height: 1.7; max-width: 640px; }
+.page-meta  { margin-top: 14px; font-size: 11.5px; color: var(--text-4); font-family: var(--mono); background: var(--bg3); display: inline-block; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); }
+
+/* ── TABS ── */
+.tab-bar { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 28px; }
+.tab-btn { padding: 9px 20px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-3); border: none; background: none; font-family: var(--font); position: relative; bottom: -2px; border-bottom: 2px solid transparent; transition: color .12s; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--violet); border-bottom-color: var(--violet); font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ══════════════════════════════
+   OPTIONS TABLE — full grid
+══════════════════════════════ */
+.opts-table-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.opts-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.opts-table th { background: var(--bg3); color: var(--text-2); padding: 9px 14px; text-align: left; font-weight: 700; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; border-bottom: 1.5px solid var(--border); white-space: nowrap; }
+.opts-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+.opts-table tr:last-child td { border-bottom: none; }
+.opts-table tr:hover td { background: #f6f7ff; }
+.opts-table .group-row td { background: #f0f1f5; padding: 7px 14px; border-bottom: 1px solid var(--border); }
+.opts-table .group-row td span { font-size: 10.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-2); }
+
+td.p-name { font-family: var(--mono); color: #0d1117; font-weight: 600; white-space: nowrap; font-size: 12.5px; }
+td.p-type { font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
+td.p-type .t-str  { color: #1a7f4b; font-weight: 500; }
+td.p-type .t-bool { color: #0550ae; font-weight: 500; }
+td.p-type .t-num  { color: #953800; font-weight: 500; }
+td.p-type .t-enum { color: #5c35cc; font-weight: 500; }
+td.p-type .t-arr  { color: #6639ba; font-weight: 500; }
+td.p-default { font-family: var(--mono); font-size: 11.5px; color: var(--text-3); white-space: nowrap; }
+td.p-desc { color: var(--text-2); font-size: 12.5px; }
+td.p-desc code { font-family: var(--mono); background: #f0f0ff; padding: 1px 5px; border-radius: 3px; color: #3b2dbf; font-size: 11.5px; border: 1px solid #c8c0f8; }
+.badge-v { display: inline-flex; background: #fff0f0; color: #9f1239; border: 1px solid #fca5a5; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 4px; vertical-align: middle; font-family: var(--font); white-space: nowrap; }
+
+/* ── OPTIONS TOOLBAR (count + level toggle) ── */
+.opts-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.opts-count { font-size: 12px; color: var(--text-3); font-weight: 500; }
+.opts-count strong { color: var(--text); font-weight: 700; }
+.opts-level-btns { display: flex; gap: 4px; }
+.opts-level-btn { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--bg2); color: var(--text-3); transition: all .15s; font-family: var(--font); }
+.opts-level-btn:hover { border-color: var(--text-3); color: var(--text); }
+.opts-level-btn.active { background: var(--violet-bg); border-color: var(--violet-bd); color: var(--violet); }
+.opts-table tr[data-level="advanced"] { display: none; }
+.opts-table.show-all tr[data-level="advanced"] { display: table-row; }
+.opts-table.show-advanced tr[data-level="basic"] { display: none; }
+.opts-table.show-advanced tr[data-level="advanced"] { display: table-row; }
+.opts-table.show-advanced .group-row { display: table-row; }
+
+/* ── TYPE CARDS ── */
+.type-filter { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+.tf-btn { padding: 5px 14px; border-radius: 20px; font-size: 11.5px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--bg2); color: var(--text-3); transition: all .15s; font-family: var(--font); }
+.tf-btn:hover { border-color: var(--text-3); color: var(--text); }
+.tf-btn.all.active    { background: var(--bg4); border-color: var(--text-2); color: var(--text); }
+.tf-btn.common.active  { color: var(--green);  background: var(--green-bg);  border-color: var(--green-bd); }
+.tf-btn.special.active { color: var(--violet); background: var(--violet-bg); border-color: var(--violet-bd); }
+.tf-btn.rich.active    { color: var(--amber);  background: var(--amber-bg);  border-color: var(--amber-bd); }
+
+.types-grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 10px; }
+.type-card2 { background: var(--bg2); border: 1.5px solid var(--border); border-radius: 10px; padding: 13px 15px; cursor: default; position: relative; overflow: hidden; }
+.type-card2::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: 0; transition: opacity .15s; }
+.type-card2.common::after  { background: var(--green); }
+.type-card2.special::after { background: var(--violet); }
+.type-card2.rich::after    { background: var(--amber); }
+.type-card2:hover::after { opacity: 1; }
+.type-card2:hover { border-color: var(--border2); box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.type-card2.hidden { display: none; }
+.tc2-name { font-family: var(--mono); font-size: 12px; font-weight: 600; color: #3730a3; margin-bottom: 5px; }
+.tc2-em   { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+.tc2-note { font-size: 11px; color: var(--text-3); margin-top: 5px; font-style: italic; }
+.tc2-max  { display: inline-block; font-family: var(--mono); font-size: 10px; color: #92400e; background: #fef9c3; padding: 1px 6px; border-radius: 4px; margin-top: 5px; border: 1px solid #fde047; }
+
+/* ── CODE TABS ── */
+.code-tabs { display: flex; border-bottom: 1.5px solid var(--border); }
+.code-tab { padding: 7px 16px; font-size: 12px; cursor: pointer; color: var(--text-3); border-bottom: 2px solid transparent; transition: all .1s; font-family: var(--font); font-weight: 500; position: relative; bottom: -1.5px; }
+.code-tab:hover { color: var(--text); }
+.code-tab.active { color: var(--violet); border-bottom-color: var(--violet); font-weight: 600; }
+.code-panel { display: none; }
+.code-panel.active { display: block; }
+.code-wrap { background: var(--bg2); border: 1.5px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; overflow: hidden; }
+
+pre { background: #0d1117; padding: 22px 24px; overflow-x: auto; font-size: 12.5px; line-height: 1.9; font-family: var(--mono); color: #e6edf3; }
+pre.flat { border: none; border-radius: 0; }
+.kw   { color: #ff7b72; } .fn  { color: #79c0ff; } .str { color: #a5d6ff; }
+.num  { color: #f2cc60; } .cm  { color: #8b949e; font-style: italic; }
+.prop { color: #ffa657; } .cls { color: #7ee787; } .dec { color: #d2a8ff; }
+
+/* ── CALLOUTS ── */
+.callout { border-radius: 8px; padding: 12px 16px; font-size: 13px; line-height: 1.7; margin-top: 12px; display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid; }
+.callout code { font-family: var(--mono); font-size: 11.5px; padding: 1px 5px; background: rgba(0,0,0,.06); border-radius: 3px; }
+.callout-blue   { background: #eff8ff; border-color: #7dd3fc;   color: #0c4a6e; }
+.callout-yellow { background: #fefce8; border-color: #fde047;   color: #713f12; }
+.callout-green  { background: #f0fdf4; border-color: #4ade80;   color: #14532d; }
+.callout-purple { background: #f5f3ff; border-color: #a78bfa;   color: #3730a3; }
+
+/* ── COMING SOON ── */
+.coming-soon { text-align: center; padding: 80px 0; color: var(--text-4); }
+.coming-soon .cs-icon { font-size: 40px; margin-bottom: 14px; }
+.coming-soon p { font-size: 15px; font-weight: 500; color: var(--text-3); }
+
+/* ── TYPE POPUP MODAL ── */
+.type-link { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 2px; }
+.type-link:hover { text-decoration-style: solid; opacity: .85; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: #fff; border: 1.5px solid var(--border); border-radius: 12px; width: 90vw; max-width: 1200px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
+.modal-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg3); }
+.modal-header h3 { font-size: 14px; font-weight: 700; font-family: var(--mono); color: var(--text); }
+.modal-close { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-3); padding: 4px 8px; border-radius: 4px; }
+.modal-close:hover { background: var(--bg4); color: var(--text); }
+.modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; min-height: 0; }
+.modal-body table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.modal-body th { text-align: left; padding: 6px 10px; background: var(--bg3); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--text-3); border-bottom: 1px solid var(--border); }
+.modal-body td { padding: 7px 10px; border-bottom: 1px solid #f0f0f2; vertical-align: top; }
+.modal-body td:first-child { font-family: var(--mono); font-weight: 600; color: var(--violet); white-space: nowrap; font-size: 12px; }
+.modal-body td:last-child { color: var(--text-2); }
+.modal-body .modal-note { margin-top: 12px; padding: 10px 14px; background: var(--bg3); border-radius: 6px; font-size: 12px; color: var(--text-3); border: 1px solid var(--border); }
+.modal-body .modal-note code { font-family: var(--mono); font-size: 11px; background: var(--bg4); padding: 1px 5px; border-radius: 3px; }
+.modal-body td code { font-family: var(--mono); font-size: 11px; }
+
+/* ── Lookup box inside code generators ── */
+.gen-lookup-box { background: #f4f1fb; border: 1.5px solid #e0d9f2; border-radius: 8px; padding: 12px 14px 14px; margin: 2px 0 4px; }
+.gen-lookup-box .gen-lookup-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--violet); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.gen-lookup-box .gen-field { margin-bottom: 8px; }
+
+/* ══════════════════════════════
+   CODE GENERATOR
+══════════════════════════════ */
+.gen-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 1000px) { .gen-layout { grid-template-columns: 1fr; } }
+
+/* -- Form panel -- */
+.gen-form-panel {
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+}
+.gen-form-header {
+  padding: 14px 18px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  letter-spacing: .3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gen-form-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+
+.gen-field { display: flex; flex-direction: column; gap: 5px; }
+.gen-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gen-label .gl-type { font-family: var(--mono); font-weight: 400; font-size: 10.5px; color: var(--text-3); }
+.gen-label .gl-validate { font-size: 10px; font-weight: 700; background: #fff0f0; color: #9f1239; border: 1px solid #fca5a5; padding: 0 5px; border-radius: 3px; }
+
+.gen-input, .gen-select {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg2);
+  transition: border-color .15s;
+  outline: none;
+}
+.gen-input:focus, .gen-select:focus { border-color: var(--violet); }
+.gen-select { cursor: pointer; }
+.gen-input.mono { font-family: var(--mono); font-size: 12px; }
+
+/* checkbox row */
+.gen-checks { display: flex; flex-direction: column; gap: 6px; }
+.gen-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .1s, border-color .1s;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+.gen-check:hover { background: var(--bg3); }
+.gen-check input[type=checkbox] { accent-color: var(--violet); width: 14px; height: 14px; cursor: pointer; }
+.gen-check.checked { border-color: var(--violet-bd); background: var(--violet-bg); color: var(--violet); }
+.gen-check .gc-label { font-weight: 500; flex: 1; }
+.gen-check .gc-desc  { font-size: 11px; color: var(--text-3); margin-left: auto; }
+
+/* sub-field (conditional) */
+.gen-subfield { margin-top: 6px; padding: 10px 12px; background: var(--bg3); border-radius: 6px; border: 1px solid var(--border); display: none; flex-direction: column; gap: 8px; }
+.gen-subfield.show { display: flex; }
+.gen-subfield .gen-label { font-size: 11px; color: var(--text-3); }
+.gen-subfield .gen-input, .gen-subfield .gen-select { font-size: 12px; }
+
+/* divider */
+.gen-divider { height: 1px; background: var(--border); margin: 2px 0; }
+
+/* -- Output panel -- */
+.gen-output-panel {
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.gen-output-header {
+  padding: 12px 16px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.gen-output-title { font-size: 12px; font-weight: 700; color: var(--text-2); }
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--violet);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background .2s, transform .1s;
+}
+.copy-btn:hover { background: #3730b3; }
+.copy-btn:active { transform: scale(.97); }
+.copy-btn.copied { background: #16a34a !important; transition: background .1s; }
+
+.gen-preview-code {
+  background: #0d1117;
+  padding: 24px 26px;
+  min-height: 240px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: #e6edf3;
+  white-space: normal;
+}
+
+/* hint box */
+.gen-hint {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-3);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--bg3);
+}
+.gen-hint code { font-family: var(--mono); font-size: 11px; background: var(--bg4); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); color: var(--text-2); }
+</style>
+</head>
+<body>
+
+<!-- ═════════ SIDEBAR ═════════ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-mark">lf</div>
+    <div class="sb-logo-text">
+    <strong>Lazy Core</strong>
+      <small>Tutorial</small>
+    </div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-group-title">Editors</div>
+    <div class="sb-item active" onclick="nav('string')"><span class="sb-icon">Aa</span>String</div>
+    <div class="sb-item" onclick="nav('number')"><span class="sb-icon">#</span>Number</div>
+    <div class="sb-item" onclick="nav('boolean')"><span class="sb-icon">◉</span>Boolean</div>
+    <div class="sb-item" onclick="nav('dropdown')"><span class="sb-icon">▾</span>Dropdown</div>
+    <div class="sb-item" onclick="nav('datetime')"><span class="sb-icon">▦</span>DateTime</div>
+    <div class="sb-item" onclick="nav('image')"><span class="sb-icon">⊡</span>Image</div>
+    <div class="sb-item" onclick="nav('file')"><span class="sb-icon">—</span>File</div>
+    <div class="sb-item" onclick="nav('video')"><span class="sb-icon">▶</span>Video</div>
+    <div class="sb-item" onclick="nav('signature')"><span class="sb-icon">✍</span>Signature</div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-group-title">Modules</div>
+    <div class="sb-item" onclick="nav('forms')"><span class="sb-icon">≡</span>Form</div>
+    <div class="sb-item" onclick="nav('grid')"><span class="sb-icon">⊞</span>Grid</div>
+    <div class="sb-item" onclick="nav('modals')"><span class="sb-icon">⬜</span>Modals</div>
+    <div class="sb-item" onclick="nav('api')"><span class="sb-icon">∞</span>API Service</div>
+    <div class="sb-item" onclick="nav('utilities')"><span class="sb-icon">⚙</span>Core Utilities</div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-group-title">Backend</div>
+    <div class="sb-item" onclick="nav('backend')"><span class="sb-icon">⚙</span>API Module</div>
+  </div>
+
+  <div class="sb-footer">v1.0 — Lazy Core Tutorial</div>
+</nav>
+
+<!-- ═════════ CONTENT ═════════ -->
+<main id="content">
+  <!-- Page content loaded dynamically via fetch() -->
+</main>
+
+<!-- ═══ TYPE POPUP MODALS (shared) ═══ -->
+
+<!-- ColumnClassFormat -->
+<div class="modal-overlay" id="modal-columnclass" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>ColumnClassFormat</h3><button class="modal-close" onclick="closeModal('modal-columnclass')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>CSS Class</th><th>Chiều rộng</th></tr>
+        <tr><td>Column2</td><td>col-sm-2</td><td>16.67%</td></tr>
+        <tr><td>Column3</td><td>col-sm-3</td><td>25%</td></tr>
+        <tr><td>Column4</td><td>col-sm-4</td><td>33.33%</td></tr>
+        <tr><td>Column5</td><td>col-sm-5</td><td>41.67%</td></tr>
+        <tr><td>Column6</td><td>col-sm-6</td><td>50%</td></tr>
+        <tr><td>Column8</td><td>col-sm-8</td><td>66.67%</td></tr>
+        <tr><td>Column9</td><td>col-sm-9</td><td>75%</td></tr>
+        <tr><td>Column10</td><td>col-sm-10</td><td>83.33%</td></tr>
+        <tr><td>Column12</td><td>col-sm-12</td><td>100%</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>columnClass: ColumnClassFormat.Column6</code> → field chiếm 50% chiều rộng form.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TextTransformType -->
+<div class="modal-overlay" id="modal-texttransform" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>TextTransformType</h3><button class="modal-close" onclick="closeModal('modal-texttransform')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td>None</td><td>Không transform — giữ nguyên khi nhập (mặc định)</td></tr>
+        <tr><td>LowerCase</td><td>Tự động chuyển thành chữ thường</td></tr>
+        <tr><td>UpperCase</td><td>Tự động chuyển thành CHỮ HOA. Thường dùng cho Code</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>textTransform: TextTransformType.UpperCase</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- ColorType -->
+<div class="modal-overlay" id="modal-colortype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>ColorType</h3><button class="modal-close" onclick="closeModal('modal-colortype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td>All</td><td>Hiển thị tất cả format: Hex + Rgb + Hsl (mặc định)</td></tr>
+        <tr><td>Hex</td><td>Chỉ format Hex: <code>#ff5733</code></td></tr>
+        <tr><td>Rgb</td><td>Chỉ format RGB: <code>rgb(255, 87, 51)</code></td></tr>
+        <tr><td>Hsl</td><td>Chỉ format HSL: <code>hsl(11, 100%, 60%)</code></td></tr>
+      </table>
+      <div class="modal-note">Chỉ dùng khi <code>type: StringType.Color</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- CompareType -->
+<div class="modal-overlay" id="modal-comparetype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>CompareType</h3><button class="modal-close" onclick="closeModal('modal-comparetype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td colspan="2" style="background:var(--bg3);font-weight:700;font-size:11px;letter-spacing:.5px">STRING (S_*)</td></tr>
+        <tr><td>S_Equals</td><td>Bằng chính xác</td></tr>
+        <tr><td>S_NotEquals</td><td>Không bằng</td></tr>
+        <tr><td>S_Contains</td><td>Chứa chuỗi con (mặc định cho string search)</td></tr>
+        <tr><td>S_NotContains</td><td>Không chứa chuỗi con</td></tr>
+        <tr><td>S_StartWith</td><td>Bắt đầu bằng</td></tr>
+        <tr><td>S_NotStartWith</td><td>Không bắt đầu bằng</td></tr>
+        <tr><td>S_EndWith</td><td>Kết thúc bằng</td></tr>
+        <tr><td>S_NotEndWith</td><td>Không kết thúc bằng</td></tr>
+        <tr><td colspan="2" style="background:var(--bg3);font-weight:700;font-size:11px;letter-spacing:.5px">NUMBER (N_*)</td></tr>
+        <tr><td>N_Equals</td><td>Bằng</td></tr>
+        <tr><td>N_GreaterThan</td><td>Lớn hơn</td></tr>
+        <tr><td>N_LessThan</td><td>Nhỏ hơn</td></tr>
+        <tr><td>N_Between</td><td>Trong khoảng</td></tr>
+        <tr><td>N_Contains</td><td>Chứa (cho danh sách số)</td></tr>
+        <tr><td colspan="2" style="background:var(--bg3);font-weight:700;font-size:11px;letter-spacing:.5px">BOOLEAN (B_*)</td></tr>
+        <tr><td>B_Equals</td><td>Bằng true/false</td></tr>
+        <tr><td>B_NotEquals</td><td>Không bằng</td></tr>
+        <tr><td colspan="2" style="background:var(--bg3);font-weight:700;font-size:11px;letter-spacing:.5px">DATE (D_*)</td></tr>
+        <tr><td>D_Equals</td><td>Bằng ngày</td></tr>
+        <tr><td>D_GreaterThan</td><td>Sau ngày</td></tr>
+        <tr><td>D_LessThan</td><td>Trước ngày</td></tr>
+        <tr><td>D_Between</td><td>Trong khoảng ngày</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>compareType: CompareType.S_Contains</code> — quy định cách filter trên grid.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LookupUniqueData -->
+<div class="modal-overlay" id="modal-lookupuniquedata" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>LookupUniqueData</h3><button class="modal-close" onclick="closeModal('modal-lookupuniquedata')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Property</th><th>Type</th><th>Mô tả</th></tr>
+        <tr><td>url</td><td>string</td><td>URL API check trùng. Tự sinh: <code>/EntityName/exists</code></td></tr>
+        <tr><td>property</td><td>string</td><td>Tên property gửi lên API để check (mặc định <code>Name</code>)</td></tr>
+        <tr><td>propertyId</td><td>string</td><td>Tên property ID để loại trừ bản ghi hiện tại khi update</td></tr>
+      </table>
+      <div class="modal-note">Cách dùng phổ biến: <code>unique: LookupUniqueData.Reference(ProductEntity, 'Code')</code><br>Hoặc custom URL: <code>unique: LookupUniqueData.ReferenceUrl('/custom/exists', 'Email')</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- LookupData -->
+<div class="modal-overlay" id="modal-lookupdata" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>LookupData</h3><button class="modal-close" onclick="closeModal('modal-lookupdata')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Property</th><th>Type</th><th>Mô tả</th></tr>
+        <tr><td>url</td><td>string</td><td>Đường dẫn API load data</td></tr>
+        <tr><td>items</td><td>OptionItem[]</td><td>Danh sách phần tử tĩnh</td></tr>
+        <tr><td>propertyValue</td><td>string</td><td>Trường dùng làm value (mặc định <code>Id</code>)</td></tr>
+        <tr><td>propertyDisplay</td><td>string[]</td><td>Trường dùng để hiển thị (mặc định <code>['Name']</code>)</td></tr>
+        <tr><td>propertyDescription</td><td>string[]</td><td>Trường hiển thị mô tả phụ (dưới display)</td></tr>
+        <tr><td>loadType</td><td>DropdownLoadType</td><td><code>All</code> = load 1 lần | <code>Ajax</code> = load theo keyword</td></tr>
+        <tr><td>cached</td><td>number</td><td>Thời gian cache phía client (ms). 0 = không cache</td></tr>
+        <tr><td>numberMax</td><td>number</td><td>Số item tối đa (mặc định 1000)</td></tr>
+        <tr><td>dependId</td><td>string | DependData[]</td><td>Trường phụ thuộc — khi thay đổi sẽ reload data</td></tr>
+        <tr><td>propertyGroup</td><td>string</td><td>Trường group cho tree hoặc phân nhóm</td></tr>
+        <tr><td>params</td><td>any</td><td>Tham số thêm khi gọi API</td></tr>
+        <tr><td>decimals</td><td>number</td><td>Số chữ số thập phân (Between type)</td></tr>
+        <tr><td>unit</td><td>string</td><td>Đơn vị (Between type)</td></tr>
+      </table>
+      <div style="margin-top:12px;font-size:12px;font-weight:600;color:var(--lavender);letter-spacing:.3px">STATIC FACTORY METHODS</div>
+      <table style="margin-top:6px"><tr><th>Method</th><th>Mô tả</th></tr>
+        <tr><td style="white-space:nowrap"><code>Reference(Entity, propDisplay?, propValue?, dependId?, emptyItem?, cached?)</code></td><td>Tham chiếu Entity class. URL tự tạo <code>/Entity/lookup</code>. <strong>Phổ biến nhất.</strong></td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceAjax(Entity, propDisplay?, propValue?, dependId?)</code></td><td>Giống Reference nhưng load Ajax — gõ keyword để tìm kiếm từ API.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceEnum(EnumType, colors?, texts?)</code></td><td>Tạo items từ enum TypeScript. Có thể gán colors/texts cho badge.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceUrl(url, propDisplay?, propValue?, dependId?, propGroup?)</code></td><td>Chỉ định URL thủ công. Dùng khi endpoint không theo convention.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceUrlAjax(url, propDisplay?, propValue?, dependId?)</code></td><td>URL thủ công + Ajax mode.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceUrlWithCache(url, cached?)</code></td><td>URL + cache phía client. Mặc định cache 1 giờ.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceGroup(Entity, propDisplay?, propValue?, dependId?, propGroup?)</code></td><td>Giống Reference + thêm propertyGroup để phân nhóm.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceStrings([...items])</code></td><td>Tạo dropdown từ mảng string tĩnh.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceNumbers([...items])</code></td><td>Tạo dropdown từ mảng number tĩnh.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceItems(items, propDisplay?, propValue?)</code></td><td>Tạo từ mảng OptionItem[] tùy chỉnh.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceByDepend(propertyDepend, unit)</code></td><td>Phụ thuộc trường khác + đơn vị. Dùng cho Between type.</td></tr>
+        <tr><td style="white-space:nowrap"><code>ReferenceBoolean()</code></td><td>Tạo dropdown Có/Không từ boolean.</td></tr>
+      </table>
+      <div class="modal-note">Thường dùng: <code>lookup: LookupData.Reference(CategoryEntity)</code> hoặc <code>lookup: LookupData.ReferenceEnum(StatusType)</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- DialogData -->
+<div class="modal-overlay" id="modal-dialogdata" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>DialogData</h3><button class="modal-close" onclick="closeModal('modal-dialogdata')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Property</th><th>Type</th><th>Mô tả</th></tr>
+        <tr><td>title</td><td>string</td><td>Tiêu đề popup</td></tr>
+        <tr><td>content</td><td>string</td><td>Nội dung popup</td></tr>
+        <tr><td>type</td><td>DialogType</td><td>Loại dialog</td></tr>
+        <tr><td>size</td><td>ModalSizeType</td><td>Kích thước popup</td></tr>
+        <tr><td>object</td><td>any</td><td>Data truyền vào popup</td></tr>
+        <tr><td>confirmText</td><td>string</td><td>Text nút xác nhận</td></tr>
+        <tr><td>cancelText</td><td>string</td><td>Text nút huỷ</td></tr>
+        <tr><td>okFunction</td><td>(result?) => void</td><td>Callback khi nhấn OK</td></tr>
+        <tr><td>resultFunction</td><td>(result?) => void</td><td>Callback khi trả về kết quả</td></tr>
+      </table>
+      <div class="modal-note">Dùng cho <code>popupImage</code> và <code>popupFile</code> trong HTML editor — cấu hình popup chọn ảnh/file từ kho.</div>
+    </div>
+  </div>
+</div>
+
+<!-- EditorParamData -->
+<div class="modal-overlay" id="modal-editorparam" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>EditorParamData</h3><button class="modal-close" onclick="closeModal('modal-editorparam')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Property</th><th>Type</th><th>Mô tả</th></tr>
+        <tr><td>name</td><td>string</td><td>Tên biến — sẽ insert vào editor dạng <code>{{name}}</code></td></tr>
+        <tr><td>title</td><td>string</td><td>Tiêu đề hiển thị trong dropdown chọn biến</td></tr>
+        <tr><td>icon</td><td>string</td><td>Icon hiển thị bên cạnh tên biến</td></tr>
+        <tr><td>type</td><td>string</td><td>Loại biến (tuỳ chỉnh)</td></tr>
+        <tr><td>childrens</td><td>EditorParamData[]</td><td>Biến con — tạo submenu lồng nhau</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>variables: [{ name: 'FullName' }, { name: 'Link', title: 'Liên kết' }]</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- BooleanType -->
+<div class="modal-overlay" id="modal-booleantype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>BooleanType</h3><button class="modal-close" onclick="closeModal('modal-booleantype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td>RadioButton</td><td>Radio button group — 2 lựa chọn Có/Không</td></tr>
+        <tr><td>Checkbox</td><td>Checkbox vuông tiêu chuẩn — tick/untick (mặc định)</td></tr>
+        <tr><td>Toggle</td><td>Toggle switch dạng bật/tắt (on/off)</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>type: BooleanType.Toggle</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- ViewType -->
+<div class="modal-overlay" id="modal-viewtype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>ViewType</h3><button class="modal-close" onclick="closeModal('modal-viewtype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td>Normal</td><td>Hiển thị bình thường — inline trên form (mặc định)</td></tr>
+        <tr><td>List</td><td>Hiển thị dạng danh sách — khi có nhiều boolean liên quan</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>view: ViewType.List</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- DateTimeType -->
+<div class="modal-overlay" id="modal-datetimetype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>DateTimeType</h3><button class="modal-close" onclick="closeModal('modal-datetimetype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Format mặc định</th><th>Mô tả</th></tr>
+        <tr><td>Date</td><td>dd/mm/yyyy</td><td>Chỉ chọn ngày</td></tr>
+        <tr><td>DateTime</td><td>dd/mm/yyyy hh:ii</td><td>Chọn ngày + giờ (mặc định)</td></tr>
+        <tr><td>Time</td><td>hh:ii</td><td>Chỉ chọn giờ/phút</td></tr>
+        <tr><td>Month</td><td>mm/yyyy</td><td>Chọn tháng/năm</td></tr>
+        <tr><td>Year</td><td>yyyy</td><td>Chỉ chọn năm</td></tr>
+        <tr><td>DayMonth</td><td>dd/mm</td><td>Chọn ngày/tháng (không năm)</td></tr>
+        <tr><td>DateRange</td><td>dd/mm/yyyy</td><td>Chọn khoảng ngày (từ — đến)</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>type: DateTimeType.Date</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- DateTimeFormat -->
+<div class="modal-overlay" id="modal-datetimeformat" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>DateTimeFormat</h3><button class="modal-close" onclick="closeModal('modal-datetimeformat')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Format</th><th>Ví dụ</th></tr>
+        <tr><td>HM</td><td>hh:ii</td><td>14:30</td></tr>
+        <tr><td>DM</td><td>dd/mm</td><td>25/12</td></tr>
+        <tr><td>YYYY</td><td>yyyy</td><td>2024</td></tr>
+        <tr><td>MY</td><td>mm/yyyy</td><td>03/2024</td></tr>
+        <tr><td>DMY</td><td>dd/mm/yyyy</td><td>25/12/2024</td></tr>
+        <tr><td>MDY</td><td>mm/dd/yyyy</td><td>12/25/2024</td></tr>
+        <tr><td>YMD</td><td>yyyy/mm/dd</td><td>2024/12/25</td></tr>
+        <tr><td>DMYHM</td><td>dd/mm/yyyy hh:ii</td><td>25/12/2024 14:30</td></tr>
+        <tr><td>MDYHM</td><td>mm/dd/yyyy hh:ii</td><td>12/25/2024 14:30</td></tr>
+        <tr><td>DMYHMS</td><td>dd/mm/yyyy hh:ii:ss</td><td>25/12/2024 14:30:00</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>format: DateTimeFormat.DMY</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- TimeData -->
+<div class="modal-overlay" id="modal-timedata" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>TimeData</h3><button class="modal-close" onclick="closeModal('modal-timedata')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Property</th><th>Type</th><th>Default</th><th>Mô tả</th></tr>
+        <tr><td>minHours</td><td>number</td><td>0</td><td>Giờ nhỏ nhất</td></tr>
+        <tr><td>maxHours</td><td>number</td><td>23</td><td>Giờ lớn nhất</td></tr>
+        <tr><td>hourStep</td><td>number</td><td>1</td><td>Bước nhảy giờ</td></tr>
+        <tr><td>hourStart</td><td>number</td><td>undefined</td><td>Giờ bắt đầu</td></tr>
+        <tr><td>minMinutes</td><td>number</td><td>0</td><td>Phút nhỏ nhất</td></tr>
+        <tr><td>maxMinutes</td><td>number</td><td>59</td><td>Phút lớn nhất</td></tr>
+        <tr><td>minuteStep</td><td>number</td><td>10 (Time)</td><td>Bước nhảy phút</td></tr>
+        <tr><td>minuteStart</td><td>number</td><td>0 (Time)</td><td>Phút bắt đầu</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>time: { minuteStep: 15, minHours: 8, maxHours: 18 }</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- DropdownType -->
+<div class="modal-overlay" id="modal-dropdowntype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>DropdownType</h3><button class="modal-close" onclick="closeModal('modal-dropdowntype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td>Normal</td><td>Dropdown select tiêu chuẩn — chọn 1 hoặc nhiều (mặc định)</td></tr>
+        <tr><td>Tree</td><td>Tree select — phân cấp cha-con (auto <code>propertyGroup: 'ParentId'</code>)</td></tr>
+        <tr><td>Grid</td><td>Dropdown dạng grid/table — hiển thị nhiều cột</td></tr>
+        <tr><td>Between</td><td>Chọn khoảng giá trị (từ — đến)</td></tr>
+        <tr><td>BetweenArea</td><td>Khoảng diện tích</td></tr>
+        <tr><td>BetweenPrice</td><td>Khoảng giá — format tiền tệ</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>type: DropdownType.Tree</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- PopupData -->
+<div class="modal-overlay" id="modal-popupdata" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>PopupData</h3><button class="modal-close" onclick="closeModal('modal-popupdata')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Property</th><th>Type</th><th>Mô tả</th></tr>
+        <tr><td>title</td><td>string</td><td>Tiêu đề popup</td></tr>
+        <tr><td>action</td><td>string</td><td>Loại action: <code>AddNew</code>, <code>Empty</code></td></tr>
+        <tr><td>hidden</td><td>boolean</td><td>Ẩn nút popup</td></tr>
+        <tr><td>controller</td><td>string</td><td>Controller name (nếu khác Entity)</td></tr>
+        <tr><td>button</td><td>ButtonData</td><td>Cấu hình nút: icon, tooltip</td></tr>
+        <tr><td>size</td><td>ModalSizeType</td><td>Kích thước popup: <code>Small</code>, <code>Medium</code>, <code>Large</code>, <code>ExtraLarge</code></td></tr>
+        <tr><td>reference</td><td>Entity class</td><td>Entity tham chiếu cho form popup</td></tr>
+        <tr><td>properties</td><td>string[]</td><td>Danh sách property hiển thị trong popup</td></tr>
+      </table>
+      <div class="modal-note">Static: <code>PopupData.Auto()</code> — thêm mới tự động | <code>PopupData.Reference(Entity)</code> — form entity cụ thể</div>
+    </div>
+  </div>
+</div>
+
+<!-- NumberType -->
+<div class="modal-overlay" id="modal-numbertype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>NumberType</h3><button class="modal-close" onclick="closeModal('modal-numbertype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td>Text</td><td>Input số tiêu chuẩn — nhập trực tiếp, nút +/− (mặc định)</td></tr>
+        <tr><td>Numberic</td><td>Numeric spinner — nút tăng/giảm rõ ràng</td></tr>
+        <tr><td>Star</td><td>Rating sao ★★★★★ — thường max=5</td></tr>
+        <tr><td>Range</td><td>Range slider — kéo thanh trượt chọn giá trị</td></tr>
+        <tr><td>Between</td><td>Khoảng giá trị (từ — đến). 2 input min/max</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>type: NumberType.Star</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- SignatureType -->
+<div class="modal-overlay" id="modal-signaturetype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>SignatureType</h3><button class="modal-close" onclick="closeModal('modal-signaturetype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td>All</td><td>Tất cả phương thức: vẽ tay, upload ảnh, nhập text (mặc định)</td></tr>
+        <tr><td>Draw</td><td>Chỉ vẽ tay trên canvas</td></tr>
+        <tr><td>Image</td><td>Chỉ upload ảnh chữ ký</td></tr>
+        <tr><td>Text</td><td>Nhập text — tự render font chữ ký</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>type: SignatureType.Draw</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- StoreType -->
+<div class="modal-overlay" id="modal-storetype" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>StoreType</h3><button class="modal-close" onclick="closeModal('modal-storetype')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>Mô tả</th></tr>
+        <tr><td>Cloud</td><td>Lưu trữ trên cloud — trả về URL (mặc định)</td></tr>
+        <tr><td>DatabaseByte</td><td>Lưu trong database dạng byte array</td></tr>
+        <tr><td>DatabaseBase64</td><td>Lưu trong database dạng Base64 string</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>store: StoreType.Cloud</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- DimensionData -->
+<div class="modal-overlay" id="modal-dimensiondata" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>DimensionData</h3><button class="modal-close" onclick="closeModal('modal-dimensiondata')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Property</th><th>Type</th><th>Mô tả</th></tr>
+        <tr><td>width</td><td>number</td><td>Chiều rộng (px)</td></tr>
+        <tr><td>height</td><td>number</td><td>Chiều cao (px)</td></tr>
+        <tr><td>type</td><td>DimensionType</td><td><code>Min</code> = tối thiểu | <code>Max</code> = tối đa | <code>Equals</code> = chính xác</td></tr>
+      </table>
+      <div class="modal-note">VD: <code>dimension: { width: 200, height: 100, type: DimensionType.Max }</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- CustomUploadData -->
+<div class="modal-overlay" id="modal-customupload" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>CustomUploadData</h3><button class="modal-close" onclick="closeModal('modal-customupload')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Property</th><th>Type</th><th>Mô tả</th></tr>
+        <tr><td>url</td><td>string</td><td>URL endpoint upload tuỳ chỉnh</td></tr>
+        <tr><td>data</td><td>KeyValue[]</td><td>Dữ liệu gửi kèm (form fields)</td></tr>
+        <tr><td>needMove</td><td>boolean</td><td>Cần di chuyển file sau khi upload</td></tr>
+        <tr><td>method</td><td>MethodType</td><td>HTTP method: <code>Post</code>, <code>Put</code></td></tr>
+        <tr><td>headers</td><td>KeyValue[]</td><td>Custom HTTP headers</td></tr>
+        <tr><td>authorization</td><td>KeyValue</td><td>Thông tin xác thực (key-value)</td></tr>
+      </table>
+      <div class="modal-note">Dùng khi cần upload lên server bên thứ 3 (S3, Azure Blob, ...)</div>
+    </div>
+  </div>
+</div>
+
+<!-- FileTypeFormat -->
+<div class="modal-overlay" id="modal-filetypeformat" onclick="if(event.target===this)closeModal(this)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>FileTypeFormat</h3><button class="modal-close" onclick="closeModal('modal-filetypeformat')">&times;</button></div>
+    <div class="modal-body">
+      <table><tr><th>Giá trị</th><th>MIME type</th><th>Mô tả</th></tr>
+        <tr><td>PDF</td><td>application/pdf</td><td>Tài liệu PDF</td></tr>
+        <tr><td>DOC</td><td>application/msword</td><td>Word (.doc)</td></tr>
+        <tr><td>DOCX</td><td>vnd.openxmlformats...wordprocessingml</td><td>Word (.docx)</td></tr>
+        <tr><td>EXCEL</td><td>vnd.ms-excel + spreadsheetml</td><td>Excel (.xls, .xlsx)</td></tr>
+        <tr><td>ZIP</td><td>application/zip</td><td>File nén ZIP</td></tr>
+        <tr><td>APK</td><td>application/apk</td><td>Android package</td></tr>
+        <tr><td>IMAGES</td><td>image/jpg, jpeg, png</td><td>Ảnh (jpg, png)</td></tr>
+        <tr><td>DOCUMENTS</td><td>PDF + DOC + DOCX + EXCEL</td><td>Tất cả tài liệu văn phòng</td></tr>
+      </table>
+      <div class="modal-note">Dùng: <code>fileTypes: [FileTypeFormat.PDF, FileTypeFormat.EXCEL]</code></div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ═══════════════════════════════════════════
+   SHARED JS — nav, tabs, modals, utils
+═══════════════════════════════════════════ */
+
+/* ── Page registry: maps sidebar id → page file or inline HTML ── */
+const PAGE_FILES = {
+  string:    'pages/string.html',
+  boolean:   'pages/boolean.html',
+  datetime:  'pages/datetime.html',
+  dropdown:  'pages/dropdown.html',
+  number:    'pages/number.html',
+  signature: 'pages/signature.html',
+  image:     'pages/image.html',
+  video:     'pages/video.html',
+  file:      'pages/file.html',
+  forms:     'pages/forms.html',
+  grid:      'pages/grid.html',
+  modals:    'pages/modals.html',
+  api:       'pages/api.html',
+  utilities: 'pages/utilities.html',
+  backend:   'pages/backend.html',
+};
+
+const PLACEHOLDER_PAGES = {
+};
+
+const pageCache = {};
+
+/* ── Load file (works with file:// and http://) ── */
+function loadFile(url) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false); // synchronous
+  xhr.send();
+  if (xhr.status === 200 || xhr.status === 0) return xhr.responseText; // status 0 = file://
+  throw new Error('HTTP ' + xhr.status);
+}
+
+/* ── NAV ── */
+function nav(id, skipHash) {
+  // Update URL hash
+  if (!skipHash) location.hash = id;
+  // Update sidebar active
+  document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.sb-item[onclick*="'${id}'"]`)?.classList.add('active');
+
+  const content = document.getElementById('content');
+  content.scrollTop = 0;
+
+  // Check if page file exists
+  if (PAGE_FILES[id]) {
+    if (!pageCache[id]) {
+      try {
+        pageCache[id] = loadFile(PAGE_FILES[id]);
+      } catch (e) {
+        pageCache[id] = `<div class="coming-soon"><div class="cs-icon">❌</div><p>Lỗi tải trang: ${e.message}</p></div>`;
+      }
+    }
+    content.innerHTML = pageCache[id];
+    // Execute inline scripts
+    content.querySelectorAll('script').forEach(old => {
+      const s = document.createElement('script');
+      s.textContent = old.textContent;
+      old.replaceWith(s);
+    });
+  } else if (PLACEHOLDER_PAGES[id]) {
+    const p = PLACEHOLDER_PAGES[id];
+    content.innerHTML = `
+      <div class="page-header">
+        <div class="page-tag ${p.tag}">${p.tagLabel}</div>
+        <div class="page-title">${p.title}</div>
+        ${p.desc ? `<div class="page-desc">${p.desc}</div>` : ''}
+        ${p.meta ? `<div class="page-meta">${p.meta}</div>` : ''}
+      </div>
+      <div class="coming-soon"><div class="cs-icon">🚧</div><p>Đang soạn thảo...</p></div>`;
+  }
+}
+
+/* ── TABS ── */
+function switchTab(page, tab) {
+  const content = document.getElementById('content');
+  content.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  content.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(page + '-tab-' + tab)?.classList.add('active');
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
+}
+
+/* ── TYPE FILTER ── */
+function filterTypes(cat, btn) {
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.type-card2').forEach(card => {
+    if (cat === 'all' || card.classList.contains(cat)) card.classList.remove('hidden');
+    else card.classList.add('hidden');
+  });
+}
+
+/* ── LEVEL TOGGLE (basic / advanced / all) ── */
+function toggleLevel(tableId, mode, btn) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+  // Update button states
+  btn.closest('.opts-level-btns').querySelectorAll('.opts-level-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Toggle classes
+  table.classList.remove('show-all', 'show-advanced');
+  if (mode === 'all') table.classList.add('show-all');
+  else if (mode === 'advanced') table.classList.add('show-advanced');
+  // Update count
+  const countEl = btn.closest('.opts-toolbar')?.querySelector('.opts-count');
+  if (countEl) {
+    const total = table.querySelectorAll('tr[data-level]').length;
+    const basic = table.querySelectorAll('tr[data-level="basic"]').length;
+    const adv = table.querySelectorAll('tr[data-level="advanced"]').length;
+    if (mode === 'basic') countEl.innerHTML = `<strong>${basic}</strong> / ${total} thuộc tính (cơ bản)`;
+    else if (mode === 'advanced') countEl.innerHTML = `<strong>${adv}</strong> / ${total} thuộc tính (nâng cao)`;
+    else countEl.innerHTML = `<strong>${total}</strong> thuộc tính`;
+  }
+}
+
+/* ── CODE TABS ── */
+function switchCode(prefix, name, btn) {
+  const wrap = btn.closest('.code-wrap, .tab-panel');
+  wrap.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+  wrap.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(prefix + '-cp-' + name)?.classList.add('active');
+}
+
+/* ── SHARED: build decorator string ── */
+function renderDecorator(name, opts) {
+  if (opts.length === 0) return `${name}()`;
+  if (opts.length === 1) return `${name}({ ${opts[0]} })`;
+  return `${name}({ ${opts.join(', ')} })`;
+}
+
+/* ── SYNTAX HIGHLIGHT ── */
+function syntaxHL(s) {
+  s = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s.replace(/@(StringDecorator|BooleanDecorator|NumberDecorator|DropDownDecorator|DateTimeDecorator|ImageDecorator|FileDecorator|VideoDecorator)/g, '<span class="dec">@$1</span>');
+  s = s.replace(/\b(true|false)\b/g, '<span class="kw">$1</span>');
+  s = s.replace(/\b(\d+)\b/g, '<span class="num">$1</span>');
+  s = s.replace(/'([^']*)'/g, '<span class="str">\'$1\'</span>');
+  s = s.replace(/\b(StringType|BooleanType|NumberType|DropdownType|DateTimeType|TextTransformType|ColorType|ColumnClassFormat|LookupUniqueData|ViewType)\b/g, '<span class="cls">$1</span>');
+  s = s.replace(/\b(label|required|allowSearch|readonly|allowClear|type|min|max|unique|columnClass|tooltip|placeholder|textTransform|slugField|requiredMatch|rows|colorType|maxTags|delimiters|variables|name|description|icon|index|allowFilter|htmlMenubar|onlyCountries|propertyPhoneCode|allowUncheck|view)(?=\s*:)/g, '<span class="prop">$1</span>');
+  return s;
+}
+
+/* ── COPY (reusable) ── */
+function doCopy(storeKey, btnId) {
+  const text = window[storeKey] || '';
+  const btn = document.getElementById(btnId);
+
+  function showCopied() {
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Đã copy!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy`;
+    }, 2000);
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(() => fallbackCopy(text, showCopied));
+  } else {
+    fallbackCopy(text, showCopied);
+  }
+}
+
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  cb();
+}
+
+/* ── MODAL ── */
+function showModal(id) {
+  const el = typeof id === 'string' ? document.getElementById(id) : id;
+  if (el) el.classList.add('show');
+}
+function closeModal(id) {
+  const el = typeof id === 'string' ? document.getElementById(id) : id;
+  if (el) el.classList.remove('show');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
+});
+
+// ── INIT: load from hash or default ──
+var initPage = location.hash ? location.hash.replace('#', '') : 'string';
+if (!PAGE_FILES[initPage] && !PLACEHOLDER_PAGES[initPage]) initPage = 'string';
+nav(initPage, true);
+
+// ── Handle back/forward ──
+window.addEventListener('hashchange', function() {
+  var pg = location.hash.replace('#', '') || 'string';
+  if (PAGE_FILES[pg] || PLACEHOLDER_PAGES[pg]) nav(pg, true);
+});
+</script>
+</body>
+</html>

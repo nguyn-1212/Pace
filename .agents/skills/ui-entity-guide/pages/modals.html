@@ -1,0 +1,334 @@
+<!-- ═══════════════ Modals — Documentation ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-module">◈ Module</div>
+  <div class="page-title">Modals — Hệ thống popup / dialog</div>
+  <div class="page-desc">AdminDialogService cung cấp các loại modal: Alert, Confirm, Prompt, Wrapper (popup component), Auto-form, Export.</div>
+  <div class="page-meta">core/modal/ &nbsp;·&nbsp; AdminDialogService &nbsp;·&nbsp; DialogData &nbsp;·&nbsp; ModalSizeType</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('mdl','overview')">📦 Tổng quan</button>
+  <button class="tab-btn" onclick="switchTab('mdl','dialog')">💬 Dialog</button>
+  <button class="tab-btn" onclick="switchTab('mdl','wrapper')">🪟 Wrapper</button>
+  <button class="tab-btn" onclick="switchTab('mdl','auto')">⚡ Auto</button>
+  <button class="tab-btn" onclick="switchTab('mdl','export')">📤 Export</button>
+</div>
+
+<!-- ═══════════ TAB 1: Tổng quan ═══════════ -->
+<div class="tab-panel active" id="mdl-tab-overview">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">📦 Tổng quan hệ thống Modal</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Tất cả modal được quản lý qua <code>AdminDialogService</code>. Service emit event → Modal component lắng nghe theo <code>DialogType</code>.
+  </p>
+
+  <div class="file-label">🗂 Danh sách Modal Components</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Component</th><th>DialogType</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">ModalAlertComponent</td><td class="p-type"><span class="t-enum">Alert / AlertTimer</span></td><td class="p-desc">Thông báo đơn giản. AlertTimer có đếm ngược tự đóng.</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalConfirmComponent</td><td class="p-type"><span class="t-enum">Confirm</span></td><td class="p-desc">Xác nhận Có/Không. Hỗ trợ async + nút Result.</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalPromptComponent</td><td class="p-type"><span class="t-enum">Prompt</span></td><td class="p-desc">Nhập liệu text. Trả về giá trị qua callback.</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalTimeoutComponent</td><td class="p-type"><span class="t-enum">Timeout</span></td><td class="p-desc">Khóa màn hình khi user idle.</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalWrapperComponent</td><td class="p-type"><span class="t-enum">Wrapper</span></td><td class="p-desc"><strong>Popup chứa component.</strong> Inject Angular component qua ComponentFactory.</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalWrapperAboveComponent</td><td class="p-type"><span class="t-enum">WrapperAbove</span></td><td class="p-desc">Popup lớp 2 (chồng lên Wrapper).</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalExportDataComponent</td><td class="p-type"><span class="t-enum">—</span></td><td class="p-desc">Export dữ liệu ra Excel/CSV/PDF.</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalViewProfileComponent</td><td class="p-type"><span class="t-enum">AdminView</span></td><td class="p-desc">Xem thông tin profile.</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalEditProfileComponent</td><td class="p-type"><span class="t-enum">AdminEdit</span></td><td class="p-desc">Chỉnh sửa profile.</td></tr>
+        <tr data-level="basic"><td class="p-name">ModalChangePasswordComponent</td><td class="p-type"><span class="t-enum">ChangePassword</span></td><td class="p-desc">Đổi mật khẩu.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">📐 ModalSizeType</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">export enum</span> <span class="cls">ModalSizeType</span> {
+  <span class="prop">Small</span>     = <span class="num">1</span>,   <span class="cm">// ~400px</span>
+  <span class="prop">Medium</span>,          <span class="cm">// ~600px</span>
+  <span class="prop">Large</span>,           <span class="cm">// ~800px</span>
+  <span class="prop">ExtraLarge</span>,      <span class="cm">// ~1100px</span>
+  <span class="prop">FullScreen</span>,      <span class="cm">// 100% viewport</span>
+}</pre></div></div>
+
+  <div class="callout callout-blue" style="margin-top:8px">
+    <span>ℹ️</span><span>Khi màn hình &lt; 1400px, popup tự tăng 1 size (<code>Small → Medium</code>, <code>Medium → Large</code>...).</span>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">🔗 DialogType enum</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">export enum</span> <span class="cls">DialogType</span> {
+  <span class="prop">Alert</span>, <span class="prop">Dialog</span>, <span class="prop">Prompt</span>, <span class="prop">Confirm</span>, <span class="prop">Loading</span>,
+  <span class="prop">Wrapper</span>, <span class="prop">Timeout</span>, <span class="prop">AdminEdit</span>, <span class="prop">AdminView</span>,
+  <span class="prop">Automatic</span>, <span class="prop">AlertTimer</span>, <span class="prop">WrapperAbove</span>,
+  <span class="prop">ChangePassword</span>, <span class="prop">AutomaticAbove</span>,
+}</pre></div></div>
+</div>
+
+<!-- ═══════════ TAB 2: Dialog (Alert / Confirm / Prompt) ═══════════ -->
+<div class="tab-panel" id="mdl-tab-dialog">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">💬 Dialog — Alert / Confirm / Prompt</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Các hàm gọi trực tiếp trên <code>this.dialogService</code> (inject <code>AdminDialogService</code>).
+  </p>
+
+  <!-- Alert -->
+  <div class="file-label">1️⃣ Alert — Thông báo</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Thông báo đơn giản</span>
+<span class="prop">this</span>.dialogService.Alert(<span class="str">'Tiêu đề'</span>, <span class="str">'Nội dung thông báo'</span>);
+
+<span class="cm">// Thông báo từ kết quả API</span>
+<span class="prop">this</span>.dialogService.AlertResult(<span class="str">'Lỗi'</span>, result);
+
+<span class="cm">// Thông báo tự đóng sau N giây</span>
+<span class="prop">this</span>.dialogService.AlertTimeOut(<span class="str">'Tiêu đề'</span>, <span class="str">'Nội dung'</span>, <span class="num">10</span>);
+
+<span class="cm">// Shortcut</span>
+<span class="prop">this</span>.dialogService.Success(<span class="str">'Thành công!'</span>);
+<span class="prop">this</span>.dialogService.Error(<span class="str">'Có lỗi xảy ra'</span>);
+<span class="prop">this</span>.dialogService.Warning(<span class="str">'Cảnh báo!'</span>);
+<span class="prop">this</span>.dialogService.Message(<span class="str">'Thông tin'</span>);</pre></div></div>
+
+  <!-- Confirm -->
+  <div class="file-label" style="margin-top:16px">2️⃣ Confirm — Xác nhận</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Confirm sync</span>
+<span class="prop">this</span>.dialogService.Confirm(<span class="str">'Bạn chắc chắn?'</span>, () => {
+  <span class="cm">// OK</span>
+}, () => {
+  <span class="cm">// Cancel (optional)</span>
+});
+
+<span class="cm">// Confirm async</span>
+<span class="prop">this</span>.dialogService.ConfirmAsync(
+  <span class="str">'Xóa mục này?'</span>,
+  <span class="kw">async</span> () => { <span class="kw">await</span> <span class="prop">this</span>.service.delete(id); },
+  <span class="kw">null</span>,          <span class="cm">// cancelFunction</span>
+  <span class="str">'Xác nhận'</span>,    <span class="cm">// title</span>
+  <span class="str">'Đồng ý'</span>,     <span class="cm">// confirmText</span>
+);</pre></div></div>
+
+  <div class="opts-table-wrap" style="margin-top:8px">
+    <table class="opts-table">
+      <thead><tr><th>Hàm</th><th>Params</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Confirm</td><td class="p-type">content, okFn, cancelFn?, title?</td><td class="p-desc">Xác nhận sync.</td></tr>
+        <tr data-level="basic"><td class="p-name">ConfirmAsync</td><td class="p-type">content, okFnAsync, cancelFn?, title?, confirmText?, resultText?, resultFn?</td><td class="p-desc">Xác nhận async. Hỗ trợ nút Result thứ 3.</td></tr>
+        <tr data-level="basic"><td class="p-name">ConfirmRedirect</td><td class="p-type">title, content, okFn</td><td class="p-desc">Xác nhận rồi redirect.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Prompt -->
+  <div class="file-label" style="margin-top:16px">3️⃣ Prompt — Nhập liệu</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.dialogService.PromptAsync(
+  <span class="str">'Nhập tên mới'</span>,     <span class="cm">// label</span>
+  <span class="str">'Giá trị mặc định'</span>, <span class="cm">// object (giá trị ban đầu)</span>
+  <span class="kw">async</span> (name) => {
+    <span class="cm">// name = giá trị user nhập</span>
+    <span class="kw">await</span> <span class="prop">this</span>.rename(name);
+  },
+  <span class="kw">null</span>,              <span class="cm">// cancelFunction</span>
+  <span class="str">'Đổi tên'</span>,         <span class="cm">// title</span>
+  <span class="str">'Lưu'</span>,             <span class="cm">// confirmText</span>
+);</pre></div></div>
+
+  <!-- Loading -->
+  <div class="file-label" style="margin-top:16px">4️⃣ Loading — Đang tải</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">let</span> dialog = <span class="prop">this</span>.dialogService.Loading(<span class="str">'Đang xử lý'</span>, <span class="str">'Vui lòng đợi...'</span>);
+<span class="cm">// ... xử lý xong</span>
+<span class="prop">this</span>.dialogService.HideDialog(dialog);</pre></div></div>
+
+  <div class="callout callout-yellow" style="margin-top:10px">
+    <span>⚠️</span><span><code>Loading</code> có <code>restrict: true</code> → user không thể đóng. Phải gọi <code>HideDialog</code> hoặc <code>HideAllDialog</code>.</span>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 3: Wrapper ═══════════ -->
+<div class="tab-panel" id="mdl-tab-wrapper">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🪟 Wrapper — Popup chứa Component</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    <code>WapperAsync</code> inject Angular component vào popup. Component được truyền data qua <code>params</code> và cần implement <code>confirm()</code> / <code>reject()</code>.
+  </p>
+
+  <div class="file-label">📐 Cách gọi WapperAsync</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.dialogService.WapperAsync({
+  <span class="prop">title</span>: <span class="str">'Tiêu đề popup'</span>,
+  <span class="prop">object</span>: <span class="cls">MyComponent</span>,         <span class="cm">// Component để inject</span>
+  <span class="prop">objectExtra</span>: { id: <span class="num">123</span> },    <span class="cm">// Data truyền vào component</span>
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Large,
+  <span class="prop">confirmText</span>: <span class="str">'Lưu'</span>,
+  <span class="prop">cancelText</span>: <span class="str">'Đóng'</span>,
+  <span class="prop">rejectText</span>: <span class="str">'Từ chối'</span>,       <span class="cm">// nút thứ 3 (optional)</span>
+  <span class="prop">resultText</span>: <span class="str">'Kết quả'</span>,       <span class="cm">// nút thứ 4 (optional)</span>
+}, <span class="kw">async</span> (result) => {
+  <span class="cm">// okFunction — sau khi component.confirm() trả true</span>
+}, <span class="kw">async</span> (result) => {
+  <span class="cm">// rejectFunction</span>
+}, <span class="kw">async</span> (result) => {
+  <span class="cm">// resultFunction</span>
+}, () => {
+  <span class="cm">// cancelFunction</span>
+});</pre></div></div>
+
+  <div class="file-label" style="margin-top:14px">📋 DialogData params</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Param</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">object</td><td class="p-type"><span class="t-enum">Component</span></td><td class="p-desc">Angular Component class để render.</td></tr>
+        <tr data-level="basic"><td class="p-name">objectExtra</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Data truyền vào <code>component.params</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">title</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tiêu đề popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Mô tả phụ dưới tiêu đề.</td></tr>
+        <tr data-level="basic"><td class="p-name">size</td><td class="p-type"><span class="t-enum">ModalSizeType</span></td><td class="p-desc">Kích thước popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút xác nhận. <code>null</code> → ẩn.</td></tr>
+        <tr data-level="basic"><td class="p-name">cancelText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút đóng.</td></tr>
+        <tr data-level="basic"><td class="p-name">rejectText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút Reject (nút thứ 3).</td></tr>
+        <tr data-level="basic"><td class="p-name">resultText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút Result (nút thứ 4).</td></tr>
+        <tr data-level="basic"><td class="p-name">className</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">CSS class thêm vào popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmClose</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Đóng cần xác nhận (gọi reject trước khi đóng).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">⚙ Component bên trong popup cần implement</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">export class</span> <span class="cls">MyComponent</span> {
+  <span class="dec">@Input</span>() <span class="prop">params</span>: <span class="kw">any</span>;   <span class="cm">// nhận objectExtra từ popup</span>
+
+  <span class="fn">ngOnInit</span>() {
+    <span class="kw">let</span> id = <span class="prop">this</span>.params[<span class="str">'id'</span>];  <span class="cm">// hoặc this.getParamPopup('id')</span>
+  }
+
+  <span class="cm">// Wrapper gọi khi bấm Confirm</span>
+  <span class="kw">async</span> <span class="fn">confirm</span>(): <span class="cls">Promise</span>&lt;<span class="kw">boolean</span>&gt; {
+    <span class="kw">let</span> valid = <span class="kw">await</span> validation(<span class="prop">this</span>.item);
+    <span class="kw">if</span> (!valid) <span class="kw">return false</span>;   <span class="cm">// popup không đóng</span>
+    <span class="kw">await</span> <span class="prop">this</span>.service.save(<span class="prop">this</span>.item);
+    <span class="kw">return true</span>;               <span class="cm">// popup đóng + gọi okFunction</span>
+  }
+
+  <span class="cm">// Wrapper gọi khi bấm Reject (optional)</span>
+  <span class="kw">async</span> <span class="fn">reject</span>(): <span class="cls">Promise</span>&lt;<span class="kw">boolean</span>&gt; { <span class="kw">return true</span>; }
+
+  <span class="cm">// Wrapper gọi khi bấm Result (optional)</span>
+  <span class="kw">async</span> <span class="fn">result</span>(): <span class="cls">Promise</span>&lt;<span class="kw">boolean</span>&gt; { <span class="kw">return true</span>; }
+
+  <span class="cm">// Wrapper gọi khi đóng popup (optional)</span>
+  <span class="fn">close</span>() { }
+}</pre></div></div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span><strong>Quan trọng:</strong> <code>confirm()</code> trả <code>false</code> → popup <strong>không đóng</strong> (dùng cho validate). Trả <code>true</code> → đóng + gọi <code>okFunctionAsync</code>.</span>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">📑 WapperAboveAsync — Popup lớp 2</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Cùng API với <code>WapperAsync</code>, nhưng mở popup chồng lên popup hiện tại.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.dialogService.WapperAboveAsync({
+  <span class="prop">title</span>: <span class="str">'Chọn nhân viên'</span>,
+  <span class="prop">object</span>: <span class="cls">ChoiceUserComponent</span>,
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Large,
+}, <span class="kw">async</span> (result) => { });</pre></div></div>
+
+  <div class="callout callout-yellow" style="margin-top:10px">
+    <span>⚠️</span><span><code>HideAllDialog()</code> đóng tất cả popup (cả Wrapper + WrapperAbove). <code>HideDialog(dialog)</code> chỉ đóng 1 popup cụ thể.</span>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 4: Auto ═══════════ -->
+<div class="tab-panel" id="mdl-tab-auto">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">⚡ Auto — Tự sinh form từ Entity</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    <code>DialogType.Automatic</code> tự render form từ Entity decorators. Không cần viết component riêng. Dùng qua <code>popupAutoAsync()</code> trên Grid/Edit.
+  </p>
+
+  <div class="file-label">📐 DialogAutoData</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Param</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">title</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tiêu đề popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">size</td><td class="p-type"><span class="t-enum">ModalSizeType</span></td><td class="p-desc">Kích thước popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">objectValue.reference</td><td class="p-type"><span class="t-enum">Entity class</span></td><td class="p-desc">Entity dùng để tự sinh form (đọc decorator).</td></tr>
+        <tr data-level="basic"><td class="p-name">objectValue.properties</td><td class="p-type"><span class="t-arr">(string | ObjectEx)[]</span></td><td class="p-desc">Danh sách properties hiển thị.</td></tr>
+        <tr data-level="basic"><td class="p-name">objectValue.object</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Giá trị mặc định (entity instance).</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút xác nhận.</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmFunction</td><td class="p-type"><span class="t-enum">(item) => Promise</span></td><td class="p-desc">Callback nhận entity object khi xác nhận.</td></tr>
+        <tr data-level="basic"><td class="p-name">cancelText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút đóng.</td></tr>
+        <tr data-level="basic"><td class="p-name">className</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">CSS class bổ sung.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">💡 Ví dụ — Thêm nhanh từ Grid</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.popupAutoAsync({
+  <span class="prop">title</span>: <span class="str">'Thêm danh mục'</span>,
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Medium,
+  <span class="prop">objectValue</span>: {
+    <span class="prop">reference</span>: <span class="cls">CategoryEntity</span>,
+    <span class="prop">properties</span>: [<span class="str">'Code'</span>, <span class="str">'Name'</span>, <span class="str">'Description'</span>],
+    <span class="prop">object</span>: <span class="kw">new</span> <span class="cls">CategoryEntity</span>(),
+  },
+  <span class="prop">confirmText</span>: <span class="str">'Lưu'</span>,
+  <span class="prop">confirmFunction</span>: <span class="kw">async</span> (item) => {
+    <span class="kw">await</span> <span class="prop">this</span>.service.save(<span class="str">'category'</span>, item);
+  },
+});</pre></div></div>
+
+  <div class="file-label" style="margin-top:14px">💡 Ví dụ — Chỉnh sửa từ Edit form</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">let</span> entity = <span class="kw">await</span> <span class="prop">this</span>.autoLoadItem(itemId, <span class="cls">CategoryEntity</span>);
+<span class="prop">this</span>.popupAutoAsync({
+  <span class="prop">title</span>: <span class="str">'Sửa danh mục'</span>,
+  <span class="prop">objectValue</span>: {
+    <span class="prop">reference</span>: <span class="cls">CategoryEntity</span>,
+    <span class="prop">properties</span>: [<span class="str">'Code'</span>, <span class="str">'Name'</span>],
+    <span class="prop">object</span>: entity,  <span class="cm">// dữ liệu có sẵn</span>
+  },
+  <span class="prop">confirmText</span>: <span class="str">'Cập nhật'</span>,
+  <span class="prop">confirmFunction</span>: <span class="kw">async</span> (item) => {
+    <span class="kw">await</span> <span class="prop">this</span>.service.update(<span class="str">'category'</span>, item);
+  },
+});</pre></div></div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span><strong>Khả dụng trên:</strong> <code>GridComponent.popupAutoAsync()</code>, <code>EditComponent.popupAutoAsync()</code>, <code>EditComponent.popupAutoAboveAsync()</code>.</span>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 5: Export ═══════════ -->
+<div class="tab-panel" id="mdl-tab-export">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">📤 Export — Xuất dữ liệu</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    <code>ModalExportDataComponent</code> render trong Wrapper. Hỗ trợ xuất Excel, CSV, PDF. Grid tự mở popup này khi user click Export trên toolbar.
+  </p>
+
+  <div class="file-label">📋 ExportDataDto params</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Param</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Data</td><td class="p-type"><span class="t-enum">TableData</span></td><td class="p-desc">Dữ liệu grid hiện tại (filter, sort...).</td></tr>
+        <tr data-level="basic"><td class="p-name">Type</td><td class="p-type"><span class="t-enum">ExportType</span></td><td class="p-desc"><code>Excel</code>, <code>Csv</code>, <code>Pdf</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">Reference</td><td class="p-type"><span class="t-enum">Entity class</span></td><td class="p-desc">Entity reference để lấy tên controller.</td></tr>
+        <tr data-level="basic"><td class="p-name">FileName</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tên file xuất. Mặc định: tên controller.</td></tr>
+        <tr data-level="basic"><td class="p-name">Limit</td><td class="p-type"><span class="t-num">number</span></td><td class="p-desc">Giới hạn số dòng. Mặc định: 1000.</td></tr>
+        <tr data-level="basic"><td class="p-name">DateRange</td><td class="p-type"><span class="t-arr">Date[]</span></td><td class="p-desc">Phạm vi ngày lọc cho export.</td></tr>
+        <tr data-level="basic"><td class="p-name">PageSize</td><td class="p-type"><span class="t-num">number</span></td><td class="p-desc">Kích thước trang PDF.</td></tr>
+        <tr data-level="basic"><td class="p-name">Landscape</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">PDF landscape mode.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">💡 Gọi thủ công</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.popupAsync({
+  <span class="prop">title</span>: <span class="str">'Xuất Excel'</span>,
+  <span class="prop">object</span>: <span class="cls">ModalExportDataComponent</span>,
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Medium,
+  <span class="prop">objectExtra</span>: {
+    <span class="prop">Data</span>: <span class="prop">this</span>.itemData,
+    <span class="prop">Type</span>: <span class="cls">ExportType</span>.Excel,
+    <span class="prop">Reference</span>: <span class="cls">CategoryEntity</span>,
+    <span class="prop">Limit</span>: <span class="num">5000</span>,
+  },
+  <span class="prop">confirmText</span>: <span class="str">'Xuất'</span>,
+});</pre></div></div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span>Grid tự tạo popup Export khi khai báo <code>Exports</code> trong <code>GridData</code>. Thường không cần gọi thủ công.</span>
+  </div>
+</div>

@@ -1,0 +1,360 @@
+<!-- ═══════════════ Forms — Step-by-step Guide ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-module">◈ Module</div>
+  <div class="page-title">Forms — Hướng dẫn tạo Form</div>
+  <div class="page-desc">Hướng dẫn từng bước tạo form thêm/sửa (Edit Component) cho một module.</div>
+  <div class="page-meta">core/components/edit/edit.component.ts &nbsp;·&nbsp; EditComponent (abstract)</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('frm','steps')">📝 Hướng dẫn</button>
+  <button class="tab-btn" onclick="switchTab('frm','editor')">⊡ Editor Tag</button>
+  <button class="tab-btn" onclick="switchTab('frm','valid')">✓ Validation</button>
+  <button class="tab-btn" onclick="switchTab('frm','popup')">🪟 Popup</button>
+</div>
+
+<!-- ═══════════ HƯỚNG DẪN TAB ═══════════ -->
+<div class="tab-panel active" id="frm-tab-steps">
+
+  <!-- Step bar -->
+  <div class="frm-step-bar">
+    <div class="frm-step-item active" onclick="frmShowStep(0,this)"><span class="frm-step-num">1</span><span class="frm-step-lbl">Entity</span></div>
+    <div class="frm-step-line"></div>
+    <div class="frm-step-item" onclick="frmShowStep(1,this)"><span class="frm-step-num">2</span><span class="frm-step-lbl">Edit Files</span></div>
+    <div class="frm-step-line"></div>
+    <div class="frm-step-item" onclick="frmShowStep(2,this)"><span class="frm-step-num">3</span><span class="frm-step-lbl">Module</span></div>
+    <div class="frm-step-line"></div>
+    <div class="frm-step-item" onclick="frmShowStep(3,this)"><span class="frm-step-num">4</span><span class="frm-step-lbl">Checklist</span></div>
+  </div>
+
+  <!-- STEP 0: Entity -->
+  <div class="frm-step-panel active" id="frm-sp-0">
+    <div class="frm-sp-title">① Đảm bảo Entity có Decorator</div>
+    <p>Mỗi field trên form = 1 property có decorator trên Entity.</p>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Category'</span> })
+<span class="kw">export class</span> <span class="cls">CategoryEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+  <span class="dec">@StringDecorator</span>({ <span class="prop">required</span>: <span class="kw">true</span>, <span class="prop">max</span>: <span class="num">20</span> })
+  <span class="prop">Code</span>: <span class="kw">string</span>;
+  <span class="dec">@StringDecorator</span>({ <span class="prop">required</span>: <span class="kw">true</span>, <span class="prop">max</span>: <span class="num">200</span> })
+  <span class="prop">Name</span>: <span class="kw">string</span>;
+  <span class="dec">@StringDecorator</span>({ <span class="prop">type</span>: <span class="cls">StringType</span>.MultiText })
+  <span class="prop">Description</span>: <span class="kw">string</span>;
+}</pre></div></div>
+    <div class="callout callout-blue" style="margin-top:8px"><span>ℹ️</span><span><code>&lt;editor&gt;</code> tự đọc decorator → render đúng loại input. Không cần viết HTML cho từng field.</span></div>
+  </div>
+
+  <!-- STEP 1: Edit Files -->
+  <div class="frm-step-panel" id="frm-sp-1">
+    <div class="frm-sp-title">② Tạo thư mục edit + 3 file</div>
+    <pre class="flat" style="margin-bottom:12px;font-size:12px;line-height:1.7">
+modules/common/<span class="cls">category</span>/
+├── <span class="cls">category</span>.module.ts
+└── edit.<span class="cls">category</span>/
+    ├── edit.<span class="cls">category</span>.component.ts    <span class="cm">← Logic</span>
+    ├── edit.<span class="cls">category</span>.component.html  <span class="cm">← Template</span>
+    └── edit.<span class="cls">category</span>.component.scss  <span class="cm">← Style (rỗng)</span></pre>
+
+    <div class="file-label">📄 edit.category.component.ts</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="dec">@Component</span>({ <span class="prop">templateUrl</span>: <span class="str">'./edit.category.component.html'</span>,
+  <span class="prop">styleUrls</span>: [<span class="str">'./edit.category.component.scss'</span>, <span class="str">'assets/css/modal.scss'</span>] })
+<span class="kw">export class</span> <span class="cls">EditCategoryComponent</span> <span class="kw">extends</span> <span class="cls">EditComponent</span> <span class="kw">implements</span> <span class="cls">OnInit</span> {
+  <span class="prop">id</span>: <span class="kw">number</span>;  <span class="prop">loading</span> = <span class="kw">true</span>;
+  <span class="prop">item</span> = <span class="kw">new</span> <span class="cls">CategoryEntity</span>();
+  <span class="kw">constructor</span>() { <span class="kw">super</span>(); <span class="prop">this</span>.state = <span class="prop">this</span>.getUrlState(); }
+
+  <span class="kw">async</span> ngOnInit() {
+    <span class="prop">this</span>.id = <span class="prop">this</span>.getParam(<span class="str">'id'</span>);  <span class="prop">this</span>.viewer = <span class="prop">this</span>.getParam(<span class="str">'viewer'</span>);
+    <span class="kw">if</span> (<span class="prop">this</span>.state) <span class="prop">this</span>.addBreadcrumb(<span class="prop">this</span>.id ? <span class="str">'Sửa'</span> : <span class="str">'Thêm'</span>);
+    <span class="prop">this</span>.renderActions();
+    <span class="kw">await</span> <span class="prop">this</span>.loadItem();  <span class="prop">this</span>.loading = <span class="kw">false</span>;
+  }
+  <span class="kw">private async</span> loadItem() {
+    <span class="prop">this</span>.item = <span class="kw">new</span> <span class="cls">CategoryEntity</span>();
+    <span class="kw">if</span> (<span class="prop">this</span>.id)
+      <span class="kw">await</span> <span class="prop">this</span>.service.item(<span class="str">'category'</span>, <span class="prop">this</span>.id).then(r =&gt; {
+        <span class="kw">if</span> (<span class="cls">ResultApi</span>.IsSuccess(r))
+          <span class="prop">this</span>.item = <span class="cls">EntityHelper</span>.createEntity(<span class="cls">CategoryEntity</span>, r.Object);
+      });
+  }
+  <span class="kw">private</span> renderActions() {
+    <span class="prop">this</span>.actions = <span class="prop">this</span>.id
+      ? [<span class="cls">ActionData</span>.back(() =&gt; <span class="prop">this</span>.back()), <span class="cls">ActionData</span>.saveUpdate(<span class="str">'Lưu'</span>, () =&gt; <span class="prop">this</span>.confirmAndBack())]
+      : [<span class="cls">ActionData</span>.back(() =&gt; <span class="prop">this</span>.back()), <span class="cls">ActionData</span>.saveAddNew(<span class="str">'Thêm'</span>, () =&gt; <span class="prop">this</span>.confirmAndBack())];
+  }
+  <span class="kw">private async</span> confirmAndBack() {
+    <span class="kw">if</span> (<span class="kw">await</span> <span class="prop">this</span>.autoConfirm(<span class="prop">this</span>.item)) <span class="prop">this</span>.back();
+  }
+}</pre></div></div>
+
+    <div class="file-label" style="margin-top:14px">📄 edit.category.component.html</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">&lt;div class=</span><span class="str">"kt-portlet kt-portlet-edit-form"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;edit-header</span> <span class="prop">*ngIf</span>=<span class="str">"breadcrumbs && actions?.length"</span>
+    <span class="prop">[breadcrumbs]</span>=<span class="str">"breadcrumbs"</span> <span class="prop">[actions]</span>=<span class="str">"actions"</span> <span class="prop">[processing]</span>=<span class="str">"processing"</span><span class="kw">&gt;&lt;/edit-header&gt;</span>
+  <span class="kw">&lt;div class=</span><span class="str">"kt-portlet__body"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;div class=</span><span class="str">"row"</span> <span class="prop">*ngIf</span>=<span class="str">"item && !loading"</span><span class="kw">&gt;</span>
+      <span class="kw">&lt;div class=</span><span class="str">"col-sm-6"</span><span class="kw">&gt;&lt;editor</span> <span class="prop">[(object)]</span>=<span class="str">"item"</span> <span class="prop">property</span>=<span class="str">"Code"</span><span class="kw">&gt;&lt;/editor&gt;&lt;/div&gt;</span>
+      <span class="kw">&lt;div class=</span><span class="str">"col-sm-6"</span><span class="kw">&gt;&lt;editor</span> <span class="prop">[(object)]</span>=<span class="str">"item"</span> <span class="prop">property</span>=<span class="str">"Name"</span><span class="kw">&gt;&lt;/editor&gt;&lt;/div&gt;</span>
+      <span class="kw">&lt;div class=</span><span class="str">"col-sm-12"</span><span class="kw">&gt;&lt;editor</span> <span class="prop">[(object)]</span>=<span class="str">"item"</span> <span class="prop">property</span>=<span class="str">"Description"</span><span class="kw">&gt;&lt;/editor&gt;&lt;/div&gt;</span>
+    <span class="kw">&lt;/div&gt;</span>
+    <span class="kw">&lt;div class=</span><span class="str">"row row-loading"</span> <span class="prop">*ngIf</span>=<span class="str">"loading"</span><span class="kw">&gt;&lt;loading&gt;&lt;/loading&gt;&lt;/div&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span></pre></div></div>
+  </div>
+
+  <!-- STEP 2: Module -->
+  <div class="frm-step-panel" id="frm-sp-2">
+    <div class="frm-sp-title">③ Đăng ký trong Module + Routes</div>
+    <p>Thêm <code>EditCategoryComponent</code> vào <code>declarations</code> và thêm 3 routes.</p>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="dec">@NgModule</span>({
+  <span class="prop">declarations</span>: [<span class="cls">CategoryComponent</span>, <span class="cls">EditCategoryComponent</span>],
+  <span class="prop">imports</span>: [<span class="cls">UtilityModule</span>, <span class="cls">RouterModule</span>.forChild([
+    { <span class="prop">path</span>: <span class="str">''</span>,     <span class="prop">component</span>: <span class="cls">CategoryComponent</span>,     <span class="prop">pathMatch</span>: <span class="str">'full'</span>, <span class="prop">data</span>: { <span class="prop">state</span>: <span class="str">'category'</span> },     <span class="prop">canActivate</span>: [<span class="cls">AdminAuthGuard</span>] },
+    { <span class="prop">path</span>: <span class="str">'add'</span>,  <span class="prop">component</span>: <span class="cls">EditCategoryComponent</span>, <span class="prop">pathMatch</span>: <span class="str">'full'</span>, <span class="prop">data</span>: { <span class="prop">state</span>: <span class="str">'add_category'</span> },  <span class="prop">canActivate</span>: [<span class="cls">AdminAuthGuard</span>] },
+    { <span class="prop">path</span>: <span class="str">'edit'</span>, <span class="prop">component</span>: <span class="cls">EditCategoryComponent</span>, <span class="prop">pathMatch</span>: <span class="str">'full'</span>, <span class="prop">data</span>: { <span class="prop">state</span>: <span class="str">'edit_category'</span> }, <span class="prop">canActivate</span>: [<span class="cls">AdminAuthGuard</span>] },
+    { <span class="prop">path</span>: <span class="str">'view'</span>, <span class="prop">component</span>: <span class="cls">EditCategoryComponent</span>, <span class="prop">pathMatch</span>: <span class="str">'full'</span>, <span class="prop">data</span>: { <span class="prop">state</span>: <span class="str">'view_category'</span> }, <span class="prop">canActivate</span>: [<span class="cls">AdminAuthGuard</span>] },
+  ])]
+})</pre></div></div>
+  </div>
+
+  <!-- STEP 3: Checklist -->
+  <div class="frm-step-panel" id="frm-sp-3">
+    <div class="frm-sp-title">④ Checklist</div>
+    <div class="opts-table-wrap">
+      <table class="opts-table">
+        <thead><tr><th>✓</th><th>File</th></tr></thead>
+        <tbody>
+          <tr data-level="basic"><td class="p-desc">Entity có decorator cho mỗi field</td><td class="p-name">category.entity.ts</td></tr>
+          <tr data-level="basic"><td class="p-desc">EditComponent — extends + ngOnInit flow</td><td class="p-name">edit.category.component.ts</td></tr>
+          <tr data-level="basic"><td class="p-desc">Template — edit-header + editor tags + loading</td><td class="p-name">edit.category.component.html</td></tr>
+          <tr data-level="basic"><td class="p-desc">Module — declarations + 3 routes</td><td class="p-name">category.module.ts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-yellow" style="margin-top:12px">
+      <span>⚠️</span>
+      <span><code>service.save('category', obj)</code> → API <code>POST/PUT /category</code>. Controller name phải khớp backend.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ EDITOR TAG TAB ═══════════ -->
+<div class="tab-panel" id="frm-tab-editor">
+  <h3 style="margin:0 0 12px;font-size:14px;color:var(--text)">⊡ &lt;editor&gt; Component</h3>
+  <p style="margin:0 0 16px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Tự render input theo decorator trên Entity. Không cần viết HTML thủ công.
+  </p>
+
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Attribute</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">[(object)]</td><td class="p-type"><span class="t-enum">Entity</span></td><td class="p-desc"><strong>Bắt buộc.</strong> Two-way binding. VD: <code>[(object)]="item"</code></td></tr>
+        <tr data-level="basic"><td class="p-name">property</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc"><strong>Bắt buộc.</strong> Tên property. VD: <code>property="Name"</code></td></tr>
+        <tr data-level="basic"><td class="p-name">[decorator]</td><td class="p-type"><span class="t-enum">object</span></td><td class="p-desc">Override runtime. VD: <code>[decorator]="{ readonly: viewer }"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:24px 0 12px;font-size:14px;color:var(--text)">💡 Ví dụ</h3>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat">
+<span class="cm">&lt;!-- Cơ bản --&gt;</span>
+<span class="kw">&lt;editor</span> <span class="prop">[(object)]</span>=<span class="str">"item"</span> <span class="prop">property</span>=<span class="str">"Name"</span><span class="kw">&gt;&lt;/editor&gt;</span>
+
+<span class="cm">&lt;!-- Override readonly --&gt;</span>
+<span class="kw">&lt;editor</span> <span class="prop">[(object)]</span>=<span class="str">"item"</span> <span class="prop">property</span>=<span class="str">"Title"</span>
+  <span class="prop">[decorator]</span>=<span class="str">"{ readonly: viewer, label: '' }"</span><span class="kw">&gt;&lt;/editor&gt;</span>
+
+<span class="cm">&lt;!-- Layout Bootstrap col --&gt;</span>
+<span class="kw">&lt;div class=</span><span class="str">"row"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div class=</span><span class="str">"col-sm-6"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;editor</span> <span class="prop">[(object)]</span>=<span class="str">"item"</span> <span class="prop">property</span>=<span class="str">"Code"</span><span class="kw">&gt;&lt;/editor&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;div class=</span><span class="str">"col-sm-6"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;editor</span> <span class="prop">[(object)]</span>=<span class="str">"item"</span> <span class="prop">property</span>=<span class="str">"Name"</span><span class="kw">&gt;&lt;/editor&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span>
+</pre></div></div>
+</div>
+
+<!-- ═══════════ VALIDATION TAB ═══════════ -->
+<div class="tab-panel" id="frm-tab-valid">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">✓ Validation</h3>
+  <p style="margin:0 0 16px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Import từ <code>core/decorators/validator</code>. Validation tự động chạy dựa trên decorator (<code>required</code>, <code>max</code>, <code>min</code>, <code>validators</code>).
+  </p>
+
+  <div class="file-label">📦 Functions</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Function</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">validation(item, cols?)</td><td class="p-desc">Validate 1 item. Trả về <code>Promise&lt;boolean&gt;</code>. Tự emit lỗi lên <code>&lt;editor&gt;</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">validations(items[], cols?)</td><td class="p-desc">Validate mảng items. Dừng ở item đầu tiên lỗi (hoặc <code>multiple=true</code> để check hết).</td></tr>
+        <tr data-level="basic"><td class="p-name">clearValidation(item)</td><td class="p-desc">Xoá tất cả lỗi validation hiện tại.</td></tr>
+        <tr data-level="basic"><td class="p-name">catchValidation(item, prop, msg)</td><td class="p-desc">Gán lỗi thủ công cho 1 property. VD: lỗi từ server.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">🔑 PatternType (validators)</div>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2)">Khai báo: <code>validators: [{ pattern: PatternType.XXX, message?: 'Custom msg' }]</code></p>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>PatternType</th><th>Áp dụng cho</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Required</td><td class="p-type">All</td><td class="p-desc">Tự động khi <code>required: true</code>. Không cần khai báo thủ công.</td></tr>
+        <tr data-level="basic"><td class="p-name">Min</td><td class="p-type">String, Number, DateTime, Image/File</td><td class="p-desc">String: min ký tự. Number: min giá trị. DateTime: min date. File: min số file.</td></tr>
+        <tr data-level="basic"><td class="p-name">Max</td><td class="p-type">String, Number, DateTime, Image/File</td><td class="p-desc">Tương tự Min nhưng giới hạn trên.</td></tr>
+        <tr data-level="basic"><td class="p-name">RequiredMatch</td><td class="p-type">String</td><td class="p-desc">So sánh 2 field giống nhau. VD: Password + ConfirmPassword.</td></tr>
+        <tr data-level="basic"><td class="p-name">RequiredMin</td><td class="p-type">Number, DateTime, Dropdown</td><td class="p-desc">Giá trị phải >= field khác. VD: EndDate >= StartDate.</td></tr>
+        <tr data-level="basic"><td class="p-name">RequiredMax</td><td class="p-type">Number, DateTime, Dropdown</td><td class="p-desc">Giá trị phải <= field khác.</td></tr>
+        <tr data-level="basic"><td class="p-name">Unique</td><td class="p-type">String</td><td class="p-desc">Check trùng qua API. Cần <code>unique: { url, property, propertyId? }</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">Duplicate</td><td class="p-type">String</td><td class="p-desc">Không trùng với field khác trong cùng entity. Cần <code>duplicates: ['FieldB']</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">CardNumber</td><td class="p-type">String</td><td class="p-desc">Validate số thẻ tín dụng (Luhn).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:18px 0 8px;font-size:14px;color:var(--text)">💡 Ví dụ</h3>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// 1. autoConfirm — validate + save tự động</span>
+<span class="kw">if</span> (<span class="kw">await</span> <span class="prop">this</span>.autoConfirm(<span class="prop">this</span>.item)) <span class="prop">this</span>.back();
+
+<span class="cm">// 2. Validate thủ công</span>
+<span class="kw">if</span> (<span class="kw">await</span> validation(<span class="prop">this</span>.item)) { <span class="cm">/* save logic */</span> }
+
+<span class="cm">// 3. Validate chỉ 1 số cột</span>
+<span class="kw">if</span> (<span class="kw">await</span> validation(<span class="prop">this</span>.item, [<span class="str">'Code'</span>, <span class="str">'Name'</span>])) { ... }
+
+<span class="cm">// 4. Gán lỗi custom (VD: lỗi từ API)</span>
+catchValidation(<span class="prop">this</span>.item, <span class="str">'Email'</span>, <span class="str">'Email đã tồn tại'</span>);
+
+<span class="cm">// 5. Xoá lỗi</span>
+clearValidation(<span class="prop">this</span>.item);</pre></div></div>
+</div>
+
+<!-- ═══════════ POPUP TAB ═══════════ -->
+<div class="tab-panel" id="frm-tab-popup">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🪟 Popup — Mở form trong popup</h3>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Có 3 hàm popup chính: <code>popupAsync</code> (custom component), <code>popupAutoAsync</code> (auto-form từ Entity), <code>popupSubGrid</code> (sub-grid popup).
+  </p>
+
+  <!-- popupAsync -->
+  <div class="file-label">1️⃣ popupAsync — Popup Component tùy chỉnh</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Mở popup chứa một component Angular tùy chỉnh. Wrapper của <code>WapperAsync</code>.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.popupAsync({
+  <span class="prop">object</span>: <span class="cls">EditCategoryComponent</span>,
+  <span class="prop">title</span>: <span class="str">'Chỉnh sửa danh mục'</span>,
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Large,
+  <span class="prop">objectExtra</span>: { id: item.Id },
+  <span class="prop">confirmText</span>: <span class="str">'Lưu'</span>,
+}, <span class="kw">async</span> (result) => {
+  <span class="cm">// callback khi bấm nút Lưu</span>
+  <span class="kw">await</span> <span class="prop">this</span>.loadItems();
+});</pre></div></div>
+
+  <div class="opts-table-wrap" style="margin-top:8px">
+    <table class="opts-table">
+      <thead><tr><th>Param</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">object</td><td class="p-type"><span class="t-enum">Component</span></td><td class="p-desc">Angular Component để render trong popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">objectExtra</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Dữ liệu truyền vào component (truy cập qua <code>getParamPopup('key')</code>).</td></tr>
+        <tr data-level="basic"><td class="p-name">title</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tiêu đề popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">size</td><td class="p-type"><span class="t-enum">ModalSizeType</span></td><td class="p-desc"><code>Small</code>, <code>Medium</code>, <code>Large</code>, <code>ExtraLarge</code>, <code>FullScreen</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút xác nhận. Nếu <code>null</code> → ẩn nút.</td></tr>
+        <tr data-level="basic"><td class="p-name">cancelText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút đóng. Mặc định: <code>'Đóng'</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmClose</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Tự đóng popup sau khi confirm.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- popupAutoAsync -->
+  <div class="file-label" style="margin-top:16px">2️⃣ popupAutoAsync — Auto-form từ Entity</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Tự sinh form popup từ Entity reference + properties. Không cần viết component riêng.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.popupAutoAsync({
+  <span class="prop">title</span>: <span class="str">'Thêm danh mục'</span>,
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Medium,
+  <span class="prop">objectValue</span>: {
+    <span class="prop">reference</span>: <span class="cls">CategoryEntity</span>,
+    <span class="prop">properties</span>: [<span class="str">'Code'</span>, <span class="str">'Name'</span>, <span class="str">'Description'</span>],
+    <span class="prop">object</span>: <span class="kw">new</span> <span class="cls">CategoryEntity</span>(),  <span class="cm">// giá trị mặc định</span>
+  },
+  <span class="prop">confirmText</span>: <span class="str">'Lưu'</span>,
+  <span class="prop">confirmFunction</span>: <span class="kw">async</span> (item) => {
+    <span class="cm">// item = entity object với dữ liệu user đã nhập</span>
+    <span class="kw">await</span> <span class="prop">this</span>.service.save(<span class="str">'category'</span>, item);
+  },
+});</pre></div></div>
+
+  <div class="opts-table-wrap" style="margin-top:8px">
+    <table class="opts-table">
+      <thead><tr><th>Param (DialogAutoData)</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">objectValue.reference</td><td class="p-type"><span class="t-enum">Entity class</span></td><td class="p-desc">Entity dùng để tự sinh form (đọc decorator).</td></tr>
+        <tr data-level="basic"><td class="p-name">objectValue.properties</td><td class="p-type"><span class="t-arr">(string | ObjectEx)[]</span></td><td class="p-desc">Danh sách properties hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">objectValue.object</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Giá trị mặc định cho form (entity instance).</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmFunction</td><td class="p-type"><span class="t-enum">(item) => Promise</span></td><td class="p-desc">Callback nhận entity object khi bấm xác nhận.</td></tr>
+        <tr data-level="basic"><td class="p-name">title / size</td><td class="p-type"><span class="t-str">string / enum</span></td><td class="p-desc">Tiêu đề và kích thước popup.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span><strong>Khác biệt:</strong> <code>popupAsync</code> cần viết component riêng, <code>popupAutoAsync</code> tự sinh form từ Entity decorators → nhanh hơn cho form đơn giản.</span>
+  </div>
+
+  <!-- popupSubGrid -->
+  <div class="file-label" style="margin-top:16px">3️⃣ popupSubGrid — Sub-grid trong popup</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Mở một GridComponent con trong popup. Có thể Checkable để chọn items.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.popupSubGrid({
+  <span class="prop">Title</span>: <span class="str">'Danh sách nhân viên'</span>,
+  <span class="prop">Reference</span>: <span class="cls">StaffEntity</span>,
+  <span class="prop">Size</span>: <span class="cls">ModalSizeType</span>.ExtraLarge,
+  <span class="prop">Properties</span>: [<span class="str">'Id'</span>, <span class="str">'Name'</span>, <span class="str">'Email'</span>],
+  <span class="prop">Checkable</span>: <span class="kw">true</span>,
+}, items, <span class="kw">async</span> (selectedItems) => {
+  <span class="cm">// selectedItems = mảng items được chọn</span>
+});</pre></div></div>
+
+  <!-- WapperAsync -->
+  <div class="file-label" style="margin-top:16px">4️⃣ WapperAsync — API cấp thấp (AdminDialogService)</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Hàm gốc để mở popup. <code>popupAsync</code> là wrapper của hàm này.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.dialogService.WapperAsync({
+  <span class="prop">title</span>: <span class="str">'Export Data'</span>,
+  <span class="prop">object</span>: <span class="cls">ModalExportDataComponent</span>,
+  <span class="prop">objectExtra</span>: { Data: data, Type: <span class="cls">ExportType</span>.Excel },
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Large,
+  <span class="prop">confirmText</span>: <span class="str">'Xuất'</span>,
+}, <span class="kw">async</span> (result) => {
+  <span class="cm">// okFunction</span>
+});</pre></div></div>
+
+  <div class="callout callout-yellow" style="margin-top:10px">
+    <span>⚠️</span><span>Component trong popup lấy params qua <code>this.getParamPopup('key')</code>. VD: <code>objectExtra: { id: 5 }</code> → <code>this.getParamPopup('id')</code> → <code>5</code>.</span>
+  </div>
+</div>
+
+<style>
+.frm-step-bar { display:flex; align-items:center; gap:0; margin-bottom:20px; padding:12px 8px; background:var(--surface); border:1px solid var(--border); border-radius:10px }
+.frm-step-item { display:flex; align-items:center; gap:6px; padding:6px 14px; border-radius:8px; cursor:pointer; transition:all .15s; user-select:none }
+.frm-step-item:hover { background:rgba(16,185,129,.1) }
+.frm-step-item.active { background:linear-gradient(135deg,#10b981,#059669); color:#fff; box-shadow:0 2px 8px rgba(16,185,129,.35) }
+.frm-step-item.active .frm-step-num { background:rgba(255,255,255,.3); color:#fff }
+.frm-step-num { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:var(--border); color:var(--text-2); font-size:11px; font-weight:700; flex-shrink:0 }
+.frm-step-lbl { font-size:12px; font-weight:600; white-space:nowrap }
+.frm-step-line { flex:1; height:2px; background:var(--border); min-width:12px }
+.frm-step-panel { display:none }
+.frm-step-panel.active { display:block }
+.frm-sp-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:10px }
+.frm-step-panel p { margin:0 0 10px; font-size:13px; color:var(--text-2); line-height:1.6 }
+.file-label { font-size:12px; font-weight:700; color:var(--accent); margin-bottom:6px; letter-spacing:.3px }
+</style>
+
+<script>
+function frmShowStep(idx, el) {
+  document.querySelectorAll('.frm-step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.frm-step-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('frm-sp-' + idx).classList.add('active');
+  el.classList.add('active');
+}
+</script>

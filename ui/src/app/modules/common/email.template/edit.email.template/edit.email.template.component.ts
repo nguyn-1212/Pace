@@ -1,0 +1,119 @@
+import * as _ from 'lodash';
+import { AppInjector } from '../../../../app.module';
+import { Component, Input, OnInit } from "@angular/core";
+import { validation } from '../../../../core/decorators/validator';
+import { ResultApi } from '../../../../core/domains/data/result.api';
+import { ToastrHelper } from '../../../../core/helpers/toastr.helper';
+import { EntityHelper } from '../../../../core/helpers/entity.helper';
+import { ActionData } from '../../../../core/domains/data/action.data';
+import { AdminApiService } from '../../../../core/services/admin.api.service';
+import { EditComponent } from '../../../../core/components/edit/edit.component';
+import { NavigationStateData } from '../../../../core/domains/data/navigation.state';
+import { EmailTemplateEntity } from '../../../../core/domains/entities/email.template.entity';
+import { AdminTranslateService } from '../../../../core/services/admin.translate.service';
+
+@Component({
+    templateUrl: './edit.email.template.component.html',
+    styleUrls: [
+        './edit.email.template.component.scss',
+        '../../../../../assets/css/modal.scss'
+    ],
+})
+export class EditEmailTemplateComponent extends EditComponent implements OnInit {
+    id: number;
+    popup: boolean;
+    tab: string = 'content';
+    loading: boolean = true;
+    loadingTemplate: boolean = false;
+    item: EmailTemplateEntity = new EmailTemplateEntity();
+
+    constructor() {
+        super();
+        this.service = AppInjector.get(AdminApiService);
+        this.translate = AppInjector.get(AdminTranslateService);
+        this.state = this.getUrlState();
+    }
+
+    async ngOnInit() {
+        this.id = this.getParam('id');
+        this.popup = this.getParam('popup');
+        this.viewer = this.getParam('viewer');
+        if (!this.popup) {
+            if (this.state) {
+                this.id = this.state.id;
+                this.viewer = this.state.viewer;
+                this.addBreadcrumb(this.translate.transform('Core.ActionType.' + (this.id ? (this.viewer ? 'View' : 'Edit') : 'AddNew')));
+            }
+            this.renderActions();
+        }
+        await this.loadItem();
+        this.loading = false;
+    }
+
+    selectedTab(tab: string) {
+        this.tab = tab;
+    }
+
+    private async loadItem() {
+        this.item = new EmailTemplateEntity();
+        if (this.id) {
+            await this.service.item('emailtemplate', this.id).then((result: ResultApi) => {
+                if (ResultApi.IsSuccess(result)) {
+                    this.item = EntityHelper.createEntity(EmailTemplateEntity, result.Object as EmailTemplateEntity);
+                } else {
+                    ToastrHelper.ErrorResult(result);
+                }
+            });
+        }
+    }
+    private async renderActions() {
+        let actions: ActionData[] = this.id
+            ? [
+                ActionData.back(() => { this.back() }),
+                this.viewer
+                    ? ActionData.gotoEdit(this.translate.transform('Core.ActionType.Edit'), () => { this.edit(this.item) })
+                    : ActionData.saveUpdate(this.translate.transform('Core.ActionType.Save'), () => { this.confirmAndBack() }),
+            ]
+            : [
+                ActionData.back(() => { this.back() }),
+                ActionData.saveUpdate(this.translate.transform('Core.ActionType.Save'), () => { this.confirmAndBack() })
+            ];
+        this.actions = await this.authen.actionsAllow(EmailTemplateEntity, actions);
+    }
+    private async confirmAndBack() {
+        await this.confirm(() => {
+            this.back();
+        });
+    }
+    private edit(item: EmailTemplateEntity) {
+        let obj: NavigationStateData = {
+            id: item.Id,
+            prevData: this.state?.prevData,
+            prevUrl: '/admin/emailtemplate',
+        };
+        this.router.navigate(['/admin/emailtemplate/edit'], { state: { params: JSON.stringify(obj) } });
+    }
+    public async confirm(complete: () => void): Promise<boolean> {
+        if (this.item) {
+            if (await validation(this.item)) {
+                this.processing = true;
+                let obj: EmailTemplateEntity = _.cloneDeep(this.item);
+                return await this.service.save('emailtemplate', obj).then((result: ResultApi) => {
+                    this.processing = false;
+                    if (ResultApi.IsSuccess(result)) {
+                        ToastrHelper.Success(this.translate.transform('EmailTemplateEntity.SaveSuccessMessage'));
+                        if (complete) complete();
+                        return true;
+                    } else {
+                        ToastrHelper.ErrorResult(result);
+                        return false;
+                    }
+                }, () => {
+                    this.processing = false;
+                    return false;
+                });
+            }
+        }
+        return false;
+    }
+}

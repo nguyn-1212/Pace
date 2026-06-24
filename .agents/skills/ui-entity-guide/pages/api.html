@@ -1,0 +1,171 @@
+<!-- ═══════════════ API Service — Documentation ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-module">◈ Service</div>
+  <div class="page-title">API Service — Gọi API từ UI</div>
+  <div class="page-desc">AdminApiService cung cấp các hàm CRUD, lookup, gọi API tùy chỉnh, upload, export từ Angular.</div>
+  <div class="page-meta">core/services/admin.api.service.ts &nbsp;·&nbsp; AdminApiService &nbsp;·&nbsp; ResultApi</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('api','crud')">📦 CRUD</button>
+  <button class="tab-btn" onclick="switchTab('api','custom')">🔗 Custom API</button>
+  <button class="tab-btn" onclick="switchTab('api','lookup')">🔍 Lookup</button>
+  <button class="tab-btn" onclick="switchTab('api','upload')">📤 Upload</button>
+</div>
+
+<!-- ═══════════ TAB 1: CRUD ═══════════ -->
+<div class="tab-panel active" id="api-tab-crud">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">📦 CRUD — Thao tác dữ liệu cơ bản</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Tất cả hàm trả về <code>Promise&lt;ResultApi&gt;</code>. Kiểm tra kết quả bằng <code>ResultApi.IsSuccess(result)</code>.
+  </p>
+
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Hàm</th><th>Params</th><th>API Endpoint</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">save</td><td class="p-type">objName, obj, id?</td><td class="p-desc"><code>POST/PUT /admin/{objName}</code></td><td class="p-desc">Tạo hoặc cập nhật. Tự detect <code>POST</code> (new) / <code>PUT</code> (update) theo <code>obj.Id</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">update</td><td class="p-type">objName, obj, columns[]</td><td class="p-desc"><code>PUT /admin/{objName}?columns=A,B</code></td><td class="p-desc">Cập nhật chỉ các cột chỉ định.</td></tr>
+        <tr data-level="basic"><td class="p-name">item</td><td class="p-type">objName, id</td><td class="p-desc"><code>GET /admin/{objName}/{id}</code></td><td class="p-desc">Lấy 1 item theo ID.</td></tr>
+        <tr data-level="basic"><td class="p-name">items</td><td class="p-type">tableData?, url?</td><td class="p-desc"><code>POST /admin/{name}/items</code></td><td class="p-desc">Lấy danh sách (paging, filter, sort).</td></tr>
+        <tr data-level="basic"><td class="p-name">delete</td><td class="p-type">objName, id</td><td class="p-desc"><code>DELETE /admin/{objName}/{id}</code></td><td class="p-desc">Xóa vĩnh viễn.</td></tr>
+        <tr data-level="basic"><td class="p-name">trash</td><td class="p-type">objName, id</td><td class="p-desc"><code>DELETE /admin/{objName}/trash/{id}</code></td><td class="p-desc">Soft delete (chuyển vào thùng rác).</td></tr>
+        <tr data-level="basic"><td class="p-name">active</td><td class="p-type">objName, id</td><td class="p-desc"><code>POST /admin/{objName}/active/{id}</code></td><td class="p-desc">Toggle trạng thái active.</td></tr>
+        <tr data-level="basic"><td class="p-name">multipleDelete</td><td class="p-type">objName, ids[]</td><td class="p-desc"><code>DELETE /admin/{objName}?ids=1,2,3</code></td><td class="p-desc">Xóa nhiều items.</td></tr>
+        <tr data-level="basic"><td class="p-name">multipleTrash</td><td class="p-type">objName, ids[]</td><td class="p-desc"><code>DELETE /admin/{objName}/trash?ids=</code></td><td class="p-desc">Soft delete nhiều items.</td></tr>
+        <tr data-level="basic"><td class="p-name">trashVerify</td><td class="p-type">objName, id</td><td class="p-desc"><code>DELETE /admin/{objName}/trashVerify/{id}</code></td><td class="p-desc">Khôi phục từ thùng rác.</td></tr>
+        <tr data-level="basic"><td class="p-name">exists</td><td class="p-type">url, property, objId?, value?</td><td class="p-desc"><code>GET /admin/{url}?property=&value=</code></td><td class="p-desc">Kiểm tra tồn tại (dùng cho validate unique).</td></tr>
+        <tr data-level="basic"><td class="p-name">resetCache</td><td class="p-type">objName</td><td class="p-desc"><code>GET /admin/{objName}/resetCache</code></td><td class="p-desc">Reset cache server.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">💡 Ví dụ</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Lưu entity (tự detect POST/PUT)</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.save(<span class="str">'category'</span>, <span class="prop">this</span>.item);
+<span class="kw">if</span> (<span class="cls">ResultApi</span>.IsSuccess(result)) { <span class="cm">/* ok */</span> }
+
+<span class="cm">// Lấy 1 item</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.item(<span class="str">'category'</span>, <span class="num">123</span>);
+<span class="kw">let</span> entity = <span class="cls">EntityHelper</span>.createEntity(<span class="cls">CategoryEntity</span>, result.Object);
+
+<span class="cm">// Xóa + confirm</span>
+<span class="prop">this</span>.dialogService.ConfirmAsync(<span class="str">'Xóa mục này?'</span>, <span class="kw">async</span> () => {
+  <span class="kw">await</span> <span class="prop">this</span>.service.delete(<span class="str">'category'</span>, item.Id);
+  <span class="kw">await</span> <span class="prop">this</span>.loadItems();
+});</pre></div></div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span><code>save()</code> tự xóa <code>IsActive</code>, <code>IsDelete</code>, <code>CreatedBy</code>, <code>CreatedDate</code>... trước khi gửi. Không cần clean thủ công.</span>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 2: Custom API ═══════════ -->
+<div class="tab-panel" id="api-tab-custom">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🔗 Custom API — Gọi API tùy chỉnh</h3>
+
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Hàm</th><th>Params</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">callApiUrl</td><td class="p-type">url, obj?, method?</td><td class="p-desc">Gọi API theo URL. Tự thêm <code>/admin</code> prefix. Method tự detect: có obj → POST, không → GET.</td></tr>
+        <tr data-level="basic"><td class="p-name">callApi</td><td class="p-type">controller, action, obj?, method?</td><td class="p-desc">Gọi <code>/admin/{controller}/{action}</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">callApiNonAdminUrl</td><td class="p-type">url, obj?, method?</td><td class="p-desc">Gọi API <strong>không có</strong> prefix <code>/admin</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">saveByUrl</td><td class="p-type">url, obj, method?</td><td class="p-desc">POST/PUT đến URL cụ thể (auto clean fields).</td></tr>
+        <tr data-level="basic"><td class="p-name">requestByUrl</td><td class="p-type">url, method?, obj?</td><td class="p-desc">Request raw theo URL + method.</td></tr>
+        <tr data-level="basic"><td class="p-name">filterItems</td><td class="p-type">objName, name, value, compare?</td><td class="p-desc">Lọc items theo 1 trường (tự detect CompareType).</td></tr>
+        <tr data-level="basic"><td class="p-name">filterItemsByUrl</td><td class="p-type">url, name, value, compare?</td><td class="p-desc">Giống filterItems nhưng dùng URL tùy chỉnh.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">💡 Ví dụ</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Gọi GET /admin/category/tree</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.callApiUrl(<span class="str">'/category/tree'</span>);
+
+<span class="cm">// Gọi POST /admin/report/summary với body</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.callApi(<span class="str">'report'</span>, <span class="str">'summary'</span>, { Year: <span class="num">2024</span> });
+
+<span class="cm">// Gọi API bên ngoài (không có /admin prefix)</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.callApiNonAdminUrl(<span class="str">'/public/config'</span>);
+
+<span class="cm">// Lọc nhanh</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.filterItems(<span class="str">'staff'</span>, <span class="str">'DepartmentId'</span>, <span class="num">5</span>);</pre></div></div>
+
+  <div class="callout callout-yellow" style="margin-top:10px">
+    <span>⚠️</span><span><code>callApiUrl</code> tự thêm <code>/admin</code> prefix. VD: <code>callApiUrl('/category/tree')</code> → <code>GET /admin/category/tree</code>.</span>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">📋 ResultApi — Xử lý kết quả</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.callApiUrl(<span class="str">'/...'</span>);
+<span class="kw">if</span> (<span class="cls">ResultApi</span>.IsSuccess(result)) {
+  <span class="kw">let</span> data = result.Object;    <span class="cm">// object trả về</span>
+  <span class="kw">let</span> items = result.Object;   <span class="cm">// mảng items (cho /items)</span>
+  <span class="kw">let</span> total = result.ObjectExtra?.Total;
+} <span class="kw">else</span> {
+  <span class="prop">this</span>.dialogService.ErrorResult(result);
+}</pre></div></div>
+</div>
+
+<!-- ═══════════ TAB 3: Lookup ═══════════ -->
+<div class="tab-panel" id="api-tab-lookup">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🔍 Lookup — Tìm kiếm nhanh</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Dùng cho Dropdown, Autocomplete. Hỗ trợ lọc theo cột, phân trang, search text.
+  </p>
+
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Hàm</th><th>Params</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">lookup</td><td class="p-type">url, columns?, by?, useQuery?, search?, pageIndex?, pageSize?</td><td class="p-desc">Lookup GET. VD: <code>/category/lookup</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">lookupItem</td><td class="p-type">url, value, key, columns?</td><td class="p-desc">Lookup 1 item theo key=value.</td></tr>
+        <tr data-level="basic"><td class="p-name">lookupDateTime</td><td class="p-type">url, columns?, by?, search?, pageIndex?, pageSize?</td><td class="p-desc">Lookup theo DateTime range.</td></tr>
+        <tr data-level="basic"><td class="p-name">columnLookup</td><td class="p-type">url, tableData, columns?, by?, ...</td><td class="p-desc">Lookup POST với TableData body.</td></tr>
+        <tr data-level="basic"><td class="p-name">popupItems</td><td class="p-type">tableData?, url?</td><td class="p-desc">Items cho popup (GET, query params).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">💡 Ví dụ</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Lookup danh sách cho dropdown</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.lookup(
+  <span class="str">'category/lookup'</span>,
+  [<span class="str">'Id'</span>, <span class="str">'Name'</span>],               <span class="cm">// columns</span>
+  <span class="kw">null</span>,                         <span class="cm">// by</span>
+  <span class="kw">false</span>,                        <span class="cm">// useQueryParms</span>
+  <span class="str">'search text'</span>,               <span class="cm">// search</span>
+);
+
+<span class="cm">// Lookup 1 item theo ID</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.lookupItem(
+  <span class="str">'category/lookup'</span>, <span class="num">5</span>, <span class="str">'Id'</span>, [<span class="str">'Name'</span>, <span class="str">'Code'</span>]
+);</pre></div></div>
+</div>
+
+<!-- ═══════════ TAB 4: Upload ═══════════ -->
+<div class="tab-panel" id="api-tab-upload">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">📤 Upload — Tải file lên</h3>
+
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Hàm</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">upload(url, UploadData)</td><td class="p-desc">Upload file qua XHR. Có callback: <code>processFunction</code> (%), <code>completeFunction</code>, <code>failFunction</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">uploadPercent(url, UploadData)</td><td class="p-desc">Upload qua HttpClient với progress tracking.</td></tr>
+        <tr data-level="basic"><td class="p-name">autoUpload(objName, obj, props?)</td><td class="p-desc">Tự detect Image/File/Video properties và upload. Dùng trước <code>save()</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">customUpload(custom, UploadData)</td><td class="p-desc">Upload đến server bên ngoài (custom headers, auth).</td></tr>
+        <tr data-level="basic"><td class="p-name">downloadFile(objName, tableData)</td><td class="p-desc">Download export file (Excel/PDF/CSV).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">💡 Ví dụ — autoUpload</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Auto upload trước khi save</span>
+<span class="kw">let</span> uploader = <span class="kw">await</span> <span class="prop">this</span>.service.autoUpload(<span class="str">'product'</span>, <span class="prop">this</span>.item);
+<span class="kw">let</span> result = <span class="kw">await</span> uploader.update(<span class="str">'product'</span>, <span class="prop">this</span>.item, [<span class="str">'Name'</span>, <span class="str">'Image'</span>]);</pre></div></div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span><code>autoUpload</code> tự scan entity decorators (<code>DataType.Image/File/Video</code>), emit <code>AutoUpload</code> event, và chờ upload xong trước khi tiếp tục.</span>
+  </div>
+</div>

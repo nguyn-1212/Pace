@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Tài chính</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--f:'Be Vietnam Pro',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--f);background:var(--cr);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px 48px;}
+.phone{width:375px;background:var(--rw);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.18);position:relative;}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp);}
+.hd{background:var(--wb);padding:18px 22px 30px;position:relative;}
+.hd::after{content:'';position:absolute;bottom:-26px;left:-10px;right:-10px;height:52px;background:var(--rw);border-radius:50%;z-index:0;}
+.hd-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.hd-title{font-size:22px;font-weight:600;color:var(--rw);}
+.hd-sub{font-size:12px;color:var(--mu);}
+.hd-icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,246,237,.12);border:1px solid rgba(255,246,237,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.hd-icon-btn svg{width:16px;height:16px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:1.8;stroke-linecap:round;}
+.balance-row{display:flex;align-items:flex-end;gap:6px;margin-bottom:4px;}
+.balance-amount{font-size:32px;font-weight:600;color:var(--rw);line-height:1;}
+.balance-unit{font-size:14px;color:var(--mu);margin-bottom:4px;}
+.balance-label{font-size:11px;color:var(--mu);}
+.month-tabs{display:flex;gap:6px;margin-top:14px;position:relative;z-index:1;}
+.mtab{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,246,237,.2);color:rgba(255,246,237,.55);background:transparent;transition:all .15s;}
+.mtab.active{background:var(--ch);color:var(--rw);border-color:var(--ch);}
+.screen{padding:36px 20px 110px;display:flex;flex-direction:column;gap:20px;}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sum-card{background:var(--cr);border-radius:14px;padding:14px;}
+.sum-label{font-size:10px;font-weight:600;color:var(--mu);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;}
+.sum-val{font-size:22px;font-weight:600;color:var(--wb);line-height:1;margin-bottom:3px;}
+.sum-val.warn{color:var(--ch);}
+.sum-val.ok{color:var(--gd);}
+.sum-sub{font-size:10px;color:var(--mu);margin-bottom:8px;}
+.prog-bar{height:4px;border-radius:2px;background:rgba(186,84,28,.1);overflow:hidden;}
+.prog-fill{height:4px;border-radius:2px;}
+.pf-ok{background:var(--gd);}.pf-warn{background:var(--ch);}.pf-over{background:var(--rs);}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);}
+.sa{font-size:11px;color:var(--ch);font-weight:600;cursor:pointer;}
+.cat-list{display:flex;flex-direction:column;gap:0;background:var(--rw);border:1px solid rgba(186,84,28,.1);border-radius:14px;overflow:hidden;}
+.cat-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(186,84,28,.07);cursor:pointer;transition:background .15s;}
+.cat-row:last-child{border-bottom:none;}
+.cat-row:hover{background:rgba(186,84,28,.03);}
+.cat-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.cat-body{flex:1;}
+.cat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.cat-name{font-size:13px;font-weight:600;color:var(--wb);}
+.cat-amounts{font-size:11px;color:var(--mu);}
+.cat-amounts strong{color:var(--wb);}
+.cat-bar{height:4px;border-radius:2px;overflow:hidden;background:rgba(186,84,28,.08);}
+.cat-fill{height:4px;border-radius:2px;}
+.saving-card{background:var(--wb);border-radius:14px;padding:14px 16px;cursor:pointer;}
+.sv-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.sv-name{font-size:13px;font-weight:600;color:var(--rw);}
+.sv-pct{font-size:12px;color:var(--mu);}
+.sv-bar{height:5px;border-radius:3px;background:rgba(255,246,237,.12);overflow:hidden;margin-bottom:7px;}
+.sv-fill{height:5px;border-radius:3px;background:#6FCF97;}
+.sv-foot{display:flex;justify-content:space-between;font-size:10px;color:var(--mu);}
+.sv-foot span:last-child{color:#A3D9B1;font-weight:600;}
+.debt-card{background:var(--cr);border-radius:14px;padding:14px 16px;}
+.debt-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.debt-title{font-size:13px;font-weight:600;color:var(--wb);}
+.debt-badge{font-size:10px;background:#FCE8E8;color:#7A1010;padding:2px 8px;border-radius:10px;font-weight:600;}
+.debt-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(186,84,28,.08);}
+.debt-item:last-child{border-bottom:none;}
+.debt-info-name{font-size:13px;font-weight:600;color:var(--wb);}
+.debt-info-sub{font-size:10px;color:var(--mu);margin-top:1px;}
+.debt-right{text-align:right;}
+.debt-amount{font-size:14px;font-weight:600;}
+.debt-amount.owe{color:var(--rs);}
+.debt-amount.recv{color:var(--gd);}
+.debt-bar{height:3px;background:rgba(186,84,28,.1);border-radius:2px;overflow:hidden;margin-top:5px;width:60px;}
+.debt-bar-fill{height:3px;border-radius:2px;background:var(--ch);}
+.txn-list{display:flex;flex-direction:column;gap:0;background:var(--rw);border:1px solid rgba(186,84,28,.1);border-radius:14px;overflow:hidden;}
+.txn-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid rgba(186,84,28,.06);cursor:pointer;transition:background .15s;}
+.txn-row:last-child{border-bottom:none;}
+.txn-row:hover{background:rgba(186,84,28,.03);}
+.txn-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.txn-body{flex:1;}
+.txn-name{font-size:13px;font-weight:600;color:var(--wb);}
+.txn-sub{font-size:10px;color:var(--mu);margin-top:1px;}
+.txn-amount{font-size:14px;font-weight:600;color:var(--rs);}
+.add-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:14px;border:1.5px dashed rgba(186,84,28,.25);background:transparent;color:var(--mu);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;transition:border-color .15s,color .15s;}
+.add-btn:hover{border-color:var(--ch);color:var(--ch);}
+.add-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
+.tab-bar{display:flex;justify-content:space-around;padding:10px 8px 20px;border-top:1px solid rgba(186,84,28,.1);background:var(--rw);}
+.ti{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1;}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.ti.a .tic svg{stroke:var(--ch);}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;}
+.tl{font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;}
+.ti.a .tl{color:var(--ch);}
+.sheet-bd{display:none;position:absolute;inset:0;background:rgba(43,15,4,.5);z-index:30;border-radius:44px;align-items:flex-end;}
+.sheet-bd.open{display:flex;}
+.sheet{background:var(--rw);border-radius:24px 24px 0 0;width:100%;padding:0 20px 36px;max-height:90vh;overflow-y:auto;}
+.sh-handle{width:36px;height:4px;border-radius:2px;background:rgba(186,84,28,.2);margin:14px auto 18px;}
+.sh-title{font-size:17px;font-weight:600;color:var(--wb);margin-bottom:4px;}
+.sh-sub{font-size:12px;color:var(--mu);margin-bottom:20px;line-height:1.5;}
+.inp-label{font-size:11px;font-weight:600;color:var(--mu);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;}
+.inp{width:100%;border:1px solid rgba(186,84,28,.2);border-radius:12px;padding:12px 14px;font-family:var(--f);font-size:15px;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s;margin-bottom:14px;}
+.inp:focus{border-color:var(--ch);}
+.big-inp{font-size:28px;font-weight:600;text-align:center;border:none;border-bottom:2px solid rgba(186,84,28,.2);border-radius:0;padding:8px 0;margin-bottom:18px;}
+.big-inp:focus{border-bottom-color:var(--ch);}
+.cat-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.cchip{padding:7px 12px;border-radius:20px;border:1px solid rgba(186,84,28,.2);background:var(--rw);font-family:var(--f);font-size:12px;color:var(--sp);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.cchip.sel,.cchip:hover{background:var(--ch);border-color:var(--ch);color:#fff;}
+.btn-primary{width:100%;padding:14px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--f);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;transition:opacity .15s;}
+.btn-cancel{width:100%;padding:12px;border-radius:14px;border:none;background:transparent;color:var(--mu);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+
+<div class="hd">
+  <div class="hd-top">
+    <div>
+      <div class="hd-title">Tài chính</div>
+      <div class="hd-sub">Tháng 6 · 2026</div>
+    </div>
+    <button class="hd-icon-btn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></button>
+  </div>
+  <div class="balance-row">
+    <div class="balance-amount">4.2tr</div>
+    <div class="balance-unit">₫</div>
+  </div>
+  <div class="balance-label">Số dư ước tính cuối tháng</div>
+  <div class="month-tabs">
+    <div class="mtab">Tháng 4</div>
+    <div class="mtab">Tháng 5</div>
+    <div class="mtab active">Tháng 6</div>
+  </div>
+</div>
+
+<div class="screen">
+
+  <div class="summary-grid">
+    <div class="sum-card">
+      <div class="sum-label">Đã chi tháng này</div>
+      <div class="sum-val warn">3.8tr</div>
+      <div class="sum-sub">Ngân sách 5.6tr</div>
+      <div class="prog-bar"><div class="prog-fill pf-warn" style="width:68%"></div></div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Đã tiết kiệm</div>
+      <div class="sum-val ok">3.2tr</div>
+      <div class="sum-sub">Mục tiêu 5tr</div>
+      <div class="prog-bar"><div class="prog-fill pf-ok" style="width:64%"></div></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-head"><span class="sl">Ngân sách theo danh mục</span><span class="sa">Chỉnh sửa</span></div>
+    <div class="cat-list">
+      <div class="cat-row" onclick="openCatDetail('Ăn uống','80','1.2tr','1.5tr','#BA541C')">
+        <div class="cat-icon" style="background:#FFF3E0">🍜</div>
+        <div class="cat-body">
+          <div class="cat-top"><span class="cat-name">Ăn uống</span><span class="cat-amounts"><strong>1.2tr</strong> / 1.5tr</span></div>
+          <div class="cat-bar"><div class="cat-fill" style="width:80%;background:#BA541C"></div></div>
+        </div>
+      </div>
+      <div class="cat-row" onclick="openCatDetail('Đi lại','56','280k','500k','#7EB8E8')">
+        <div class="cat-icon" style="background:#E6F1FB">🚗</div>
+        <div class="cat-body">
+          <div class="cat-top"><span class="cat-name">Đi lại</span><span class="cat-amounts"><strong>280k</strong> / 500k</span></div>
+          <div class="cat-bar"><div class="cat-fill" style="width:56%;background:#7EB8E8"></div></div>
+        </div>
+      </div>
+      <div class="cat-row" onclick="openCatDetail('Học tập','40','320k','800k','#AFA9EC')">
+        <div class="cat-icon" style="background:#E8E7FC">📚</div>
+        <div class="cat-body">
+          <div class="cat-top"><span class="cat-name">Học tập</span><span class="cat-amounts"><strong>320k</strong> / 800k</span></div>
+          <div class="cat-bar"><div class="cat-fill" style="width:40%;background:#AFA9EC"></div></div>
+        </div>
+      </div>
+      <div class="cat-row" onclick="openCatDetail('Giải trí','20','160k','800k','#6FCF97')">
+        <div class="cat-icon" style="background:#E1F5EE">🎮</div>
+        <div class="cat-body">
+          <div class="cat-top"><span class="cat-name">Giải trí</span><span class="cat-amounts"><strong>160k</strong> / 800k</span></div>
+          <div class="cat-bar"><div class="cat-fill" style="width:20%;background:#6FCF97"></div></div>
+        </div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-icon" style="background:#FCE8E8">💊</div>
+        <div class="cat-body">
+          <div class="cat-top"><span class="cat-name">Sức khoẻ</span><span class="cat-amounts"><strong>85k</strong> / 500k</span></div>
+          <div class="cat-bar"><div class="cat-fill" style="width:17%;background:#E8593C"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="sl">Goal tiết kiệm</span><span class="sa">Xem tất cả</span></div>
+    <div class="saving-card">
+      <div class="sv-top"><span class="sv-name">Tiết kiệm tháng 6</span><span class="sv-pct">64%</span></div>
+      <div class="sv-bar"><div class="sv-fill" style="width:64%"></div></div>
+      <div class="sv-foot"><span>3.2tr đã tiết kiệm</span><span>Mục tiêu 5tr</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="sl">Khoản nợ</span><span class="sa">Thêm</span></div>
+    <div class="debt-card">
+      <div class="debt-head"><span class="debt-title">Đang theo dõi</span><span class="debt-badge">3 khoản</span></div>
+      <div class="debt-item">
+        <div><div class="debt-info-name">Minh nợ bạn</div><div class="debt-info-sub">Hạn: 30/06 · Bia hôm qua</div></div>
+        <div class="debt-right"><div class="debt-amount recv">+500k</div><div class="debt-bar"><div class="debt-bar-fill" style="width:0%"></div></div></div>
+      </div>
+      <div class="debt-item">
+        <div><div class="debt-info-name">Bạn nợ mẹ</div><div class="debt-info-sub">Hạn: 15/07 · Tiền thuê</div></div>
+        <div class="debt-right"><div class="debt-amount owe">-1.2tr</div><div class="debt-bar"><div class="debt-bar-fill" style="width:30%"></div></div></div>
+      </div>
+      <div class="debt-item">
+        <div><div class="debt-info-name">Hà nợ bạn</div><div class="debt-info-sub">Hạn: 05/07 · Đi chơi</div></div>
+        <div class="debt-right"><div class="debt-amount recv">+200k</div><div class="debt-bar"><div class="debt-bar-fill" style="width:0%"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="sl">Chi tiêu gần đây</span><span class="sa">Xem tất cả</span></div>
+    <div class="txn-list">
+      <div class="txn-row"><div class="txn-icon" style="background:#FFF3E0">🍜</div><div class="txn-body"><div class="txn-name">Bún bò Huế</div><div class="txn-sub">Ăn uống · Hôm nay 12:30</div></div><div class="txn-amount">-45k</div></div>
+      <div class="txn-row"><div class="txn-icon" style="background:#E6F1FB">🚗</div><div class="txn-body"><div class="txn-name">Grab đi làm</div><div class="txn-sub">Đi lại · Hôm nay 8:15</div></div><div class="txn-amount">-32k</div></div>
+      <div class="txn-row"><div class="txn-icon" style="background:#FFF3E0">☕</div><div class="txn-body"><div class="txn-name">Cà phê The Coffee House</div><div class="txn-sub">Ăn uống · Hôm qua</div></div><div class="txn-amount">-55k</div></div>
+      <div class="txn-row"><div class="txn-icon" style="background:#E8E7FC">📚</div><div class="txn-body"><div class="txn-name">Sách Don't Make Me Think</div><div class="txn-sub">Học tập · 20/06</div></div><div class="txn-amount">-185k</div></div>
+    </div>
+  </section>
+
+  <button class="add-btn" onclick="document.getElementById('add-txn').classList.add('open')">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Ghi khoản chi
+  </button>
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="tl">Home</span></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div><span class="tl">Goals</span></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Habits</span></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><span class="tl">More</span></div>
+</div>
+</div>
+</div>
+  <div class="ti"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Thói quen</span></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><span class="tl">Finance</span></div>
+</div>
+
+<!-- ADD TRANSACTION SHEET -->
+<div class="sheet-bd" id="add-txn" onclick="if(event.target===this)this.classList.remove('open')">
+<div class="sheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Ghi khoản chi</div>
+  <div class="sh-sub">Nhập nhanh — chỉ cần số tiền và danh mục.</div>
+  <div class="inp-label">Số tiền (₫)</div>
+  <input class="inp big-inp" id="amount-inp" type="number" placeholder="0" min="0">
+  <div class="inp-label">Danh mục</div>
+  <div class="cat-chips">
+    <div class="cchip sel" onclick="selCat(this)">🍜 Ăn uống</div>
+    <div class="cchip" onclick="selCat(this)">🚗 Đi lại</div>
+    <div class="cchip" onclick="selCat(this)">📚 Học tập</div>
+    <div class="cchip" onclick="selCat(this)">🎮 Giải trí</div>
+    <div class="cchip" onclick="selCat(this)">💊 Sức khoẻ</div>
+    <div class="cchip" onclick="selCat(this)">🏠 Khác</div>
+  </div>
+  <div class="inp-label">Ghi chú (tuỳ chọn)</div>
+  <input class="inp" type="text" placeholder="VD: Bún bò hôm nay">
+  <button class="btn-primary" onclick="saveTransaction()">Lưu khoản chi ✓</button>
+  <button class="btn-cancel" onclick="document.getElementById('add-txn').classList.remove('open')">Huỷ</button>
+</div>
+</div>
+
+<script>
+function selCat(el){document.querySelectorAll('.cchip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
+function saveTransaction(){
+  var amt=document.getElementById('amount-inp').value;
+  if(!amt||amt<=0){document.getElementById('amount-inp').focus();return;}
+  document.getElementById('add-txn').classList.remove('open');
+  document.getElementById('amount-inp').value='';
+  var cat=document.querySelector('.cchip.sel');
+  var catName=cat?cat.textContent.trim():'Khác';
+  var list=document.querySelector('.txn-list');
+  var row=document.createElement('div');row.className='txn-row';
+  var icon=catName.split(' ')[0];
+  row.innerHTML='<div class="txn-icon" style="background:#FFF3E0">'+icon+'</div><div class="txn-body"><div class="txn-name">Vừa thêm</div><div class="txn-sub">'+catName+' · Vừa xong</div></div><div class="txn-amount">-'+parseInt(amt).toLocaleString('vi-VN')+'₫</div>';
+  list.insertBefore(row,list.firstChild);
+}
+function openCatDetail(name,pct,spent,total,color){}
+</script>
+
+</div>
+</body>
+</html>

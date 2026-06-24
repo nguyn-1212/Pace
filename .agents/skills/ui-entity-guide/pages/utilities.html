@@ -1,0 +1,161 @@
+<!-- ═══════════════ Core Utilities — Documentation ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-module">◈ Core</div>
+  <div class="page-title">Core Utilities — Tiện ích hệ thống</div>
+  <div class="page-desc">Đa ngôn ngữ (i18n), Event bus, Xác thực (Auth), Phân quyền (Permission).</div>
+  <div class="page-meta">core/services/ &nbsp;·&nbsp; AdminAuthService &nbsp;·&nbsp; AdminEventService &nbsp;·&nbsp; TranslatePipe</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('utl','auth')">🔐 Auth</button>
+  <button class="tab-btn" onclick="switchTab('utl','i18n')">🌐 i18n</button>
+  <button class="tab-btn" onclick="switchTab('utl','event')">📡 Events</button>
+</div>
+
+<!-- ═══════════ TAB 1: Auth ═══════════ -->
+<div class="tab-panel active" id="utl-tab-auth">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🔐 Auth — Xác thực & Phân quyền</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    <code>AdminAuthService</code> quản lý đăng nhập, user hiện tại, và phân quyền.
+  </p>
+
+  <div class="file-label">👤 Lấy user hiện tại</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Inject AdminAuthService</span>
+<span class="kw">constructor</span>(<span class="kw">private</span> <span class="prop">authen</span>: <span class="cls">AdminAuthService</span>) {}
+
+<span class="cm">// Lấy user object (AdminUserDto)</span>
+<span class="kw">let</span> user = <span class="prop">this</span>.authen.account;
+<span class="kw">let</span> name = user.FullName;
+<span class="kw">let</span> email = user.Email;
+<span class="kw">let</span> isAdmin = user.IsAdmin;
+<span class="kw">let</span> id = user.Id;</pre></div></div>
+
+  <div class="file-label" style="margin-top:14px">🔑 Đăng nhập / Đăng xuất</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Đăng nhập</span>
+<span class="kw">let</span> result = <span class="kw">await</span> <span class="prop">this</span>.service.signin({ Email: email, Password: pwd });
+<span class="kw">if</span> (<span class="cls">ResultApi</span>.IsSuccess(result)) {
+  <span class="kw">let</span> account = result.Object <span class="kw">as</span> <span class="cls">AdminUserDto</span>;
+  <span class="kw">await</span> <span class="prop">this</span>.authen.login(account, rememberMe);
+}
+
+<span class="cm">// Đăng xuất</span>
+<span class="kw">await</span> <span class="prop">this</span>.authen.logout();
+
+<span class="cm">// Khóa màn hình</span>
+<span class="kw">await</span> <span class="prop">this</span>.authen.lock();</pre></div></div>
+
+  <div class="file-label" style="margin-top:14px">🛡️ Kiểm tra quyền</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Kiểm tra quyền async</span>
+<span class="kw">let</span> allow = <span class="kw">await</span> <span class="prop">this</span>.authen.permissionAllow(<span class="str">'category'</span>, <span class="str">'Edit'</span>);
+
+<span class="cm">// Kiểm tra quyền sync (nhanh, dùng cache đã load)</span>
+<span class="kw">let</span> allow = <span class="prop">this</span>.authen.permissionAllowSync(<span class="str">'category'</span>, <span class="str">'Delete'</span>);
+
+<span class="cm">// Lọc actions theo quyền</span>
+<span class="kw">let</span> allowedActions = <span class="kw">await</span> <span class="prop">this</span>.authen.actionsAllow(
+  <span class="cls">CategoryEntity</span>, <span class="prop">this</span>.obj.Actions
+);</pre></div></div>
+
+  <div class="opts-table-wrap" style="margin-top:10px">
+    <table class="opts-table">
+      <thead><tr><th>Hàm</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">account</td><td class="p-desc"><strong>Getter</strong> — lấy <code>AdminUserDto</code> hiện tại (Id, Email, FullName, IsAdmin, Token...).</td></tr>
+        <tr data-level="basic"><td class="p-name">login(account, rememberMe?)</td><td class="p-desc">Lưu session + redirect đến /admin.</td></tr>
+        <tr data-level="basic"><td class="p-name">logout(navigate?)</td><td class="p-desc">Xóa session + redirect đến /admin/signin.</td></tr>
+        <tr data-level="basic"><td class="p-name">lock()</td><td class="p-desc">Khóa màn hình, redirect đến /admin/lock.</td></tr>
+        <tr data-level="basic"><td class="p-name">permissionAllow(controller, action?)</td><td class="p-desc">Async — kiểm tra quyền. IsAdmin → luôn true.</td></tr>
+        <tr data-level="basic"><td class="p-name">permissionAllowSync(controller, action?)</td><td class="p-desc">Sync — dùng cache đã load. Nhanh hơn.</td></tr>
+        <tr data-level="basic"><td class="p-name">actionsAllow(reference, actions)</td><td class="p-desc">Lọc ActionData[] theo quyền.</td></tr>
+        <tr data-level="basic"><td class="p-name">loadAuthenData()</td><td class="p-desc">Load permissions + link permissions.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span><code>account</code> đọc từ <code>sessionStorage</code> hoặc <code>localStorage</code> (tùy rememberMe). Token được lưu cùng với user object.</span>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 2: i18n ═══════════ -->
+<div class="tab-panel" id="utl-tab-i18n">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🌐 i18n — Đa ngôn ngữ</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Dùng <code>TranslatePipe</code> trong template hoặc <code>AdminTranslateService</code> trong code.
+  </p>
+
+  <div class="file-label">📝 Trong Template (HTML)</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">&lt;!-- Pipe translate --&gt;</span>
+&lt;<span class="kw">span</span>&gt;{{ <span class="str">'General.Save'</span> | <span class="prop">translate</span> }}&lt;/<span class="kw">span</span>&gt;
+&lt;<span class="kw">button</span>&gt;{{ <span class="str">'General.Cancel'</span> | <span class="prop">translate</span> }}&lt;/<span class="kw">button</span>&gt;
+&lt;<span class="kw">label</span>&gt;{{ <span class="str">'Category.Name'</span> | <span class="prop">translate</span> }}&lt;/<span class="kw">label</span>&gt;</pre></div></div>
+
+  <div class="file-label" style="margin-top:14px">⚙ Trong Code (TypeScript)</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Inject translate service (GridComponent / EditComponent đã có sẵn)</span>
+<span class="kw">let</span> text = <span class="prop">this</span>.translate.transform(<span class="str">'General.Confirm'</span>);
+<span class="kw">let</span> label = <span class="prop">this</span>.translate.transform(<span class="str">'Category.Name'</span>);
+
+<span class="cm">// Hoặc dùng UtilityExHelper (static)</span>
+<span class="kw">let</span> text = <span class="cls">UtilityExHelper</span>.transformText(<span class="str">'Core.Error'</span>);</pre></div></div>
+
+  <div class="file-label" style="margin-top:14px">📋 Key format</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Key</th><th>Ví dụ</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">General.*</td><td class="p-desc"><code>General.Save</code>, <code>General.Cancel</code>, <code>General.Ok</code>, <code>General.Close</code>, <code>General.Confirm</code></td></tr>
+        <tr data-level="basic"><td class="p-name">Core.*</td><td class="p-desc"><code>Core.Error</code>, <code>Core.Warning</code>, <code>Core.Success</code>, <code>Core.Loading</code>, <code>Core.Notify</code></td></tr>
+        <tr data-level="basic"><td class="p-name">{Module}.*</td><td class="p-desc"><code>Category.Name</code>, <code>Category.Code</code> — key cho từng module.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:10px">
+    <span>⚠️</span><span>Ngôn ngữ được lưu trong <code>localStorage</code> với key <code>AppConfig.LanguageKey</code>. Thay đổi ngôn ngữ cần reload page.</span>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 3: Events ═══════════ -->
+<div class="tab-panel" id="utl-tab-event">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">📡 Events — Event Bus (AdminEventService)</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    <code>AdminEventService</code> cung cấp EventEmitter cho giao tiếp giữa các component.
+  </p>
+
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Event</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">RefreshGrids</td><td class="p-type"><span class="t-enum">TableData</span></td><td class="p-desc">Yêu cầu grid reload dữ liệu.</td></tr>
+        <tr data-level="basic"><td class="p-name">RefreshUpdateGrids</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Yêu cầu grid cập nhật theo tên.</td></tr>
+        <tr data-level="basic"><td class="p-name">RefreshItems</td><td class="p-type"><span class="t-enum">RefreshOptionItem</span></td><td class="p-desc">Refresh items trên dropdown/combobox.</td></tr>
+        <tr data-level="basic"><td class="p-name">RefreshMenus</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Refresh sidebar menu.</td></tr>
+        <tr data-level="basic"><td class="p-name">RefreshItemDetail</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Refresh chi tiết item.</td></tr>
+        <tr data-level="basic"><td class="p-name">SignalrNotify</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Nhận notification từ SignalR.</td></tr>
+        <tr data-level="basic"><td class="p-name">Validate</td><td class="p-type"><span class="t-enum">ObjectEx</span></td><td class="p-desc">Trigger validation cho 1 property.</td></tr>
+        <tr data-level="basic"><td class="p-name">ResetValidate</td><td class="p-type"><span class="t-enum">ObjectEx</span></td><td class="p-desc">Reset validation cho 1 property.</td></tr>
+        <tr data-level="basic"><td class="p-name">AutoUpload</td><td class="p-type"><span class="t-enum">{ decorator, object }</span></td><td class="p-desc">Tự động upload file/image/video.</td></tr>
+        <tr data-level="basic"><td class="p-name">HideCombobox</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Ẩn tất cả dropdown đang mở.</td></tr>
+        <tr data-level="basic"><td class="p-name">TextChange</td><td class="p-type"><span class="t-enum">RefreshOptionItem</span></td><td class="p-desc">Text thay đổi trên editor.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="file-label" style="margin-top:14px">💡 Ví dụ — Emit & Subscribe</div>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Emit — refresh grid</span>
+<span class="prop">this</span>.eventService.RefreshGrids.emit(<span class="prop">this</span>.itemData);
+
+<span class="cm">// Subscribe — lắng nghe SignalR notification</span>
+<span class="prop">this</span>.eventService.SignalrNotify.subscribe((data) => {
+  <span class="cm">// xử lý notification realtime</span>
+});
+
+<span class="cm">// Refresh dropdown items</span>
+<span class="prop">this</span>.eventService.RefreshItems.emit({
+  <span class="prop">property</span>: <span class="str">'CategoryId'</span>,
+});</pre></div></div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span>Grid/Edit component đã inject <code>eventService</code> sẵn. Chỉ cần <code>this.eventService.XXX.emit()</code>.</span>
+  </div>
+</div>

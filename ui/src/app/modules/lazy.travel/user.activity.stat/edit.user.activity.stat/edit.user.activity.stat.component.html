@@ -1,0 +1,17 @@
+﻿<div class="kt-portlet kt-portlet-edit-form">
+    <edit-header *ngIf="breadcrumbs && actions?.length" [breadcrumbs]="breadcrumbs" [actions]="actions" [processing]="processing"></edit-header>
+    <div class="kt-portlet__body">
+        <div class="row" *ngIf="item && !loading">
+            <div class="col-sm-12"><editor [(object)]="item" property="UserId" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><h5 class="form-section-title">📊 Thống kê</h5></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="TotalTrips" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="TotalFriends" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="TotalCheckins" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="TotalPhotos" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="TotalKm" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="TotalCountries" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="TotalProvinces" [decorator]="{readonly: viewer}"></editor></div>
+        </div>
+        <div class="row row-loading" *ngIf="loading"><loading></loading></div>
+    </div>
+</div>

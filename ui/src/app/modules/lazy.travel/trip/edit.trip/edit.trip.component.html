@@ -1,0 +1,27 @@
+﻿<div class="kt-portlet kt-portlet-edit-form">
+    <edit-header *ngIf="breadcrumbs && actions?.length"
+        [breadcrumbs]="breadcrumbs" [actions]="actions" [processing]="processing">
+    </edit-header>
+    <div class="kt-portlet__body">
+        <div class="row" *ngIf="item && !loading">
+            <!-- Row 1: Thông tin cơ bản -->
+            <div class="col-sm-12"><h5 class="form-section-title">✈️ Thông tin chuyến đi</h5></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="CoverEmoji" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-7"><editor [(object)]="item" property="Name" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="Code" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><editor [(object)]="item" property="Description" [decorator]="{readonly: viewer}"></editor></div>
+            <!-- Row 2: Thời gian -->
+            <div class="col-sm-12"><h5 class="form-section-title">📅 Thời gian</h5></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="StartDate" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="EndDate" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="Status" [decorator]="{readonly: viewer}"></editor></div>
+            <!-- Row 3: Tài chính & Cài đặt -->
+            <div class="col-sm-12"><h5 class="form-section-title">💰 Tài chính & Cài đặt</h5></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="OwnerId" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="TotalBudget" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="Currency" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="IsPublic" [decorator]="{readonly: viewer}"></editor></div>
+        </div>
+        <div class="row row-loading" *ngIf="loading"><loading></loading></div>
+    </div>
+</div>

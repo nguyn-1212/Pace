@@ -1,0 +1,73 @@
+{
+  "Dashboard": {
+    "Title": "AsiaMarkt Verwaltungssystem"
+  },
+  "Enums": {
+    "Male": "Männlich",
+    "Female": "Weiblich",
+    "Unknow": "Unbekannt",
+    "Individual": "Einzelperson",
+    "Business": "Unternehmen",
+    "Pending": "Ausstehend",
+    "Accept": "Akzeptiert",
+    "Active": "Aktiv",
+    "Success": "Erfolgreich",
+    "Failed": "Fehlgeschlagen",
+    "Locked": "Gesperrt",
+    "Reject": "Abgelehnt",
+    "Refunded": "Rückerstattet",
+    "Day": "Tag",
+    "Week": "Woche",
+    "Month": "Monat",
+    "Year": "Jahr",
+    "Monday": "Montag",
+    "Tuesday": "Dienstag",
+    "Wednesday": "Mittwoch",
+    "Thursday": "Donnerstag",
+    "Friday": "Freitag",
+    "Saturday": "Samstag",
+    "Sunday": "Sonntag",
+    "Certificate": "Zertifikat",
+    "Gift": "Geschenk",
+    "Money": "Geld",
+    "Percent": "% nach Gehalt",
+    "Labour": "Arbeit",
+    "Leave": "Urlaubsantrag",
+    "Overtime": "Überstundenantrag",
+    "Absence": "Abwesenheitsantrag",
+    "Mission": "Dienstreiseantrag",
+    "CheckIn": "Antrag auf verspätete Ankunft/früheres Gehen",
+    "Regime": "Antrag auf Arbeitsregelung",
+    "Statement": "Erklärung",
+    "None": "Keine",
+    "SignatureDigital": "Digitale Signatur",
+    "SignatureHand": "Handschriftliche Unterschrift",
+    "ByLevel": "Nach Gehaltsstufe",
+    "ByTitle": "Nach Titel",
+    "Arrive": "Eingehendes Dokument",
+    "Out": "Ausgehendes Dokument",
+    "Confirmed": "Bestätigt",
+    "Processing": "In Bearbeitung",
+    "Shipped": "Versandt",
+    "Delivered": "Zugestellt",
+    "Cancelled": "Storniert",
+    "Returned": "Zurückgegeben",
+    "Priority1": "Priorität 1",
+    "Priority2": "Priorität 2",
+    "Priority3": "Priorität 3"
+  },
+  "ConfigurationEntity": {
+    "DiscountValue": "Rabatt nach Betrag",
+    "DiscountPercent": "Rabatt nach Prozentsatz",
+    "TotalPriceFreeOff": "Gesamtbestellwert (für Rabatt)",
+    "NotifyEmail": "E-Mail zum Empfangen von Benachrichtigungen",
+    "TotalPriceFreeShip": "Gesamtbestellwert (für kostenlosen Versand)"
+  },
+  "CustomerOrderEntity": {
+    "OrderCount": "Gesamtzahl der Bestellungen",
+    "TotalPayment": "Gezahlter Gesamtbetrag"
+  },
+  "ShippingRuleEntity": {
+    "TitleEntity": "Versandregel"
+  }
+}

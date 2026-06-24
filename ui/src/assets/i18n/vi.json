@@ -1,0 +1,73 @@
+{
+    "Dashboard": {
+        "Title": "Hệ thống quản trị AsiaMarkt"
+    },
+    "Enums": {
+        "Male": "Nam",
+        "Female": "Nữ",
+        "Unknow": "Không xác định",
+        "Individual": "Cá nhân",
+        "Business": "Doanh nghiệp",
+        "Pending": "Chờ thanh toán",
+        "Accept": "Đã duyệt",
+        "Active": "Hoạt động",
+        "Success": "Thành công",
+        "Failed": "Thất bại",
+        "Locked": "Đã khóa",
+        "Reject": "Từ chối",
+        "Refunded": "Hoàn tiền",
+        "Day": "Ngày",
+        "Week": "Tuần",
+        "Month": "Tháng",
+        "Year": "Năm",
+        "Monday": "Thứ 2",
+        "Tuesday": "Thứ 3",
+        "Wednesday": "Thứ 4",
+        "Thursday": "Thứ 5",
+        "Friday": "Thứ 6",
+        "Saturday": "Thứ 7",
+        "Sunday": "Chủ nhật",
+        "Certificate": "Bằng khen",
+        "Gift": "Quà",
+        "Money": "Tiền",
+        "Percent": "% theo lương",
+        "Labour": "Công",
+        "Leave": "Đơn xin nghỉ",
+        "Overtime": "Đơn xin làm thêm giờ",
+        "Absence": "Đơn xin vắng mặt",
+        "Mission": "Đơn xin công tác",
+        "CheckIn": "Đơn xin đi muộn/về sớm",
+        "Regime": "Đơn xin đi làm theo chế độ",
+        "Statement": "Đơn từ",
+        "None": "Không",
+        "SignatureDigital": "Chữ ký số",
+        "SignatureHand": "Ký tay",
+        "ByLevel": "Theo bậc lương",
+        "ByTitle": "Theo chức danh",
+        "Arrive": "Văn bản đến",
+        "Out": "Văn bản đi",
+        "Confirmed": "Đã thanh toán",
+        "Processing": "Đang xử lý",
+        "Shipped": "Đã gửi hàng",
+        "Delivered": "Đã nhận hàng",
+        "Cancelled": "Đã hủy",
+        "Returned": "Đã hoàn trả",
+        "Priority1": "Độ ưu tiên 1",
+        "Priority2": "Độ ưu tiên 2",
+        "Priority3": "Độ ưu tiên 3"
+    },
+    "ConfigurationEntity": {
+        "NotifyEmail": "Email nhận thông báo",
+        "DiscountValue": "Khuyến mại theo số tiền",
+        "DiscountPercent": "Khuyến mại theo phần trăm",
+        "TotalPriceFreeOff": "Tổng giá trị đơn hàng (hưởng khuyến mại)",
+        "TotalPriceFreeShip": "Tổng giá trị đơn hàng (Miễn phí vận chuyển)"
+    },
+    "CustomerOrderEntity": {
+        "OrderCount": "Tổng số đơn hàng",
+        "TotalPayment": "Tổng số tiền đã thanh toán"
+    },
+    "ShippingRuleEntity": {
+        "TitleEntity": "Quy tắc vận chuyển"
+    }
+}

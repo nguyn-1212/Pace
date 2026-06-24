@@ -1,0 +1,212 @@
+<!-- ═══════════════ @ImageDecorator ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-editor">✦ Editor</div>
+  <div class="page-title">@ImageDecorator</div>
+  <div class="page-desc">Upload ảnh đơn hoặc nhiều ảnh. Hỗ trợ drag & drop, validate kích thước, định dạng, dimension, kho ảnh.</div>
+  <div class="page-meta">core/decorators/image.decorator.ts &nbsp;·&nbsp; DataType.Image &nbsp;·&nbsp; ImageEx extends ObjectEx</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('img','opts')">⚙ Options</button>
+  <button class="tab-btn" onclick="switchTab('img','examples')">{ } Examples</button>
+  <button class="tab-btn" onclick="switchTab('img','gen')">⚡ Code Generator</button>
+</div>
+
+<!-- ─── OPTIONS TAB ─── -->
+<div class="tab-panel active" id="img-tab-opts">
+  <div class="opts-toolbar">
+    <div class="opts-count"><strong>14</strong> / 30 thuộc tính (cơ bản)</div>
+    <div class="opts-level-btns">
+      <button class="opts-level-btn active" onclick="toggleLevel('img-opts','basic',this)">Cơ bản</button>
+      <button class="opts-level-btn" onclick="toggleLevel('img-opts','advanced',this)">Nâng cao</button>
+      <button class="opts-level-btn" onclick="toggleLevel('img-opts','all',this)">Tất cả</button>
+    </div>
+  </div>
+  <div class="opts-table-wrap">
+    <table class="opts-table" id="img-opts">
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr class="group-row"><td colspan="4"><span>📦 ObjectEx — chung cho mọi decorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">label</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Nhãn hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">required <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Bắt buộc upload.</td></tr>
+        <tr data-level="basic"><td class="p-name">readonly</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Hiển thị ảnh nhưng không cho upload.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowClear</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Cho phép xoá ảnh.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowSearch</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép lọc theo cột này.</td></tr>
+        <tr data-level="basic"><td class="p-name">columnClass</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-columnclass')">ColumnClassFormat</span></td><td class="p-default">undefined</td><td class="p-desc">Độ rộng cột form.</td></tr>
+        <tr data-level="advanced"><td class="p-name">unique <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span> | <span class="t-enum type-link" onclick="showModal('modal-lookupuniquedata')">LookupUniqueData</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểm tra trùng.</td></tr>
+        <tr data-level="advanced"><td class="p-name">tooltip</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Tooltip khi hover vào label.</td></tr>
+        <tr data-level="advanced"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto (format: png...)</td><td class="p-desc">Mô tả dưới input.</td></tr>
+        <tr data-level="advanced"><td class="p-name">index</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Thứ tự hiển thị.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Filter column trên Grid.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customValidators</td><td class="p-type"><span class="t-arr">Validator[]</span></td><td class="p-default">undefined</td><td class="p-desc">Custom validator.</td></tr>
+
+        <tr class="group-row"><td colspan="4"><span>▾ ImageEx — riêng cho @ImageDecorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">size</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">10 (MB)</td><td class="p-desc">Kích thước file tối đa mỗi ảnh (MB).</td></tr>
+        <tr data-level="basic"><td class="p-name">accept</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">image/jpg,jpeg,png</td><td class="p-desc">MIME types cho phép. Tự tạo regex.</td></tr>
+        <tr data-level="basic"><td class="p-name">multiple</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Cho phép upload nhiều ảnh. Khi <code>true</code> → max=50.</td></tr>
+        <tr data-level="basic"><td class="p-name">max <span class="badge-v">validate</span></td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">1 (single) / 50 (multi)</td><td class="p-desc">Số ảnh tối đa.</td></tr>
+        <tr data-level="basic"><td class="p-name">min <span class="badge-v">validate</span></td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Số ảnh tối thiểu.</td></tr>
+        <tr data-level="basic"><td class="p-name">store</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-storetype')">StoreType</span></td><td class="p-default">StoreType.Cloud</td><td class="p-desc">Nơi lưu trữ. DatabaseByte/Base64 → tắt multiple.</td></tr>
+        <tr data-level="basic"><td class="p-name">private</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Ảnh private — cần auth để xem.</td></tr>
+        <tr data-level="basic"><td class="p-name">dragable</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép kéo thả sắp xếp (multiple).</td></tr>
+        <tr data-level="advanced"><td class="p-name">url</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">upload/uploadimage</td><td class="p-desc">API endpoint upload.</td></tr>
+        <tr data-level="advanced"><td class="p-name">view</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-viewtype')">ViewType</span></td><td class="p-default">ViewType.Normal</td><td class="p-desc">Kiểu hiển thị: Normal hoặc List.</td></tr>
+        <tr data-level="advanced"><td class="p-name">note</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép thêm ghi chú cho mỗi ảnh.</td></tr>
+        <tr data-level="advanced"><td class="p-name">choice</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép chọn ảnh (checkbox).</td></tr>
+        <tr data-level="advanced"><td class="p-name">totalSize</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">1000 (MB)</td><td class="p-desc">Tổng dung lượng tối đa cho 1 lần upload.</td></tr>
+        <tr data-level="advanced"><td class="p-name">duplicate</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Kiểm tra trùng nội dung ảnh khi upload.</td></tr>
+        <tr data-level="advanced"><td class="p-name">dimension</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-dimensiondata')">DimensionData</span></td><td class="p-default">undefined</td><td class="p-desc">Validate kích thước ảnh (width × height).</td></tr>
+        <tr data-level="advanced"><td class="p-name">popupArchive</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-dialogdata')">DialogData</span></td><td class="p-default">undefined</td><td class="p-desc">Cấu hình popup kho ảnh — chọn ảnh từ archive.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customUpload</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-customupload')">CustomUploadData</span></td><td class="p-default">undefined</td><td class="p-desc">Cấu hình upload tuỳ chỉnh (S3, Azure, ...).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:16px">
+    <span>⚠️</span>
+    <span><code>@ImageDecorator()</code> không truyền options → upload 1 ảnh, max 10MB, Cloud, accept jpg/png.</span>
+  </div>
+</div>
+
+<!-- ─── EXAMPLES TAB ─── -->
+<div class="tab-panel" id="img-tab-examples">
+  <div class="code-tabs">
+    <div class="code-tab active" onclick="switchCode('img','basic',this)">Basic</div>
+    <div class="code-tab" onclick="switchCode('img','multi',this)">Multiple</div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-panel active" id="img-cp-basic"><pre class="flat">
+<span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Product'</span> })
+<span class="kw">export class</span> <span class="cls">ProductEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Ảnh đại diện — bắt buộc</span>
+  <span class="dec">@ImageDecorator</span>({ <span class="prop">label</span>: <span class="str">'Ảnh'</span>, <span class="prop">required</span>: <span class="kw">true</span> })
+  <span class="prop">Image</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Ảnh private — max 5MB</span>
+  <span class="dec">@ImageDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'CMND'</span>,
+    <span class="prop">size</span>: <span class="num">5</span>,
+    <span class="prop">private</span>: <span class="kw">true</span>
+  })
+  <span class="prop">IdCard</span>: <span class="kw">string</span>;
+}</pre></div>
+    <div class="code-panel" id="img-cp-multi"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">GalleryEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Nhiều ảnh — kéo thả sắp xếp</span>
+  <span class="dec">@ImageDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Bộ sưu tập'</span>,
+    <span class="prop">multiple</span>: <span class="kw">true</span>,
+    <span class="prop">max</span>: <span class="num">20</span>,
+    <span class="prop">dragable</span>: <span class="kw">true</span>,
+    <span class="prop">note</span>: <span class="kw">true</span>,
+    <span class="prop">columnClass</span>: <span class="cls">ColumnClassFormat</span>.Column12
+  })
+  <span class="prop">Images</span>: <span class="kw">string</span>;
+}</pre></div>
+  </div>
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span><strong>Import:</strong> <code>ImageDecorator</code> từ <code>core/decorators/image.decorator</code>.</span></div>
+</div>
+
+<!-- ─── CODE GENERATOR TAB ─── -->
+<div class="tab-panel" id="img-tab-gen">
+  <div class="gen-layout">
+    <div class="gen-form-panel">
+      <div class="gen-form-header">⚡ Tham số decorator</div>
+      <div class="gen-form-body">
+        <div class="gen-field">
+          <label class="gen-label">Property name <span class="gl-type">string</span></label>
+          <input id="imgg-propname" class="gen-input mono" placeholder="VD: Image, Avatar, Photos..." oninput="genImgCode()">
+        </div>
+        <div class="gen-field">
+          <label class="gen-label">label <span class="gl-type">string</span></label>
+          <input id="imgg-label" class="gen-input" placeholder="Để trống = auto" oninput="genImgCode()">
+        </div>
+        <div class="gen-divider"></div>
+        <div class="gen-field">
+          <label class="gen-label" style="margin-bottom:2px">Flags</label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genImgCode,0)"><input type="checkbox" id="imgg-required"><span class="gc-label">required</span><span class="gc-desc" style="color:var(--rose);font-size:10px;font-weight:700">validate</span></label>
+            <label class="gen-check" onclick="setTimeout(genImgCode,0)"><input type="checkbox" id="imgg-multiple"><span class="gc-label">multiple</span><span class="gc-desc">nhiều ảnh</span></label>
+            <label class="gen-check" onclick="setTimeout(genImgCode,0)"><input type="checkbox" id="imgg-dragable"><span class="gc-label">dragable</span><span class="gc-desc">kéo thả</span></label>
+            <label class="gen-check" onclick="setTimeout(genImgCode,0)"><input type="checkbox" id="imgg-private"><span class="gc-label">private</span><span class="gc-desc">cần auth</span></label>
+            <label class="gen-check" onclick="setTimeout(genImgCode,0)"><input type="checkbox" id="imgg-note"><span class="gc-label">note</span><span class="gc-desc">ghi chú ảnh</span></label>
+          </div>
+        </div>
+        <div class="gen-divider"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="gen-field">
+            <label class="gen-label">size (MB) <span class="gl-type">number</span></label>
+            <input id="imgg-size" class="gen-input mono" type="number" min="1" placeholder="10" oninput="genImgCode()">
+          </div>
+          <div class="gen-field">
+            <label class="gen-label">max <span class="gl-type">number</span></label>
+            <input id="imgg-max" class="gen-input mono" type="number" min="1" placeholder="auto" oninput="genImgCode()">
+          </div>
+        </div>
+        <div class="gen-field">
+          <label class="gen-label">store <span class="gl-type">StoreType</span></label>
+          <select id="imgg-store" class="gen-select" onchange="genImgCode()">
+            <option value="">StoreType.Cloud (mặc định)</option>
+            <option value="DatabaseByte">StoreType.DatabaseByte</option>
+            <option value="DatabaseBase64">StoreType.DatabaseBase64</option>
+          </select>
+        </div>
+        <div class="gen-field">
+          <label class="gen-label">columnClass <span class="gl-type">ColumnClassFormat</span></label>
+          <select id="imgg-column" class="gen-select" onchange="genImgCode()">
+            <option value="">— auto</option>
+            <option value="Column6">Column6 (50%)</option>
+            <option value="Column12">Column12 (100%)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="gen-output-panel">
+      <div class="gen-output-header">
+        <span class="gen-output-title">📋 Generated code</span>
+        <button class="copy-btn" id="copy-btn-img" onclick="doCopy('_genImgPlain','copy-btn-img')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>
+      </div>
+      <div class="gen-preview-code" id="gen-img-output"></div>
+      <div class="gen-hint"><span>💡</span><span>Import: <code>ImageDecorator</code> từ <code>core/decorators/image.decorator</code>.</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function genImgCode() {
+  const propName = document.getElementById('imgg-propname').value.trim() || 'PropertyName';
+  const label    = document.getElementById('imgg-label').value.trim();
+  const required = document.getElementById('imgg-required').checked;
+  const multiple = document.getElementById('imgg-multiple').checked;
+  const dragable = document.getElementById('imgg-dragable').checked;
+  const priv     = document.getElementById('imgg-private').checked;
+  const note     = document.getElementById('imgg-note').checked;
+  const size     = document.getElementById('imgg-size').value.trim();
+  const max      = document.getElementById('imgg-max').value.trim();
+  const store    = document.getElementById('imgg-store').value;
+  const column   = document.getElementById('imgg-column').value;
+
+  const opts = [];
+  if (label)    opts.push(`label: '${label}'`);
+  if (required) opts.push(`required: true`);
+  if (multiple) opts.push(`multiple: true`);
+  if (max)      opts.push(`max: ${max}`);
+  if (size && size !== '10') opts.push(`size: ${size}`);
+  if (dragable) opts.push(`dragable: true`);
+  if (priv)     opts.push(`private: true`);
+  if (note)     opts.push(`note: true`);
+  if (store)    opts.push(`store: StoreType.${store}`);
+  if (column)   opts.push(`columnClass: ColumnClassFormat.${column}`);
+
+  const decoratorStr = renderDecorator('@ImageDecorator', opts);
+  const pname = propName || 'PropertyName';
+  const propStr = `${pname}: string;`;
+  window._genImgPlain = decoratorStr + '\n' + propStr;
+  const hlDec  = syntaxHL(decoratorStr);
+  const hlProp = `<span class="prop">${pname}</span>: <span class="kw">string</span>;`;
+  document.getElementById('gen-img-output').innerHTML = hlDec + '<br>' + hlProp;
+}
+genImgCode();
+</script>

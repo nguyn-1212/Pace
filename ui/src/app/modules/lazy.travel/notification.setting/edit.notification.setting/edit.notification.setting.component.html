@@ -1,0 +1,12 @@
+﻿<div class="kt-portlet kt-portlet-edit-form">
+    <edit-header *ngIf="breadcrumbs && actions?.length" [breadcrumbs]="breadcrumbs" [actions]="actions" [processing]="processing"></edit-header>
+    <div class="kt-portlet__body">
+        <div class="row" *ngIf="item && !loading">
+            <div class="col-sm-6"><editor [(object)]="item" property="UserId" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-6"><editor [(object)]="item" property="NotifyType" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="IsEnabled" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="Channel" [decorator]="{readonly: viewer}"></editor></div>
+        </div>
+        <div class="row row-loading" *ngIf="loading"><loading></loading></div>
+    </div>
+</div>

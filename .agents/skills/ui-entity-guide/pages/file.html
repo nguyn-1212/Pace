@@ -1,0 +1,250 @@
+<!-- ═══════════════ @FileDecorator ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-editor">✦ Editor</div>
+  <div class="page-title">@FileDecorator</div>
+  <div class="page-desc">Upload file đa dạng: PDF, DOC, Excel, ZIP, ảnh... Hỗ trợ <code>FileTypeFormat</code> để chọn nhanh định dạng.</div>
+  <div class="page-meta">core/decorators/file.decorator.ts &nbsp;·&nbsp; DataType.File &nbsp;·&nbsp; FileEx extends ObjectEx</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('file','opts')">⚙ Options</button>
+  <button class="tab-btn" onclick="switchTab('file','types')">◈ FileTypeFormat</button>
+  <button class="tab-btn" onclick="switchTab('file','examples')">{ } Examples</button>
+  <button class="tab-btn" onclick="switchTab('file','gen')">⚡ Code Generator</button>
+</div>
+
+<!-- ─── OPTIONS TAB ─── -->
+<div class="tab-panel active" id="file-tab-opts">
+  <div class="opts-toolbar">
+    <div class="opts-count"><strong>14</strong> / 31 thuộc tính (cơ bản)</div>
+    <div class="opts-level-btns">
+      <button class="opts-level-btn active" onclick="toggleLevel('file-opts','basic',this)">Cơ bản</button>
+      <button class="opts-level-btn" onclick="toggleLevel('file-opts','advanced',this)">Nâng cao</button>
+      <button class="opts-level-btn" onclick="toggleLevel('file-opts','all',this)">Tất cả</button>
+    </div>
+  </div>
+  <div class="opts-table-wrap">
+    <table class="opts-table" id="file-opts">
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr class="group-row"><td colspan="4"><span>📦 ObjectEx — chung cho mọi decorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">label</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Nhãn hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">required <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Bắt buộc upload.</td></tr>
+        <tr data-level="basic"><td class="p-name">readonly</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Chỉ xem.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowClear</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Cho phép xoá.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowSearch</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Filter cột.</td></tr>
+        <tr data-level="basic"><td class="p-name">columnClass</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-columnclass')">ColumnClassFormat</span></td><td class="p-default">undefined</td><td class="p-desc">Độ rộng cột form.</td></tr>
+        <tr data-level="advanced"><td class="p-name">unique <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span> | <span class="t-enum type-link" onclick="showModal('modal-lookupuniquedata')">LookupUniqueData</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểm tra trùng.</td></tr>
+        <tr data-level="advanced"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto (format: pdf...)</td><td class="p-desc">Mô tả dưới input.</td></tr>
+        <tr data-level="advanced"><td class="p-name">index</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Thứ tự hiển thị.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Filter column trên Grid.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customValidators</td><td class="p-type"><span class="t-arr">Validator[]</span></td><td class="p-default">undefined</td><td class="p-desc">Custom validator.</td></tr>
+
+        <tr class="group-row"><td colspan="4"><span>▾ FileEx — riêng cho @FileDecorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">size</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">100 (MB)</td><td class="p-desc">Kích thước file tối đa mỗi file (MB).</td></tr>
+        <tr data-level="basic"><td class="p-name">fileTypes</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-filetypeformat')">FileTypeFormat[]</span></td><td class="p-default">undefined</td><td class="p-desc">Chọn nhanh định dạng: PDF, DOC, EXCEL... Tự tạo accept + description.</td></tr>
+        <tr data-level="basic"><td class="p-name">accept</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">rất nhiều MIME types</td><td class="p-desc">MIME types cho phép. Thường dùng <code>fileTypes</code> thay vì set trực tiếp.</td></tr>
+        <tr data-level="basic"><td class="p-name">multiple</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Upload nhiều file. Khi <code>true</code> → max=50.</td></tr>
+        <tr data-level="basic"><td class="p-name">max <span class="badge-v">validate</span></td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">1 (single) / 50 (multi)</td><td class="p-desc">Số file tối đa.</td></tr>
+        <tr data-level="basic"><td class="p-name">min <span class="badge-v">validate</span></td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">0</td><td class="p-desc">Số file tối thiểu.</td></tr>
+        <tr data-level="basic"><td class="p-name">store</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-storetype')">StoreType</span></td><td class="p-default">StoreType.Cloud</td><td class="p-desc">Nơi lưu trữ. DatabaseByte/Base64 → tắt multiple.</td></tr>
+        <tr data-level="basic"><td class="p-name">private</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">File private — cần auth để tải.</td></tr>
+        <tr data-level="basic"><td class="p-name">dragable</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Kéo thả sắp xếp (multiple).</td></tr>
+        <tr data-level="advanced"><td class="p-name">url</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">upload/uploadfile</td><td class="p-desc">API endpoint upload.</td></tr>
+        <tr data-level="advanced"><td class="p-name">view</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-viewtype')">ViewType</span></td><td class="p-default">ViewType.Normal</td><td class="p-desc">Kiểu hiển thị.</td></tr>
+        <tr data-level="advanced"><td class="p-name">totalSize</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">1000 (MB)</td><td class="p-desc">Tổng dung lượng tối đa 1 lần upload.</td></tr>
+        <tr data-level="advanced"><td class="p-name">duplicate</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Kiểm tra trùng nội dung.</td></tr>
+        <tr data-level="advanced"><td class="p-name">actions</td><td class="p-type"><span class="t-arr">ActionData[]</span></td><td class="p-default">undefined</td><td class="p-desc">Mảng action button cho mỗi file (xem, tải, ...).</td></tr>
+        <tr data-level="advanced"><td class="p-name">popupArchive</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-dialogdata')">DialogData</span></td><td class="p-default">undefined</td><td class="p-desc">Popup kho tài liệu — chọn file từ archive.</td></tr>
+        <tr data-level="advanced"><td class="p-name">dependAccepts</td><td class="p-type"><span class="t-enum">FileAcceptData</span></td><td class="p-default">undefined</td><td class="p-desc">Accept phụ thuộc theo trường khác.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customUpload</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-customupload')">CustomUploadData</span></td><td class="p-default">undefined</td><td class="p-desc">Upload tuỳ chỉnh (S3, Azure, ...).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:16px">
+    <span>⚠️</span>
+    <span><code>@FileDecorator()</code> không truyền options → upload 1 file, max 100MB, Cloud, accept rất nhiều MIME types mặc định.</span>
+  </div>
+</div>
+
+<!-- ─── FILETYPEFORMAT TAB ─── -->
+<div class="tab-panel" id="file-tab-types">
+  <div class="types-grid2">
+    <div class="type-card2 common"><div class="tc2-name">FileTypeFormat.PDF</div><div class="tc2-em">application/pdf</div><div class="tc2-note">Tài liệu PDF</div></div>
+    <div class="type-card2 common"><div class="tc2-name">FileTypeFormat.DOC</div><div class="tc2-em">application/msword</div><div class="tc2-note">Word (.doc)</div></div>
+    <div class="type-card2 common"><div class="tc2-name">FileTypeFormat.DOCX</div><div class="tc2-em">vnd.openxmlformats...wordprocessingml</div><div class="tc2-note">Word (.docx)</div></div>
+    <div class="type-card2 common"><div class="tc2-name">FileTypeFormat.EXCEL</div><div class="tc2-em">vnd.ms-excel, vnd.openxmlformats...spreadsheetml</div><div class="tc2-note">Excel (.xls, .xlsx)</div></div>
+    <div class="type-card2 common"><div class="tc2-name">FileTypeFormat.DOCUMENTS</div><div class="tc2-em">PDF + DOC + DOCX + EXCEL</div><div class="tc2-note">Tất cả tài liệu văn phòng</div></div>
+    <div class="type-card2 special"><div class="tc2-name">FileTypeFormat.ZIP</div><div class="tc2-em">application/zip</div><div class="tc2-note">File nén ZIP</div></div>
+    <div class="type-card2 special"><div class="tc2-name">FileTypeFormat.APK</div><div class="tc2-em">application/apk</div><div class="tc2-note">Android package</div></div>
+    <div class="type-card2 special"><div class="tc2-name">FileTypeFormat.IMAGES</div><div class="tc2-em">image/jpg, jpeg, png</div><div class="tc2-note">Chỉ ảnh</div></div>
+  </div>
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span>Dùng: <code>fileTypes: [FileTypeFormat.PDF, FileTypeFormat.DOCX]</code> — tự tạo <code>accept</code> + <code>description</code>.</span></div>
+</div>
+
+<!-- ─── EXAMPLES TAB ─── -->
+<div class="tab-panel" id="file-tab-examples">
+  <div class="code-tabs">
+    <div class="code-tab active" onclick="switchCode('file','basic',this)">Basic</div>
+    <div class="code-tab" onclick="switchCode('file','multi',this)">Multiple</div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-panel active" id="file-cp-basic"><pre class="flat">
+<span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Contract'</span> })
+<span class="kw">export class</span> <span class="cls">ContractEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// File PDF — bắt buộc</span>
+  <span class="dec">@FileDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Hợp đồng PDF'</span>,
+    <span class="prop">required</span>: <span class="kw">true</span>,
+    <span class="prop">fileTypes</span>: [<span class="cls">FileTypeFormat</span>.PDF]
+  })
+  <span class="prop">ContractFile</span>: <span class="kw">string</span>;
+
+  <span class="cm">// File văn phòng — PDF + Word + Excel</span>
+  <span class="dec">@FileDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Tài liệu'</span>,
+    <span class="prop">fileTypes</span>: [<span class="cls">FileTypeFormat</span>.DOCUMENTS]
+  })
+  <span class="prop">Document</span>: <span class="kw">string</span>;
+}</pre></div>
+    <div class="code-panel" id="file-cp-multi"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">ProjectEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Nhiều file — private, kéo thả</span>
+  <span class="dec">@FileDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Attachments'</span>,
+    <span class="prop">multiple</span>: <span class="kw">true</span>,
+    <span class="prop">max</span>: <span class="num">10</span>,
+    <span class="prop">dragable</span>: <span class="kw">true</span>,
+    <span class="prop">private</span>: <span class="kw">true</span>,
+    <span class="prop">size</span>: <span class="num">50</span>,
+    <span class="prop">columnClass</span>: <span class="cls">ColumnClassFormat</span>.Column12
+  })
+  <span class="prop">Attachments</span>: <span class="kw">string</span>;
+}</pre></div>
+  </div>
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span><strong>Import:</strong> <code>FileDecorator</code>, <code>FileTypeFormat</code> từ <code>core/decorators/file.decorator</code>.</span></div>
+</div>
+
+<!-- ─── CODE GENERATOR TAB ─── -->
+<div class="tab-panel" id="file-tab-gen">
+  <div class="gen-layout">
+    <div class="gen-form-panel">
+      <div class="gen-form-header">⚡ Tham số decorator</div>
+      <div class="gen-form-body">
+        <div class="gen-field">
+          <label class="gen-label">Property name <span class="gl-type">string</span></label>
+          <input id="fileg-propname" class="gen-input mono" placeholder="VD: Document, ContractFile..." oninput="genFileCode()">
+        </div>
+        <div class="gen-field">
+          <label class="gen-label">label <span class="gl-type">string</span></label>
+          <input id="fileg-label" class="gen-input" placeholder="Để trống = auto" oninput="genFileCode()">
+        </div>
+        <div class="gen-divider"></div>
+        <div class="gen-field">
+          <label class="gen-label" style="margin-bottom:2px">Flags</label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-required"><span class="gc-label">required</span><span class="gc-desc" style="color:var(--rose);font-size:10px;font-weight:700">validate</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-multiple"><span class="gc-label">multiple</span><span class="gc-desc">nhiều file</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-dragable"><span class="gc-label">dragable</span><span class="gc-desc">kéo thả</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-private"><span class="gc-label">private</span><span class="gc-desc">cần auth</span></label>
+          </div>
+        </div>
+        <div class="gen-divider"></div>
+        <div class="gen-field">
+          <label class="gen-label">fileTypes <span class="gl-type">FileTypeFormat[]</span></label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-ft-pdf"><span class="gc-label">PDF</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-ft-doc"><span class="gc-label">DOC</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-ft-docx"><span class="gc-label">DOCX</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-ft-excel"><span class="gc-label">EXCEL</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-ft-zip"><span class="gc-label">ZIP</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-ft-images"><span class="gc-label">IMAGES</span></label>
+            <label class="gen-check" onclick="setTimeout(genFileCode,0)"><input type="checkbox" id="fileg-ft-docs"><span class="gc-label">DOCUMENTS</span></label>
+          </div>
+        </div>
+        <div class="gen-divider"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="gen-field">
+            <label class="gen-label">size (MB) <span class="gl-type">number</span></label>
+            <input id="fileg-size" class="gen-input mono" type="number" min="1" placeholder="100" oninput="genFileCode()">
+          </div>
+          <div class="gen-field">
+            <label class="gen-label">max <span class="gl-type">number</span></label>
+            <input id="fileg-max" class="gen-input mono" type="number" min="1" placeholder="auto" oninput="genFileCode()">
+          </div>
+        </div>
+        <div class="gen-field">
+          <label class="gen-label">store <span class="gl-type">StoreType</span></label>
+          <select id="fileg-store" class="gen-select" onchange="genFileCode()">
+            <option value="">StoreType.Cloud (mặc định)</option>
+            <option value="DatabaseByte">StoreType.DatabaseByte</option>
+            <option value="DatabaseBase64">StoreType.DatabaseBase64</option>
+          </select>
+        </div>
+        <div class="gen-field">
+          <label class="gen-label">columnClass <span class="gl-type">ColumnClassFormat</span></label>
+          <select id="fileg-column" class="gen-select" onchange="genFileCode()">
+            <option value="">— auto</option>
+            <option value="Column6">Column6 (50%)</option>
+            <option value="Column12">Column12 (100%)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="gen-output-panel">
+      <div class="gen-output-header">
+        <span class="gen-output-title">📋 Generated code</span>
+        <button class="copy-btn" id="copy-btn-file" onclick="doCopy('_genFilePlain','copy-btn-file')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>
+      </div>
+      <div class="gen-preview-code" id="gen-file-output"></div>
+      <div class="gen-hint"><span>💡</span><span>Import: <code>FileDecorator</code>, <code>FileTypeFormat</code> từ <code>core/decorators/file.decorator</code>.</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function genFileCode() {
+  const propName = document.getElementById('fileg-propname').value.trim() || 'PropertyName';
+  const label    = document.getElementById('fileg-label').value.trim();
+  const required = document.getElementById('fileg-required').checked;
+  const multiple = document.getElementById('fileg-multiple').checked;
+  const dragable = document.getElementById('fileg-dragable').checked;
+  const priv     = document.getElementById('fileg-private').checked;
+  const size     = document.getElementById('fileg-size').value.trim();
+  const max      = document.getElementById('fileg-max').value.trim();
+  const store    = document.getElementById('fileg-store').value;
+  const column   = document.getElementById('fileg-column').value;
+
+  // FileTypes
+  const ftIds = ['pdf','doc','docx','excel','zip','images','docs'];
+  const ftNames = ['PDF','DOC','DOCX','EXCEL','ZIP','IMAGES','DOCUMENTS'];
+  const selected = [];
+  ftIds.forEach((id, i) => {
+    if (document.getElementById('fileg-ft-' + id).checked) selected.push(ftNames[i]);
+  });
+
+  const opts = [];
+  if (label)    opts.push(`label: '${label}'`);
+  if (required) opts.push(`required: true`);
+  if (multiple) opts.push(`multiple: true`);
+  if (max)      opts.push(`max: ${max}`);
+  if (size && size !== '100') opts.push(`size: ${size}`);
+  if (selected.length > 0) opts.push(`fileTypes: [${selected.map(s => `FileTypeFormat.${s}`).join(', ')}]`);
+  if (dragable) opts.push(`dragable: true`);
+  if (priv)     opts.push(`private: true`);
+  if (store)    opts.push(`store: StoreType.${store}`);
+  if (column)   opts.push(`columnClass: ColumnClassFormat.${column}`);
+
+  const decoratorStr = renderDecorator('@FileDecorator', opts);
+  const pname = propName || 'PropertyName';
+  const propStr = `${pname}: string;`;
+  window._genFilePlain = decoratorStr + '\n' + propStr;
+  const hlDec  = syntaxHL(decoratorStr);
+  const hlProp = `<span class="prop">${pname}</span>: <span class="kw">string</span>;`;
+  document.getElementById('gen-file-output').innerHTML = hlDec + '<br>' + hlProp;
+}
+genFileCode();
+</script>

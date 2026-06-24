@@ -1,0 +1,33 @@
+﻿<div class="kt-portlet kt-portlet-edit-form">
+    <edit-header *ngIf="breadcrumbs && actions?.length"
+        [breadcrumbs]="breadcrumbs" [actions]="actions" [processing]="processing">
+    </edit-header>
+    <div class="kt-portlet__body">
+        <div class="row" *ngIf="item && !loading">
+            <div class="col-sm-12"><h5 class="form-section-title">📍 Thông tin địa điểm</h5></div>
+            <div class="col-sm-1"><editor [(object)]="item" property="CoverEmoji" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-5"><editor [(object)]="item" property="Name" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="NameEn" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="Type" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><editor [(object)]="item" property="Description" [decorator]="{readonly: viewer}"></editor></div>
+
+            <div class="col-sm-12"><h5 class="form-section-title">🌍 Vị trí</h5></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="Country" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="Province" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="City" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="Slug" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><editor [(object)]="item" property="Address" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="Latitude" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="Longitude" [decorator]="{readonly: viewer}"></editor></div>
+
+            <div class="col-sm-12"><h5 class="form-section-title">ℹ️ Thông tin bổ sung</h5></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="OpenTime" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="CloseTime" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="PriceRange" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-3"><editor [(object)]="item" property="Website" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="Rating" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-2"><editor [(object)]="item" property="IsVerified" [decorator]="{readonly: viewer}"></editor></div>
+        </div>
+        <div class="row row-loading" *ngIf="loading"><loading></loading></div>
+    </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="kt-portlet kt-portlet-edit-form kt-portlet--mobile configuration-wrapper">
+    <edit-header *ngIf="breadcrumbs && actions && actions.length > 0" [breadcrumbs]="breadcrumbs" [actions]="actions" [processing]="processing"></edit-header>
+    <div class="kt-portlet__body" *ngIf="!loading">
+        <div class="kt-portlet">
+            <div class="kt-portlet__body" *ngIf="item">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="box-item">
+                            <h5>{{ 'Title.PaymentMethod' | translate }}</h5>
+                            <editor [(object)]="item" property="AllowCash"></editor>
+                            <editor [(object)]="item" property="AllowStripe"></editor>
+                            <div class="box-item" *ngIf="item.AllowStripe">
+                                <h5>Stripe</h5>
+                                <editor [(object)]="item" property="StripeSecretKey"></editor>
+                                <editor [(object)]="item" property="StripePublishableKey"></editor>
+                                <editor [(object)]="item" property="StripeWebhookSecret"></editor>
+                            </div>
+                            <editor [(object)]="item" property="AllowPaypal"></editor>
+                            <div class="box-item" *ngIf="item.AllowPaypal">
+                                <h5>Paypal</h5>
+                                <editor [(object)]="item" property="PaypalBaseUrl"></editor>
+                                <editor [(object)]="item" property="PaypalClientId"></editor>
+                                <editor [(object)]="item" property="PaypalClientSecret"></editor>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="box-item">
+                            <h5>{{ 'Title.Website' | translate }}</h5>
+                            <editor [(object)]="item" property="Name"></editor>
+                            <editor #uploadLogo [(object)]="item" property="Logo"></editor>
+                            <editor [(object)]="item" property="Title"></editor>
+                            <editor [(object)]="item" property="Description"></editor>
+                        </div>
+                        <div class="box-item">
+                            <h5>{{ 'Title.Discount' | translate }}</h5>
+                            <editor [(object)]="item" property="TotalPriceFreeShip"></editor>
+                            <editor [(object)]="item" property="TotalPriceFreeOff"></editor>
+                            <editor [(object)]="item" property="DiscountValue"></editor>
+                            <editor [(object)]="item" property="DiscountPercent"></editor>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="box-item">
+                            <h5>{{ 'Title.Contact' | translate }}</h5>
+                            <editor [(object)]="item" property="Phone"></editor>
+                            <editor [(object)]="item" property="Email"></editor>
+                            <editor [(object)]="item" property="Address"></editor>
+                            <editor [(object)]="item" property="Introduce"></editor>
+                            <editor [(object)]="item" property="Hotline"></editor>
+                            <editor [(object)]="item" property="Supportline"></editor>
+                            <editor [(object)]="item" property="Time"></editor>
+                            <editor [(object)]="item" property="NotifyEmail"></editor>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="box-item">
+                            <h5>{{ 'Title.Social' | translate }}</h5>
+                            <editor [(object)]="item" property="Tiktok"></editor>
+                            <editor [(object)]="item" property="Youtube"></editor>
+                            <editor [(object)]="item" property="Facebook"></editor>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="kt-portlet__body" *ngIf="loading">
+        <loading></loading>
+    </div>
+</div>

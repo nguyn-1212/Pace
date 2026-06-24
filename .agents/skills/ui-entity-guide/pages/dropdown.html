@@ -1,0 +1,476 @@
+<!-- ═══════════════ @DropDownDecorator ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-editor">✦ Editor</div>
+  <div class="page-title">@DropDownDecorator</div>
+  <div class="page-desc">Decorator cho input dạng chọn giá trị: Dropdown, Tree select, Grid lookup, Between range.</div>
+  <div class="page-meta">core/decorators/dropdown.decorator.ts &nbsp;·&nbsp; DataType.DropDown &nbsp;·&nbsp; DropDownEx extends ObjectEx</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('dd','opts')">⚙ Options</button>
+  <button class="tab-btn" onclick="switchTab('dd','types')">◈ DropdownType</button>
+  <button class="tab-btn" onclick="switchTab('dd','examples')">{ } Examples</button>
+  <button class="tab-btn" onclick="switchTab('dd','gen')">⚡ Code Generator</button>
+</div>
+
+<!-- ─── OPTIONS TAB ─── -->
+<div class="tab-panel active" id="dd-tab-opts">
+  <div class="opts-toolbar">
+    <div class="opts-count"><strong>12</strong> / 26 thuộc tính (cơ bản)</div>
+    <div class="opts-level-btns">
+      <button class="opts-level-btn active" onclick="toggleLevel('dd-opts','basic',this)">Cơ bản</button>
+      <button class="opts-level-btn" onclick="toggleLevel('dd-opts','advanced',this)">Nâng cao</button>
+      <button class="opts-level-btn" onclick="toggleLevel('dd-opts','all',this)">Tất cả</button>
+    </div>
+  </div>
+  <div class="opts-table-wrap">
+    <table class="opts-table" id="dd-opts">
+      <thead>
+        <tr><th>Property</th><th>Type</th><th>Default</th><th>Mô tả</th></tr>
+      </thead>
+      <tbody>
+        <tr class="group-row"><td colspan="4"><span>📦 ObjectEx — chung cho mọi decorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">label</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Nhãn hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">required <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Bắt buộc nhập. Tự thêm validator <code>PatternType.Required</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">allowSearch</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép lọc theo cột này trong grid/table.</td></tr>
+        <tr data-level="basic"><td class="p-name">readonly</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Hiển thị nhưng không cho chỉnh sửa.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowClear</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Cho phép xoá giá trị.</td></tr>
+        <tr data-level="advanced"><td class="p-name">unique <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span> | <span class="t-enum type-link" onclick="showModal('modal-lookupuniquedata')">LookupUniqueData</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểm tra trùng.</td></tr>
+        <tr data-level="basic"><td class="p-name">columnClass</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-columnclass')">ColumnClassFormat</span></td><td class="p-default">undefined</td><td class="p-desc">Độ rộng cột form.</td></tr>
+        <tr data-level="basic"><td class="p-name">tooltip</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Tooltip hiển thị khi hover vào label.</td></tr>
+        <tr data-level="basic"><td class="p-name">placeholder</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">= label</td><td class="p-desc">Placeholder mặc định lấy từ label.</td></tr>
+        <tr data-level="advanced"><td class="p-name">icon</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Icon class (Line Awesome).</td></tr>
+        <tr data-level="advanced"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Mô tả hiển thị dưới input.</td></tr>
+        <tr data-level="advanced"><td class="p-name">defaultValue</td><td class="p-type"><span class="t-str">any</span></td><td class="p-default">undefined</td><td class="p-desc">Giá trị mặc định ban đầu.</td></tr>
+        <tr data-level="advanced"><td class="p-name">index</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Thứ tự hiển thị trên form.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép filter column trên Grid.</td></tr>
+        <tr data-level="advanced"><td class="p-name">compareType</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-comparetype')">CompareType</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểu so sánh khi filter.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customValidators</td><td class="p-type"><span class="t-arr">Validator[]</span></td><td class="p-default">undefined</td><td class="p-desc">Mảng custom validator.</td></tr>
+
+        <tr class="group-row"><td colspan="4"><span>▾ DropDownEx — riêng cho @DropDownDecorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">type</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-dropdowntype')">DropdownType</span></td><td class="p-default">DropdownType.Normal</td><td class="p-desc">Loại dropdown. Xem tab <strong>DropdownType</strong>.</td></tr>
+        <tr data-level="basic"><td class="p-name">lookup</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-lookupdata')">LookupData</span></td><td class="p-default">auto</td><td class="p-desc">Cấu hình nguồn dữ liệu. URL tự tạo: <code>/EntityName/lookup</code>. PropertyValue=<code>Id</code>, PropertyDisplay=<code>['Name']</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">multiple</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép chọn nhiều giá trị (multi-select).</td></tr>
+        <tr data-level="basic"><td class="p-name">max</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">100</td><td class="p-desc">Số item tối đa hiển thị trong dropdown.</td></tr>
+        <tr data-level="advanced"><td class="p-name">popup</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-popupdata')">PopupData</span></td><td class="p-default">undefined</td><td class="p-desc">Cấu hình popup "Thêm mới" bên cạnh dropdown. Dùng <code>PopupData.Auto()</code>, <code>PopupData.Reference()</code>.</td></tr>
+        <tr data-level="advanced"><td class="p-name">text</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Tên property lưu text hiển thị (khi cần lưu cả text, không chỉ Id).</td></tr>
+        <tr data-level="advanced"><td class="p-name">autoHide</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Tự ẩn dropdown sau khi chọn giá trị.</td></tr>
+        <tr data-level="advanced"><td class="p-name">selectAll</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Hiển thị nút "Chọn tất cả" (chỉ dùng khi <code>multiple: true</code>).</td></tr>
+        <tr data-level="advanced"><td class="p-name">minDepend</td><td class="p-type"><span class="t-str">string</span> | <span class="t-arr">string[]</span></td><td class="p-default">undefined</td><td class="p-desc">Tên property phụ thuộc (validate giá trị min).</td></tr>
+        <tr data-level="advanced"><td class="p-name">maxDepend</td><td class="p-type"><span class="t-str">string</span> | <span class="t-arr">string[]</span></td><td class="p-default">undefined</td><td class="p-desc">Tên property phụ thuộc (validate giá trị max).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:16px">
+    <span>⚠️</span>
+    <span><code>@DropDownDecorator()</code> không truyền options → mặc định <code>DropdownType.Normal</code>, lookup URL tự tạo từ Entity name: <code>/EntityName/lookup</code>.</span>
+  </div>
+</div>
+
+<!-- ─── DROPDOWNTYPE TAB ─── -->
+<div class="tab-panel" id="dd-tab-types">
+  <div class="types-grid2">
+    <div class="type-card2 common"><div class="tc2-name">DropdownType.Normal</div><div class="tc2-em">Dropdown select tiêu chuẩn. Chọn 1 hoặc nhiều item.</div><div class="tc2-note">Mặc định — phổ biến nhất</div></div>
+    <div class="type-card2 special"><div class="tc2-name">DropdownType.Tree</div><div class="tc2-em">Tree select (phân cấp cha-con). Tự thêm <code style="font-family:var(--mono);font-size:11px">lookup.propertyGroup = 'ParentId'</code>.</div><div class="tc2-note">Danh mục phân cấp</div></div>
+    <div class="type-card2 special"><div class="tc2-name">DropdownType.Grid</div><div class="tc2-em">Dropdown dạng grid/table với nhiều cột thông tin.</div><div class="tc2-note">Chọn item phức tạp</div></div>
+    <div class="type-card2 special"><div class="tc2-name">DropdownType.Between</div><div class="tc2-em">Chọn khoảng giá trị (từ — đến).</div><div class="tc2-note">Filter khoảng giá trị</div></div>
+    <div class="type-card2 special"><div class="tc2-name">DropdownType.BetweenArea</div><div class="tc2-em">Khoảng diện tích (từ — đến).</div><div class="tc2-note">Lọc diện tích BĐS</div></div>
+    <div class="type-card2 special"><div class="tc2-name">DropdownType.BetweenPrice</div><div class="tc2-em">Khoảng giá (từ — đến). Format tiền tệ.</div><div class="tc2-note">Lọc giá sản phẩm</div></div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLES TAB ─── -->
+<div class="tab-panel" id="dd-tab-examples">
+  <div class="code-tabs">
+    <div class="code-tab active" onclick="switchCode('dd','basic',this)">Basic</div>
+    <div class="code-tab" onclick="switchCode('dd','advanced',this)">Advanced</div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-panel active" id="dd-cp-basic"><pre class="flat">
+<span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Product'</span> })
+<span class="kw">export class</span> <span class="cls">ProductEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Dropdown đơn giản — auto lookup /Product/lookup</span>
+  <span class="dec">@DropDownDecorator</span>({ <span class="prop">label</span>: <span class="str">'Danh mục'</span>, <span class="prop">required</span>: <span class="kw">true</span>,
+    <span class="prop">lookup</span>: <span class="cls">LookupData</span>.<span class="fn">Reference</span>(<span class="cls">CategoryEntity</span>) })
+  <span class="prop">CategoryId</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Multi-select</span>
+  <span class="dec">@DropDownDecorator</span>({ <span class="prop">label</span>: <span class="str">'Tags'</span>, <span class="prop">multiple</span>: <span class="kw">true</span>,
+    <span class="prop">lookup</span>: <span class="cls">LookupData</span>.<span class="fn">Reference</span>(<span class="cls">TagEntity</span>) })
+  <span class="prop">TagIds</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Với popup thêm mới</span>
+  <span class="dec">@DropDownDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Nhà cung cấp'</span>,
+    <span class="prop">lookup</span>: <span class="cls">LookupData</span>.<span class="fn">Reference</span>(<span class="cls">SupplierEntity</span>),
+    <span class="prop">popup</span>: <span class="cls">PopupData</span>.<span class="fn">Auto</span>()
+  })
+  <span class="prop">SupplierId</span>: <span class="kw">string</span>;
+}</pre></div>
+    <div class="code-panel" id="dd-cp-advanced"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">CategoryEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Tree — danh mục phân cấp</span>
+  <span class="dec">@DropDownDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Danh mục cha'</span>,
+    <span class="prop">type</span>: <span class="cls">DropdownType</span>.Tree,
+    <span class="prop">lookup</span>: <span class="cls">LookupData</span>.<span class="fn">Reference</span>(<span class="cls">CategoryEntity</span>)
+  })
+  <span class="prop">ParentId</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Grid — hiển thị dạng bảng</span>
+  <span class="dec">@DropDownDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Sản phẩm'</span>,
+    <span class="prop">type</span>: <span class="cls">DropdownType</span>.Grid,
+    <span class="prop">lookup</span>: <span class="cls">LookupData</span>.<span class="fn">Reference</span>(<span class="cls">ProductEntity</span>,
+      [<span class="str">'Code'</span>, <span class="str">'Name'</span>, <span class="str">'Price'</span>])
+  })
+  <span class="prop">ProductId</span>: <span class="kw">string</span>;
+}</pre></div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span><strong>Import:</strong> <code>DropDownDecorator</code>, <code>DropdownType</code> từ <code>core/decorators/dropdown.decorator</code>. Lookup: <code>LookupData</code> từ <code>core/domains/data/lookup.data</code>.</span></div>
+  <div class="callout callout-green" style="margin-top:10px"><span>✓</span><span><strong>Quy tắc:</strong> Luôn dùng <code>LookupData.Reference(Entity)</code> — URL tự tạo <code>/Entity/lookup</code>. Chỉ set <code>lookup.url</code> thủ công khi cần endpoint đặc biệt.</span></div>
+</div>
+
+<!-- ─── CODE GENERATOR TAB ─── -->
+<div class="tab-panel" id="dd-tab-gen">
+  <div class="gen-layout">
+
+    <!-- LEFT: Form -->
+    <div class="gen-form-panel">
+      <div class="gen-form-header">⚡ Tham số decorator</div>
+      <div class="gen-form-body">
+
+        <div class="gen-field">
+          <label class="gen-label">Property name <span class="gl-type">string</span></label>
+          <input id="ddg-propname" class="gen-input mono" placeholder="VD: CategoryId, StatusId..." oninput="genDdCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">type <span class="gl-type">DropdownType</span></label>
+          <select id="ddg-type" class="gen-select" onchange="genDdCode()">
+            <option value="Normal">DropdownType.Normal</option>
+            <option value="Tree">DropdownType.Tree</option>
+            <option value="Grid">DropdownType.Grid</option>
+            <option value="Between">DropdownType.Between</option>
+            <option value="BetweenArea">DropdownType.BetweenArea</option>
+            <option value="BetweenPrice">DropdownType.BetweenPrice</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">label <span class="gl-type">string</span></label>
+          <input id="ddg-label" class="gen-input" placeholder="Để trống = auto từ tên property" oninput="genDdCode()">
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label" style="margin-bottom:2px">Flags</label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genDdCode,0)"><input type="checkbox" id="ddg-required" onchange="genDdCode()"><span class="gc-label">required</span><span class="gc-desc" style="color:var(--rose);font-size:10px;font-weight:700">validate</span></label>
+            <label class="gen-check" onclick="setTimeout(genDdCode,0)"><input type="checkbox" id="ddg-allowSearch" onchange="genDdCode()"><span class="gc-label">allowSearch</span><span class="gc-desc">filter grid</span></label>
+            <label class="gen-check" onclick="setTimeout(genDdCode,0)"><input type="checkbox" id="ddg-readonly" onchange="genDdCode()"><span class="gc-label">readonly</span><span class="gc-desc">chỉ xem</span></label>
+            <label class="gen-check" onclick="setTimeout(genDdCode,0)"><input type="checkbox" id="ddg-multiple" onchange="genDdCode()"><span class="gc-label">multiple</span><span class="gc-desc">chọn nhiều</span></label>
+            <label class="gen-check" onclick="setTimeout(genDdCode,0)"><input type="checkbox" id="ddg-selectAll" onchange="genDdCode()"><span class="gc-label">selectAll</span><span class="gc-desc">nút chọn tất cả</span></label>
+          </div>
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-lookup-box">
+          <div class="gen-lookup-title">📦 LookupData — nguồn dữ liệu</div>
+
+          <div class="gen-field">
+            <label class="gen-label">Phương thức <span class="gl-type">LookupData</span></label>
+            <select id="ddg-lookupMethod" class="gen-select" onchange="ddToggleLookupFields();genDdCode()">
+              <option value="Reference">LookupData.Reference(Entity) — từ Entity class</option>
+              <option value="ReferenceAjax">LookupData.ReferenceAjax(Entity) — Ajax (gõ để tìm)</option>
+              <option value="ReferenceEnum">LookupData.ReferenceEnum(Enum) — từ enum TypeScript</option>
+              <option value="ReferenceUrl">LookupData.ReferenceUrl(url) — từ URL tùy chỉnh</option>
+              <option value="ReferenceUrlAjax">LookupData.ReferenceUrlAjax(url) — URL + Ajax mode</option>
+              <option value="ReferenceStrings">LookupData.ReferenceStrings([...]) — từ mảng string</option>
+              <option value="ReferenceNumbers">LookupData.ReferenceNumbers([...]) — từ mảng number</option>
+              <option value="ReferenceUrlWithCache">LookupData.ReferenceUrlWithCache(url) — URL + cache</option>
+              <option value="ReferenceGroup">LookupData.ReferenceGroup(Entity) — Entity + group</option>
+            </select>
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-entity">
+            <label class="gen-label">Entity class <span class="gl-type">class</span></label>
+            <input id="ddg-lookupEntity" class="gen-input mono" placeholder="VD: CategoryEntity, StatusEntity..." oninput="genDdCode()">
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-enumName" style="display:none">
+            <label class="gen-label">Enum name <span class="gl-type">enum</span></label>
+            <input id="ddg-enumName" class="gen-input mono" placeholder="VD: StatusType, GenderType..." oninput="genDdCode()">
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-url" style="display:none">
+            <label class="gen-label">URL <span class="gl-type">string</span></label>
+            <input id="ddg-url" class="gen-input mono" placeholder="VD: /Category/lookup, /api/tags..." oninput="genDdCode()">
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-items" style="display:none">
+            <label class="gen-label">Items (phân cách bởi dấu phẩy) <span class="gl-type">string[] | number[]</span></label>
+            <input id="ddg-items" class="gen-input mono" placeholder="VD: Chờ duyệt, Đã duyệt, Từ chối" oninput="genDdCode()">
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-propDisplay">
+            <label class="gen-label">propertyDisplay <span class="gl-type">string[]</span></label>
+            <input id="ddg-propDisplay" class="gen-input mono" placeholder="Mặc định: Name (phân cách bởi dấu phẩy)" oninput="genDdCode()">
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-propValue">
+            <label class="gen-label">propertyValue <span class="gl-type">string</span></label>
+            <input id="ddg-propValue" class="gen-input mono" placeholder="Mặc định: Id" oninput="genDdCode()">
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-dependId">
+            <label class="gen-label">dependId — property phụ thuộc <span class="gl-type">string</span></label>
+            <input id="ddg-dependId" class="gen-input mono" placeholder="VD: CategoryId (load lại khi trường này thay đổi)" oninput="genDdCode()">
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-propGroup" style="display:none">
+            <label class="gen-label">propertyGroup <span class="gl-type">string</span></label>
+            <input id="ddg-propGroup" class="gen-input mono" placeholder="Mặc định: ParentId" oninput="genDdCode()">
+          </div>
+
+          <div class="gen-field" id="ddg-wrap-cached" style="display:none">
+            <label class="gen-label">cached (giây) <span class="gl-type">number</span></label>
+            <input id="ddg-cached" class="gen-input mono" placeholder="VD: 3600 (= 1 giờ)" oninput="genDdCode()">
+          </div>
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label">popup <span class="gl-type">PopupData</span></label>
+          <select id="ddg-popup" class="gen-select" onchange="genDdCode()">
+            <option value="">— không dùng</option>
+            <option value="auto">PopupData.Auto()</option>
+            <option value="ref">PopupData.Reference(Entity)</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">columnClass <span class="gl-type">ColumnClassFormat</span></label>
+          <select id="ddg-column" class="gen-select" onchange="genDdCode()">
+            <option value="">— auto</option>
+            <option value="Column3">Column3 (25%)</option>
+            <option value="Column4">Column4 (33%)</option>
+            <option value="Column6">Column6 (50%)</option>
+            <option value="Column8">Column8 (67%)</option>
+            <option value="Column12">Column12 (100%)</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">tooltip <span class="gl-type">string</span></label>
+          <input id="ddg-tooltip" class="gen-input" placeholder="Tooltip khi hover label..." oninput="genDdCode()">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: Output -->
+    <div class="gen-output-panel">
+      <div class="gen-output-header">
+        <span class="gen-output-title">📋 Generated code</span>
+        <button class="copy-btn" id="copy-btn-dd" onclick="doCopy('_genDdPlain','copy-btn-dd')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="gen-preview-code" id="gen-dd-output"></div>
+      <div class="gen-hint">
+        <span>💡</span>
+        <span>Import: <code>DropDownDecorator</code>, <code>DropdownType</code> từ core decorator. Lookup: <code>LookupData</code> từ <code>core/domains/data/lookup.data</code>.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── Toggle visibility of lookup sub-fields based on method ── */
+function ddToggleLookupFields() {
+  const method = document.getElementById('ddg-lookupMethod').value;
+  const show = (id, visible) => { document.getElementById(id).style.display = visible ? '' : 'none'; };
+
+  // Entity-based methods
+  const isEntity = ['Reference', 'ReferenceAjax', 'ReferenceGroup'].includes(method);
+  show('ddg-wrap-entity', isEntity);
+
+  // Enum-based
+  show('ddg-wrap-enumName', method === 'ReferenceEnum');
+
+  // URL-based
+  const isUrl = ['ReferenceUrl', 'ReferenceUrlAjax', 'ReferenceUrlWithCache'].includes(method);
+  show('ddg-wrap-url', isUrl);
+
+  // Items-based (strings / numbers)
+  const isItems = ['ReferenceStrings', 'ReferenceNumbers'].includes(method);
+  show('ddg-wrap-items', isItems);
+
+  // propertyDisplay & propertyValue — shown for entity, url, ajax
+  const hasProps = isEntity || isUrl;
+  show('ddg-wrap-propDisplay', hasProps);
+  show('ddg-wrap-propValue', hasProps);
+
+  // dependId — for entity & url
+  show('ddg-wrap-dependId', isEntity || isUrl);
+
+  // propertyGroup — only for ReferenceGroup & ReferenceUrl
+  show('ddg-wrap-propGroup', method === 'ReferenceGroup' || method === 'ReferenceUrl');
+
+  // cached — for ReferenceUrlWithCache, Reference, ReferenceAjax, ReferenceGroup, ReferenceUrl
+  show('ddg-wrap-cached', ['ReferenceUrlWithCache', 'Reference', 'ReferenceAjax', 'ReferenceGroup', 'ReferenceUrl'].includes(method));
+}
+
+/* ── DROPDOWN CODE GENERATOR ── */
+function genDdCode() {
+  const propName     = document.getElementById('ddg-propname').value.trim() || 'PropertyName';
+  const type         = document.getElementById('ddg-type').value;
+  const label        = document.getElementById('ddg-label').value.trim();
+  const required     = document.getElementById('ddg-required').checked;
+  const allowSearch  = document.getElementById('ddg-allowSearch').checked;
+  const readonly     = document.getElementById('ddg-readonly').checked;
+  const multiple     = document.getElementById('ddg-multiple').checked;
+  const selectAll    = document.getElementById('ddg-selectAll').checked;
+  const popup        = document.getElementById('ddg-popup').value;
+  const column       = document.getElementById('ddg-column').value;
+  const tooltip      = document.getElementById('ddg-tooltip').value.trim();
+
+  // Lookup fields
+  const method       = document.getElementById('ddg-lookupMethod').value;
+  const entity       = document.getElementById('ddg-lookupEntity').value.trim();
+  const enumName     = document.getElementById('ddg-enumName').value.trim();
+  const url          = document.getElementById('ddg-url').value.trim();
+  const items        = document.getElementById('ddg-items').value.trim();
+  const propDisplay  = document.getElementById('ddg-propDisplay').value.trim();
+  const propValue    = document.getElementById('ddg-propValue').value.trim();
+  const dependId     = document.getElementById('ddg-dependId').value.trim();
+  const propGroup    = document.getElementById('ddg-propGroup').value.trim();
+  const cached       = document.getElementById('ddg-cached').value.trim();
+
+  const opts = [];
+  if (label)        opts.push(`label: '${label}'`);
+  if (required)     opts.push(`required: true`);
+  if (allowSearch)  opts.push(`allowSearch: true`);
+  if (readonly)     opts.push(`readonly: true`);
+  if (type !== 'Normal') opts.push(`type: DropdownType.${type}`);
+  if (multiple)     opts.push(`multiple: true`);
+  if (selectAll)    opts.push(`selectAll: true`);
+
+  // Build lookup string
+  const lookupStr = buildLookupStr(method, entity, enumName, url, items, propDisplay, propValue, dependId, propGroup, cached);
+  if (lookupStr) opts.push(`lookup: ${lookupStr}`);
+
+  if (popup === 'auto') opts.push(`popup: PopupData.Auto()`);
+  else if (popup === 'ref') {
+    opts.push(`popup: PopupData.Reference(${entity || 'Entity'})`);
+  }
+  if (column)       opts.push(`columnClass: ColumnClassFormat.${column}`);
+  if (tooltip)      opts.push(`tooltip: '${tooltip}'`);
+
+  const decoratorStr = renderDecorator('@DropDownDecorator', opts);
+  const pname = propName || 'PropertyName';
+  const propStr = `${pname}: string;`;
+  window._genDdPlain = decoratorStr + '\n' + propStr;
+  const hlDec  = syntaxHL(decoratorStr);
+  const hlProp = `<span class="prop">${pname}</span>: <span class="kw">string</span>;`;
+  document.getElementById('gen-dd-output').innerHTML = hlDec + '<br>' + hlProp;
+}
+
+function buildLookupStr(method, entity, enumName, url, items, propDisplay, propValue, dependId, propGroup, cached) {
+  // Helper to build args
+  const pdArr = propDisplay ? (propDisplay.includes(',') ? `[${propDisplay.split(',').map(s => `'${s.trim()}'`).join(', ')}]` : `'${propDisplay}'`) : '';
+  const pvStr = propValue && propValue !== 'Id' ? `'${propValue}'` : '';
+  const depStr = dependId ? `'${dependId}'` : '';
+  const cacheStr = cached ? cached : '';
+
+  switch (method) {
+    case 'Reference': {
+      if (!entity) return '';
+      const args = [entity];
+      if (pdArr) args.push(pdArr);
+      else if (pvStr || depStr || cacheStr) args.push('undefined');
+      if (pvStr) args.push(pvStr);
+      else if (depStr || cacheStr) args.push('undefined');
+      if (depStr) args.push(depStr);
+      else if (cacheStr) args.push('undefined');
+      if (cacheStr) { if (!depStr) args.push('undefined'); args.push(cacheStr); }
+      // trim trailing undefineds
+      while (args.length > 1 && args[args.length - 1] === 'undefined') args.pop();
+      return `LookupData.Reference(${args.join(', ')})`;
+    }
+    case 'ReferenceAjax': {
+      if (!entity) return '';
+      const args = [entity];
+      if (pdArr) args.push(pdArr);
+      else if (pvStr || depStr || cacheStr) args.push('undefined');
+      if (pvStr) args.push(pvStr);
+      else if (depStr || cacheStr) args.push('undefined');
+      if (depStr) args.push(depStr);
+      else if (cacheStr) args.push('undefined');
+      if (cacheStr) { if (!depStr) args.push('undefined'); args.push(cacheStr); }
+      while (args.length > 1 && args[args.length - 1] === 'undefined') args.pop();
+      return `LookupData.ReferenceAjax(${args.join(', ')})`;
+    }
+    case 'ReferenceGroup': {
+      if (!entity) return '';
+      const args = [entity];
+      if (pdArr) args.push(pdArr); else if (pvStr || depStr || propGroup || cacheStr) args.push('undefined');
+      if (pvStr) args.push(pvStr); else if (depStr || propGroup || cacheStr) args.push('undefined');
+      if (depStr) args.push(depStr); else if (propGroup || cacheStr) args.push('undefined');
+      if (propGroup) args.push(`'${propGroup}'`); else if (cacheStr) args.push('undefined');
+      if (cacheStr) args.push(cacheStr);
+      while (args.length > 1 && args[args.length - 1] === 'undefined') args.pop();
+      return `LookupData.ReferenceGroup(${args.join(', ')})`;
+    }
+    case 'ReferenceEnum':
+      return enumName ? `LookupData.ReferenceEnum(${enumName})` : '';
+    case 'ReferenceUrl': {
+      if (!url) return '';
+      const args = [`'${url}'`];
+      if (pdArr) args.push(pdArr.startsWith('[') ? pdArr : `[${pdArr}]`);
+      else if (pvStr || depStr || propGroup || cacheStr) args.push('undefined');
+      if (pvStr) args.push(pvStr); else if (depStr || propGroup || cacheStr) args.push('undefined');
+      if (depStr) args.push(depStr); else if (propGroup || cacheStr) args.push('undefined');
+      if (propGroup) args.push(`'${propGroup}'`); else if (cacheStr) args.push('undefined');
+      if (cacheStr) args.push(cacheStr);
+      while (args.length > 1 && args[args.length - 1] === 'undefined') args.pop();
+      return `LookupData.ReferenceUrl(${args.join(', ')})`;
+    }
+    case 'ReferenceUrlAjax': {
+      if (!url) return '';
+      const args = [`'${url}'`];
+      if (pdArr) args.push(pdArr.startsWith('[') ? pdArr : `[${pdArr}]`);
+      else if (pvStr) args.push('undefined');
+      if (pvStr) args.push(pvStr);
+      while (args.length > 1 && args[args.length - 1] === 'undefined') args.pop();
+      return `LookupData.ReferenceUrlAjax(${args.join(', ')})`;
+    }
+    case 'ReferenceUrlWithCache': {
+      if (!url) return '';
+      return cacheStr ? `LookupData.ReferenceUrlWithCache('${url}', ${cacheStr})` : `LookupData.ReferenceUrlWithCache('${url}')`;
+    }
+    case 'ReferenceStrings':
+      if (!items) return '';
+      return `LookupData.ReferenceStrings([${items.split(',').map(s => `'${s.trim()}'`).join(', ')}])`;
+    case 'ReferenceNumbers':
+      if (!items) return '';
+      return `LookupData.ReferenceNumbers([${items.split(',').map(s => s.trim()).join(', ')}])`;
+    default:
+      return '';
+  }
+}
+
+// Init
+ddToggleLookupFields();
+genDdCode();
+</script>

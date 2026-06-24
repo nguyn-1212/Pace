@@ -1,0 +1,73 @@
+{
+  "Dashboard": {
+    "Title": "AsiaMarkt Management System"
+  },
+  "Enums": {
+    "Male": "Male",
+    "Female": "Female",
+    "Unknow": "Unknown",
+    "Individual": "Individual",
+    "Business": "Business",
+    "Pending": "Pending",
+    "Accept": "Accepted",
+    "Active": "Active",
+    "Success": "Success",
+    "Failed": "Failed",
+    "Locked": "Locked",
+    "Reject": "Rejected",
+    "Refunded": "Refunded",
+    "Day": "Day",
+    "Week": "Week",
+    "Month": "Month",
+    "Year": "Year",
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday",
+    "Sunday": "Sunday",
+    "Certificate": "Certificate",
+    "Gift": "Gift",
+    "Money": "Money",
+    "Percent": "% by salary",
+    "Labour": "Work",
+    "Leave": "Leave Application",
+    "Overtime": "Overtime Application",
+    "Absence": "Absence Application",
+    "Mission": "Mission Application",
+    "CheckIn": "Late Arrival/Early Leave Application",
+    "Regime": "Work Regime Application",
+    "Statement": "Statement",
+    "None": "None",
+    "SignatureDigital": "Digital Signature",
+    "SignatureHand": "Handwritten Signature",
+    "ByLevel": "By Salary Level",
+    "ByTitle": "By Title",
+    "Arrive": "Incoming Document",
+    "Out": "Outgoing Document",
+    "Confirmed": "Confirmed",
+    "Processing": "Processing",
+    "Shipped": "Shipped",
+    "Delivered": "Delivered",
+    "Cancelled": "Cancelled",
+    "Returned": "Returned",
+    "Priority1": "Priority 1",
+    "Priority2": "Priority 2",
+    "Priority3": "Priority 3"
+  },
+  "ConfigurationEntity": {
+    "DiscountValue": "Discount by amount",
+    "DiscountPercent": "Discount by percentage",
+    "NotifyEmail": "Email to receive notifications",
+    "TotalPriceFreeOff": "Total order value (for discount)",
+    "TotalPriceFreeShip": "Total order value (for free shipping)"
+  },
+  "CustomerOrderEntity": {
+    "OrderCount": "Total orders",
+    "TotalPayment": "Total amount paid"
+  },
+  "ShippingRuleEntity": {
+    "TitleEntity": "Shipping Rule"
+  }
+}

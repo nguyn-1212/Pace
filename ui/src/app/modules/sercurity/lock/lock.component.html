@@ -1,0 +1,54 @@
+﻿<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--desktop kt-grid--ver-desktop kt-grid--hor-tablet-and-mobile kt-login__fluid">
+    <div class="kt-grid__item kt-grid__item--order-tablet-and-mobile-2 kt-grid kt-grid--hor kt-login__aside">
+        <div class="kt-grid__item">
+            <a class="kt-login__logo">
+                <img [src]="logo" style="background-color: #fff; border-radius: 12px;">
+            </a>
+        </div>
+        <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver">
+            <div class="kt-grid__item kt-grid__item--middle">
+                <h3 class="kt-login__title">Lazy Travel ✈️</h3>
+                <h4 class="kt-login__subtitle">Hệ thống đang bị khoá</h4>
+                <div class="kt-login__features">
+                    <div class="feature-item"><i class="la la-lock"></i> Phiên đăng nhập đã hết hạn</div>
+                    <div class="feature-item"><i class="la la-shield"></i> Vui lòng xác thực lại để tiếp tục</div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-grid__item kt-grid--ver">
+            <div class="kt-login__info">
+                <div class="kt-login__copyright">
+                    2025&nbsp;&copy;&nbsp;Lazy Travel
+                </div>
+                <div class="kt-login__menu">
+                    <a class="kt-link" (click)="tutorial()">Hướng dẫn</a>
+                    <a class="kt-link" (click)="contact()">Liên hệ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="kt-grid__item kt-grid__item--fluid kt-grid__item--order-tablet-and-mobile-1 kt-login__wrapper">
+        <div class="kt-login__body">
+            <div class="kt-login__form">
+                <div class="kt-login__title">
+                    <h3>🔒 Màn hình khoá</h3>
+                </div>
+                <form class="kt-form" action="" novalidate="novalidate" id="kt_login_form">
+                    <div class="form-group">
+                        <editor [(object)]="item" property="UserName" [decorator]="{ label : '', readonly: true}"></editor>
+                    </div>
+                    <div class="form-group">
+                        <editor [(object)]="item" property="Password" [decorator]="{ label : ''}"></editor>
+                    </div>
+                    <div class="kt-login__actions">
+                        <p style="color: #718096; font-size: 14px; margin-bottom: 12px;">
+                            Không phải {{ item.UserName }}?
+                            <a class="kt-link" style="color: #FF2D78; font-weight: 600; cursor: pointer;" (click)="signOut()">Đăng xuất</a>
+                        </p>
+                        <editor-button className="btn btn-primary w-100 py-3" label="Mở khoá" [(process)]="processing" (click)="signin()"></editor-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

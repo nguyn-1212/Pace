@@ -1,0 +1,16 @@
+﻿<div class="kt-portlet kt-portlet-edit-form">
+    <edit-header *ngIf="breadcrumbs && actions?.length" [breadcrumbs]="breadcrumbs" [actions]="actions" [processing]="processing"></edit-header>
+    <div class="kt-portlet__body">
+        <div class="row" *ngIf="item && !loading">
+            <div class="col-sm-12"><h5 class="form-section-title">📸 Thông tin ảnh</h5></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="TripId" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="AlbumId" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="UploadedBy" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><editor [(object)]="item" property="FileUrl" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-12"><editor [(object)]="item" property="Caption" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="TakenAt" [decorator]="{readonly: viewer}"></editor></div>
+            <div class="col-sm-4"><editor [(object)]="item" property="LikeCount" [decorator]="{readonly: viewer}"></editor></div>
+        </div>
+        <div class="row row-loading" *ngIf="loading"><loading></loading></div>
+    </div>
+</div>

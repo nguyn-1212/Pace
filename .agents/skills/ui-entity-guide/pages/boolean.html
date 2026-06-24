@@ -1,0 +1,257 @@
+<!-- ═══════════════ @BooleanDecorator ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-editor">✦ Editor</div>
+  <div class="page-title">@BooleanDecorator</div>
+  <div class="page-desc">Decorator cho input dạng boolean: Checkbox, Toggle switch, Radio button.</div>
+  <div class="page-meta">core/decorators/boolean.decorator.ts &nbsp;·&nbsp; DataType.Boolean &nbsp;·&nbsp; BooleanEx extends ObjectEx</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('boolean','opts')">⚙ Options</button>
+  <button class="tab-btn" onclick="switchTab('boolean','types')">◈ BooleanType</button>
+  <button class="tab-btn" onclick="switchTab('boolean','examples')">{ } Examples</button>
+  <button class="tab-btn" onclick="switchTab('boolean','gen')">⚡ Code Generator</button>
+</div>
+
+<!-- ─── OPTIONS TAB ─── -->
+<div class="tab-panel active" id="boolean-tab-opts">
+  <div class="opts-toolbar">
+    <div class="opts-count"><strong>10</strong> / 20 thuộc tính (cơ bản)</div>
+    <div class="opts-level-btns">
+      <button class="opts-level-btn active" onclick="toggleLevel('bool-opts','basic',this)">Cơ bản</button>
+      <button class="opts-level-btn" onclick="toggleLevel('bool-opts','advanced',this)">Nâng cao</button>
+      <button class="opts-level-btn" onclick="toggleLevel('bool-opts','all',this)">Tất cả</button>
+    </div>
+  </div>
+  <div class="opts-table-wrap">
+    <table class="opts-table" id="bool-opts">
+      <thead>
+        <tr><th>Property</th><th>Type</th><th>Default</th><th>Mô tả</th></tr>
+      </thead>
+      <tbody>
+        <tr class="group-row"><td colspan="4"><span>📦 ObjectEx — chung cho mọi decorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">label</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Nhãn hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">required <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Bắt buộc nhập. Tự thêm validator <code>PatternType.Required</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">allowSearch</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép lọc theo cột này trong grid/table.</td></tr>
+        <tr data-level="basic"><td class="p-name">readonly</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Hiển thị nhưng không cho chỉnh sửa.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowClear</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Cho phép xoá giá trị (reset về null).</td></tr>
+        <tr data-level="advanced"><td class="p-name">unique <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span> | <span class="t-enum type-link" onclick="showModal('modal-lookupuniquedata')">LookupUniqueData</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểm tra trùng.</td></tr>
+        <tr data-level="basic"><td class="p-name">columnClass</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-columnclass')">ColumnClassFormat</span></td><td class="p-default">undefined</td><td class="p-desc">Độ rộng cột form.</td></tr>
+        <tr data-level="basic"><td class="p-name">tooltip</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Tooltip hiển thị khi hover vào label.</td></tr>
+        <tr data-level="basic"><td class="p-name">placeholder</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">= label</td><td class="p-desc">Placeholder mặc định lấy từ label.</td></tr>
+        <tr data-level="advanced"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">= label</td><td class="p-desc">Mô tả hiển thị bên cạnh boolean input.</td></tr>
+        <tr data-level="advanced"><td class="p-name">icon</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Icon class (Line Awesome).</td></tr>
+        <tr data-level="advanced"><td class="p-name">defaultValue</td><td class="p-type"><span class="t-str">any</span></td><td class="p-default">undefined</td><td class="p-desc">Giá trị mặc định ban đầu.</td></tr>
+        <tr data-level="advanced"><td class="p-name">index</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Thứ tự hiển thị trên form.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép filter column trên Grid.</td></tr>
+        <tr data-level="advanced"><td class="p-name">lookup</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-lookupdata')">LookupData</span></td><td class="p-default">new LookupData()</td><td class="p-desc">Cấu hình lookup cho boolean dropdown.</td></tr>
+        <tr data-level="advanced"><td class="p-name">compareType</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-comparetype')">CompareType</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểu so sánh khi filter trên grid. Thường dùng <code>B_Equals</code>.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customValidators</td><td class="p-type"><span class="t-arr">Validator[]</span></td><td class="p-default">undefined</td><td class="p-desc">Mảng custom validator.</td></tr>
+
+        <tr class="group-row"><td colspan="4"><span>◉ BooleanEx — riêng cho @BooleanDecorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">type</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-booleantype')">BooleanType</span></td><td class="p-default">BooleanType.Checkbox</td><td class="p-desc">Loại input boolean. Xem tab <strong>BooleanType</strong>.</td></tr>
+        <tr data-level="basic"><td class="p-name">view</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-viewtype')">ViewType</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểu hiển thị: <code>Normal</code> hoặc <code>List</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">allowUncheck</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép bỏ chọn — trả về <code>null</code> thay vì <code>false</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:16px">
+    <span>⚠️</span>
+    <span><code>@BooleanDecorator()</code> không truyền options → mặc định là <code>BooleanType.Checkbox</code>, không allowSearch, không allowUncheck.</span>
+  </div>
+</div>
+
+<!-- ─── BOOLEANTYPE TAB ─── -->
+<div class="tab-panel" id="boolean-tab-types">
+  <div class="types-grid2">
+    <div class="type-card2 common"><div class="tc2-name">BooleanType.Checkbox</div><div class="tc2-em">Checkbox vuông tiêu chuẩn. Tick/untick.</div><div class="tc2-note">Mặc định — phổ biến nhất</div></div>
+    <div class="type-card2 common"><div class="tc2-name">BooleanType.Toggle</div><div class="tc2-em">Toggle switch dạng bật/tắt (on/off).</div><div class="tc2-note">Dùng cho cài đặt bật/tắt</div></div>
+    <div class="type-card2 common"><div class="tc2-name">BooleanType.RadioButton</div><div class="tc2-em">Radio button group với 2 lựa chọn (Có/Không).</div><div class="tc2-note">Dùng khi cần chọn rõ ràng Yes/No</div></div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLES TAB ─── -->
+<div class="tab-panel" id="boolean-tab-examples">
+  <div class="code-tabs">
+    <div class="code-tab active" onclick="switchCode('b','basic',this)">Basic</div>
+    <div class="code-tab" onclick="switchCode('b','settings',this)">Settings</div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-panel active" id="b-cp-basic"><pre class="flat">
+<span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Product'</span> })
+<span class="kw">export class</span> <span class="cls">ProductEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Checkbox mặc định</span>
+  <span class="dec">@BooleanDecorator</span>({ <span class="prop">label</span>: <span class="str">'Hoạt động'</span> })
+  <span class="prop">IsActive</span>: <span class="kw">boolean</span>;
+
+  <span class="cm">// Toggle switch</span>
+  <span class="dec">@BooleanDecorator</span>({ <span class="prop">label</span>: <span class="str">'Hiển thị'</span>, <span class="prop">type</span>: <span class="cls">BooleanType</span>.Toggle })
+  <span class="prop">IsVisible</span>: <span class="kw">boolean</span>;
+
+  <span class="cm">// Có filter trên grid</span>
+  <span class="dec">@BooleanDecorator</span>({ <span class="prop">label</span>: <span class="str">'Nổi bật'</span>, <span class="prop">allowSearch</span>: <span class="kw">true</span> })
+  <span class="prop">IsFeatured</span>: <span class="kw">boolean</span>;
+}</pre></div>
+    <div class="code-panel" id="b-cp-settings"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">SettingEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Toggle — cho phép bỏ chọn → null</span>
+  <span class="dec">@BooleanDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Sao lưu tự động'</span>,
+    <span class="prop">type</span>: <span class="cls">BooleanType</span>.Toggle,
+    <span class="prop">allowUncheck</span>: <span class="kw">true</span>,
+    <span class="prop">columnClass</span>: <span class="cls">ColumnClassFormat</span>.Column6
+  })
+  <span class="prop">BackupEnabled</span>: <span class="kw">boolean</span>;
+
+  <span class="cm">// Radio button — Có/Không</span>
+  <span class="dec">@BooleanDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Gửi báo cáo tuần'</span>,
+    <span class="prop">type</span>: <span class="cls">BooleanType</span>.RadioButton,
+    <span class="prop">columnClass</span>: <span class="cls">ColumnClassFormat</span>.Column6
+  })
+  <span class="prop">WeeklyReport</span>: <span class="kw">boolean</span>;
+}</pre></div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span><strong>Import:</strong> <code>BooleanDecorator</code>, <code>BooleanType</code> từ <code>core/decorators/boolean.decorator</code></span></div>
+</div>
+
+<!-- ─── CODE GENERATOR TAB ─── -->
+<div class="tab-panel" id="boolean-tab-gen">
+  <div class="gen-layout">
+
+    <!-- LEFT: Form -->
+    <div class="gen-form-panel">
+      <div class="gen-form-header">⚡ Tham số decorator</div>
+      <div class="gen-form-body">
+
+        <div class="gen-field">
+          <label class="gen-label">Property name <span class="gl-type">string</span></label>
+          <input id="bg-propname" class="gen-input mono" placeholder="VD: IsActive, IsVisible..." oninput="genBoolCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">type <span class="gl-type">BooleanType</span></label>
+          <select id="bg-type" class="gen-select" onchange="genBoolCode()">
+            <option value="Checkbox">BooleanType.Checkbox</option>
+            <option value="Toggle">BooleanType.Toggle</option>
+            <option value="RadioButton">BooleanType.RadioButton</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">label <span class="gl-type">string</span></label>
+          <input id="bg-label" class="gen-input" placeholder="Để trống = auto từ tên property" oninput="genBoolCode()">
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label" style="margin-bottom:2px">Flags</label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genBoolCode,0)"><input type="checkbox" id="bg-required" onchange="genBoolCode()"><span class="gc-label">required</span><span class="gc-desc" style="color:var(--rose);font-size:10px;font-weight:700">validate</span></label>
+            <label class="gen-check" onclick="setTimeout(genBoolCode,0)"><input type="checkbox" id="bg-allowSearch" onchange="genBoolCode()"><span class="gc-label">allowSearch</span><span class="gc-desc">filter grid</span></label>
+            <label class="gen-check" onclick="setTimeout(genBoolCode,0)"><input type="checkbox" id="bg-readonly" onchange="genBoolCode()"><span class="gc-label">readonly</span><span class="gc-desc">chỉ xem</span></label>
+            <label class="gen-check" onclick="setTimeout(genBoolCode,0)"><input type="checkbox" id="bg-allowUncheck" onchange="genBoolCode()"><span class="gc-label">allowUncheck</span><span class="gc-desc">cho phép null</span></label>
+            <label class="gen-check" onclick="setTimeout(genBoolCode,0)"><input type="checkbox" id="bg-allowFilter" onchange="genBoolCode()"><span class="gc-label">allowFilter</span><span class="gc-desc">filter column grid</span></label>
+          </div>
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label">view <span class="gl-type">ViewType</span></label>
+          <select id="bg-view" class="gen-select" onchange="genBoolCode()">
+            <option value="">— Normal (mặc định)</option>
+            <option value="List">ViewType.List</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">columnClass <span class="gl-type">ColumnClassFormat</span></label>
+          <select id="bg-column" class="gen-select" onchange="genBoolCode()">
+            <option value="">— auto</option>
+            <option value="Column3">Column3 (25%)</option>
+            <option value="Column4">Column4 (33%)</option>
+            <option value="Column6">Column6 (50%)</option>
+            <option value="Column8">Column8 (67%)</option>
+            <option value="Column12">Column12 (100%)</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">tooltip <span class="gl-type">string</span></label>
+          <input id="bg-tooltip" class="gen-input" placeholder="Tooltip khi hover label..." oninput="genBoolCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">description <span class="gl-type">string</span></label>
+          <input id="bg-description" class="gen-input" placeholder="Mô tả hiển thị cạnh input" oninput="genBoolCode()">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: Output -->
+    <div class="gen-output-panel">
+      <div class="gen-output-header">
+        <span class="gen-output-title">📋 Generated code</span>
+        <button class="copy-btn" id="copy-btn-bool" onclick="doCopy('_genBoolPlain','copy-btn-bool')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="gen-preview-code" id="gen-bool-output"></div>
+      <div class="gen-hint">
+        <span>💡</span>
+        <span>Điền tên property và chọn các tham số bên trái. Import: <code>BooleanDecorator</code>, <code>BooleanType</code> từ core decorator.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── BOOLEAN-SPECIFIC JS ── */
+function genBoolCode() {
+  const propName    = document.getElementById('bg-propname').value.trim() || 'PropertyName';
+  const type        = document.getElementById('bg-type').value;
+  const label       = document.getElementById('bg-label').value.trim();
+  const required    = document.getElementById('bg-required').checked;
+  const allowSearch = document.getElementById('bg-allowSearch').checked;
+  const readonly    = document.getElementById('bg-readonly').checked;
+  const allowUncheck= document.getElementById('bg-allowUncheck').checked;
+  const allowFilter = document.getElementById('bg-allowFilter').checked;
+  const view        = document.getElementById('bg-view').value;
+  const column      = document.getElementById('bg-column').value;
+  const tooltip     = document.getElementById('bg-tooltip').value.trim();
+  const description = document.getElementById('bg-description').value.trim();
+
+  const opts = [];
+  if (label)        opts.push(`label: '${label}'`);
+  if (required)     opts.push(`required: true`);
+  if (allowSearch)  opts.push(`allowSearch: true`);
+  if (readonly)     opts.push(`readonly: true`);
+  if (type !== 'Checkbox') opts.push(`type: BooleanType.${type}`);
+  if (allowUncheck) opts.push(`allowUncheck: true`);
+  if (view)         opts.push(`view: ViewType.${view}`);
+  if (column)       opts.push(`columnClass: ColumnClassFormat.${column}`);
+  if (tooltip)      opts.push(`tooltip: '${tooltip}'`);
+  if (description)  opts.push(`description: '${description}'`);
+  if (allowFilter)  opts.push(`allowFilter: true`);
+
+  const decoratorStr = renderDecorator('@BooleanDecorator', opts);
+  const pname = propName || 'PropertyName';
+  const propStr = `${pname}: boolean;`;
+  window._genBoolPlain = decoratorStr + '\n' + propStr;
+  const hlDec  = syntaxHL(decoratorStr);
+  const hlProp = `<span class="prop">${pname}</span>: <span class="kw">boolean</span>;`;
+  document.getElementById('gen-bool-output').innerHTML = hlDec + '<br>' + hlProp;
+}
+
+// Init on load
+genBoolCode();
+</script>

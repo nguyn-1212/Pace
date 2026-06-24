@@ -1,0 +1,304 @@
+<!-- ═══════════════ @NumberDecorator ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-editor">✦ Editor</div>
+  <div class="page-title">@NumberDecorator</div>
+  <div class="page-desc">Decorator cho tất cả input dạng số: số nguyên, số thập phân, rating (star), range slider, between.</div>
+  <div class="page-meta">core/decorators/number.decorator.ts &nbsp;·&nbsp; DataType.Number &nbsp;·&nbsp; NumberEx extends ObjectEx</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('num','opts')">⚙ Options</button>
+  <button class="tab-btn" onclick="switchTab('num','types')">◈ NumberType</button>
+  <button class="tab-btn" onclick="switchTab('num','examples')">{ } Examples</button>
+  <button class="tab-btn" onclick="switchTab('num','gen')">⚡ Code Generator</button>
+</div>
+
+<!-- ─── OPTIONS TAB ─── -->
+<div class="tab-panel active" id="num-tab-opts">
+  <div class="opts-toolbar">
+    <div class="opts-count"><strong>14</strong> / 25 thuộc tính (cơ bản)</div>
+    <div class="opts-level-btns">
+      <button class="opts-level-btn active" onclick="toggleLevel('num-opts','basic',this)">Cơ bản</button>
+      <button class="opts-level-btn" onclick="toggleLevel('num-opts','advanced',this)">Nâng cao</button>
+      <button class="opts-level-btn" onclick="toggleLevel('num-opts','all',this)">Tất cả</button>
+    </div>
+  </div>
+  <div class="opts-table-wrap">
+    <table class="opts-table" id="num-opts">
+      <thead>
+        <tr><th>Property</th><th>Type</th><th>Default</th><th>Mô tả</th></tr>
+      </thead>
+      <tbody>
+        <tr class="group-row"><td colspan="4"><span>📦 ObjectEx — chung cho mọi decorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">label</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Nhãn hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">required <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Bắt buộc nhập. Tự thêm validator <code>PatternType.Required</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">allowSearch</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép lọc theo cột này trong grid/table.</td></tr>
+        <tr data-level="basic"><td class="p-name">readonly</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">undefined</td><td class="p-desc">Hiển thị nhưng không cho chỉnh sửa.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowClear</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">true</td><td class="p-desc">Cho phép xoá giá trị.</td></tr>
+        <tr data-level="advanced"><td class="p-name">unique <span class="badge-v">validate</span></td><td class="p-type"><span class="t-bool">boolean</span> | <span class="t-enum type-link" onclick="showModal('modal-lookupuniquedata')">LookupUniqueData</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểm tra trùng.</td></tr>
+        <tr data-level="basic"><td class="p-name">columnClass</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-columnclass')">ColumnClassFormat</span></td><td class="p-default">undefined</td><td class="p-desc">Độ rộng cột form.</td></tr>
+        <tr data-level="basic"><td class="p-name">tooltip</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Tooltip hiển thị khi hover vào label.</td></tr>
+        <tr data-level="basic"><td class="p-name">placeholder</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">= label</td><td class="p-desc">Placeholder mặc định lấy từ label.</td></tr>
+        <tr data-level="advanced"><td class="p-name">icon</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">auto</td><td class="p-desc">Icon class (Line Awesome).</td></tr>
+        <tr data-level="advanced"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-default">undefined</td><td class="p-desc">Mô tả hiển thị dưới input.</td></tr>
+        <tr data-level="advanced"><td class="p-name">defaultValue</td><td class="p-type"><span class="t-str">any</span></td><td class="p-default">undefined</td><td class="p-desc">Giá trị mặc định ban đầu.</td></tr>
+        <tr data-level="advanced"><td class="p-name">index</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">undefined</td><td class="p-desc">Thứ tự hiển thị trên form.</td></tr>
+        <tr data-level="advanced"><td class="p-name">allowFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép filter column trên Grid.</td></tr>
+        <tr data-level="advanced"><td class="p-name">compareType</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-comparetype')">CompareType</span></td><td class="p-default">undefined</td><td class="p-desc">Kiểu so sánh khi filter.</td></tr>
+        <tr data-level="advanced"><td class="p-name">customValidators</td><td class="p-type"><span class="t-arr">Validator[]</span></td><td class="p-default">undefined</td><td class="p-desc">Mảng custom validator.</td></tr>
+
+        <tr class="group-row"><td colspan="4"><span>▾ NumberEx — riêng cho @NumberDecorator</span></td></tr>
+        <tr data-level="basic"><td class="p-name">type</td><td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-numbertype')">NumberType</span></td><td class="p-default">NumberType.Text</td><td class="p-desc">Loại input số. Xem tab <strong>NumberType</strong>.</td></tr>
+        <tr data-level="basic"><td class="p-name">min <span class="badge-v">validate</span></td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">0</td><td class="p-desc">Giá trị nhỏ nhất. Tự thêm validator <code>PatternType.Min</code>. Mặc định <code>-1000000000</code> nếu <code>allowNegative</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">max <span class="badge-v">validate</span></td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">1000000000</td><td class="p-desc">Giá trị lớn nhất. Tự thêm validator <code>PatternType.Max</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">step</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">1</td><td class="p-desc">Bước nhảy khi tăng/giảm. Nếu có phần thập phân → tự tính <code>decimals</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">decimals</td><td class="p-type"><span class="t-num">number</span></td><td class="p-default">auto (0)</td><td class="p-desc">Số chữ số thập phân. Tự tính từ <code>step</code> nếu không set.</td></tr>
+        <tr data-level="basic"><td class="p-name">allowZero</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép giá trị = 0. Tự <code>true</code> nếu <code>decimals > 0</code> hoặc <code>min == 0</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">allowNegative</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-default">false</td><td class="p-desc">Cho phép nhập số âm. Khi <code>true</code> → <code>allowZero = true</code>, <code>min = -1e9</code>.</td></tr>
+        <tr data-level="advanced"><td class="p-name">minDepend</td><td class="p-type"><span class="t-str">string</span> | <span class="t-arr">string[]</span></td><td class="p-default">undefined</td><td class="p-desc">Property phụ thuộc validate giá trị min. Thêm <code>PatternType.RequiredMin</code>.</td></tr>
+        <tr data-level="advanced"><td class="p-name">maxDepend</td><td class="p-type"><span class="t-str">string</span> | <span class="t-arr">string[]</span></td><td class="p-default">undefined</td><td class="p-desc">Property phụ thuộc validate giá trị max. Thêm <code>PatternType.RequiredMax</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:16px">
+    <span>⚠️</span>
+    <span><code>@NumberDecorator()</code> không truyền options → mặc định <code>NumberType.Text</code>, min=0, max=1e9, step=1, decimals=0.</span>
+  </div>
+</div>
+
+<!-- ─── NUMBERTYPE TAB ─── -->
+<div class="tab-panel" id="num-tab-types">
+  <div class="types-grid2">
+    <div class="type-card2 common"><div class="tc2-name">NumberType.Text</div><div class="tc2-em">Input số tiêu chuẩn — nhập trực tiếp, nút +/−.</div><div class="tc2-note">Mặc định — phổ biến nhất</div></div>
+    <div class="type-card2 common"><div class="tc2-name">NumberType.Numberic</div><div class="tc2-em">Numeric spinner — nút tăng/giảm rõ ràng hơn.</div><div class="tc2-note">Số lượng, thứ tự</div></div>
+    <div class="type-card2 special"><div class="tc2-name">NumberType.Star</div><div class="tc2-em">Rating dạng sao ★★★★★. Thường max=5.</div><div class="tc2-note">Đánh giá, xếp hạng</div></div>
+    <div class="type-card2 special"><div class="tc2-name">NumberType.Range</div><div class="tc2-em">Range slider — kéo thanh trượt chọn giá trị.</div><div class="tc2-note">Phần trăm, mức độ</div></div>
+    <div class="type-card2 special"><div class="tc2-name">NumberType.Between</div><div class="tc2-em">Khoảng giá trị (từ — đến). 2 input min/max.</div><div class="tc2-note">Lọc khoảng giá, diện tích</div></div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLES TAB ─── -->
+<div class="tab-panel" id="num-tab-examples">
+  <div class="code-tabs">
+    <div class="code-tab active" onclick="switchCode('num','basic',this)">Basic</div>
+    <div class="code-tab" onclick="switchCode('num','advanced',this)">Advanced</div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-panel active" id="num-cp-basic"><pre class="flat">
+<span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Product'</span> })
+<span class="kw">export class</span> <span class="cls">ProductEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Giá sản phẩm — bắt buộc, cho search</span>
+  <span class="dec">@NumberDecorator</span>({ <span class="prop">label</span>: <span class="str">'Giá'</span>, <span class="prop">required</span>: <span class="kw">true</span>,
+    <span class="prop">min</span>: <span class="num">0</span>, <span class="prop">max</span>: <span class="num">1000000000</span>, <span class="prop">allowSearch</span>: <span class="kw">true</span> })
+  <span class="prop">Price</span>: <span class="kw">number</span>;
+
+  <span class="cm">// Số lượng tồn kho</span>
+  <span class="dec">@NumberDecorator</span>({ <span class="prop">label</span>: <span class="str">'Tồn kho'</span>, <span class="prop">min</span>: <span class="num">0</span>, <span class="prop">max</span>: <span class="num">99999</span> })
+  <span class="prop">Stock</span>: <span class="kw">number</span>;
+
+  <span class="cm">// Thứ tự hiển thị</span>
+  <span class="dec">@NumberDecorator</span>({ <span class="prop">label</span>: <span class="str">'Thứ tự'</span>, <span class="prop">type</span>: <span class="cls">NumberType</span>.Numberic })
+  <span class="prop">Order</span>: <span class="kw">number</span>;
+
+  <span class="cm">// Đánh giá sao</span>
+  <span class="dec">@NumberDecorator</span>({ <span class="prop">type</span>: <span class="cls">NumberType</span>.Star, <span class="prop">max</span>: <span class="num">5</span> })
+  <span class="prop">Rating</span>: <span class="kw">number</span>;
+}</pre></div>
+    <div class="code-panel" id="num-cp-advanced"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">InvoiceEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Số thập phân — step=0.01</span>
+  <span class="dec">@NumberDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Chiết khấu %'</span>,
+    <span class="prop">min</span>: <span class="num">0</span>, <span class="prop">max</span>: <span class="num">100</span>,
+    <span class="prop">step</span>: <span class="num">0.01</span>, <span class="prop">decimals</span>: <span class="num">2</span>
+  })
+  <span class="prop">Discount</span>: <span class="kw">number</span>;
+
+  <span class="cm">// Range slider — phần trăm</span>
+  <span class="dec">@NumberDecorator</span>({
+    <span class="prop">type</span>: <span class="cls">NumberType</span>.Range,
+    <span class="prop">min</span>: <span class="num">0</span>, <span class="prop">max</span>: <span class="num">100</span>, <span class="prop">step</span>: <span class="num">5</span>
+  })
+  <span class="prop">Progress</span>: <span class="kw">number</span>;
+
+  <span class="cm">// Cho phép số âm (lợi nhuận/lỗ)</span>
+  <span class="dec">@NumberDecorator</span>({
+    <span class="prop">label</span>: <span class="str">'Lợi nhuận'</span>,
+    <span class="prop">allowNegative</span>: <span class="kw">true</span>
+  })
+  <span class="prop">Profit</span>: <span class="kw">number</span>;
+}</pre></div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span><strong>Import:</strong> <code>NumberDecorator</code>, <code>NumberType</code> từ <code>core/decorators/number.decorator</code>.</span></div>
+</div>
+
+<!-- ─── CODE GENERATOR TAB ─── -->
+<div class="tab-panel" id="num-tab-gen">
+  <div class="gen-layout">
+
+    <!-- LEFT: Form -->
+    <div class="gen-form-panel">
+      <div class="gen-form-header">⚡ Tham số decorator</div>
+      <div class="gen-form-body">
+
+        <div class="gen-field">
+          <label class="gen-label">Property name <span class="gl-type">string</span></label>
+          <input id="numg-propname" class="gen-input mono" placeholder="VD: Price, Stock, Order..." oninput="genNumCode()">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">type <span class="gl-type">NumberType</span></label>
+          <select id="numg-type" class="gen-select" onchange="genNumCode()">
+            <option value="Text">NumberType.Text</option>
+            <option value="Numberic">NumberType.Numberic</option>
+            <option value="Star">NumberType.Star</option>
+            <option value="Range">NumberType.Range</option>
+            <option value="Between">NumberType.Between</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">label <span class="gl-type">string</span></label>
+          <input id="numg-label" class="gen-input" placeholder="Để trống = auto từ tên property" oninput="genNumCode()">
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div class="gen-field">
+          <label class="gen-label" style="margin-bottom:2px">Flags</label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genNumCode,0)"><input type="checkbox" id="numg-required" onchange="genNumCode()"><span class="gc-label">required</span><span class="gc-desc" style="color:var(--rose);font-size:10px;font-weight:700">validate</span></label>
+            <label class="gen-check" onclick="setTimeout(genNumCode,0)"><input type="checkbox" id="numg-allowSearch" onchange="genNumCode()"><span class="gc-label">allowSearch</span><span class="gc-desc">filter grid</span></label>
+            <label class="gen-check" onclick="setTimeout(genNumCode,0)"><input type="checkbox" id="numg-readonly" onchange="genNumCode()"><span class="gc-label">readonly</span><span class="gc-desc">chỉ xem</span></label>
+            <label class="gen-check" onclick="setTimeout(genNumCode,0)"><input type="checkbox" id="numg-allowZero" onchange="genNumCode()"><span class="gc-label">allowZero</span><span class="gc-desc">cho phép = 0</span></label>
+            <label class="gen-check" onclick="setTimeout(genNumCode,0)"><input type="checkbox" id="numg-allowNegative" onchange="genNumCode()"><span class="gc-label">allowNegative</span><span class="gc-desc">cho phép số âm</span></label>
+          </div>
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="gen-field">
+            <label class="gen-label">min <span class="gl-validate">validate</span></label>
+            <input id="numg-min" class="gen-input mono" type="number" placeholder="0" oninput="genNumCode()">
+          </div>
+          <div class="gen-field">
+            <label class="gen-label">max <span class="gl-validate">validate</span></label>
+            <input id="numg-max" class="gen-input mono" type="number" placeholder="1000000000" oninput="genNumCode()">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="gen-field">
+            <label class="gen-label">step <span class="gl-type">number</span></label>
+            <input id="numg-step" class="gen-input mono" type="number" placeholder="1" oninput="genNumCode()">
+          </div>
+          <div class="gen-field">
+            <label class="gen-label">decimals <span class="gl-type">number</span></label>
+            <input id="numg-decimals" class="gen-input mono" type="number" min="0" placeholder="auto" oninput="genNumCode()">
+          </div>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">columnClass <span class="gl-type">ColumnClassFormat</span></label>
+          <select id="numg-column" class="gen-select" onchange="genNumCode()">
+            <option value="">— auto</option>
+            <option value="Column3">Column3 (25%)</option>
+            <option value="Column4">Column4 (33%)</option>
+            <option value="Column6">Column6 (50%)</option>
+            <option value="Column8">Column8 (67%)</option>
+            <option value="Column12">Column12 (100%)</option>
+          </select>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">tooltip <span class="gl-type">string</span></label>
+          <input id="numg-tooltip" class="gen-input" placeholder="Tooltip khi hover label..." oninput="genNumCode()">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="gen-field">
+            <label class="gen-label">minDepend <span class="gl-type">string</span></label>
+            <input id="numg-minDepend" class="gen-input mono" placeholder="VD: MinPrice" oninput="genNumCode()">
+          </div>
+          <div class="gen-field">
+            <label class="gen-label">maxDepend <span class="gl-type">string</span></label>
+            <input id="numg-maxDepend" class="gen-input mono" placeholder="VD: MaxPrice" oninput="genNumCode()">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: Output -->
+    <div class="gen-output-panel">
+      <div class="gen-output-header">
+        <span class="gen-output-title">📋 Generated code</span>
+        <button class="copy-btn" id="copy-btn-num" onclick="doCopy('_genNumPlain','copy-btn-num')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="gen-preview-code" id="gen-num-output"></div>
+      <div class="gen-hint">
+        <span>💡</span>
+        <span>Import: <code>NumberDecorator</code>, <code>NumberType</code> từ <code>core/decorators/number.decorator</code>.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── NUMBER CODE GENERATOR ── */
+function genNumCode() {
+  const propName      = document.getElementById('numg-propname').value.trim() || 'PropertyName';
+  const type          = document.getElementById('numg-type').value;
+  const label         = document.getElementById('numg-label').value.trim();
+  const required      = document.getElementById('numg-required').checked;
+  const allowSearch   = document.getElementById('numg-allowSearch').checked;
+  const readonly      = document.getElementById('numg-readonly').checked;
+  const allowZero     = document.getElementById('numg-allowZero').checked;
+  const allowNegative = document.getElementById('numg-allowNegative').checked;
+  const min           = document.getElementById('numg-min').value.trim();
+  const max           = document.getElementById('numg-max').value.trim();
+  const step          = document.getElementById('numg-step').value.trim();
+  const decimals      = document.getElementById('numg-decimals').value.trim();
+  const column        = document.getElementById('numg-column').value;
+  const tooltip       = document.getElementById('numg-tooltip').value.trim();
+  const minDepend     = document.getElementById('numg-minDepend').value.trim();
+  const maxDepend     = document.getElementById('numg-maxDepend').value.trim();
+
+  const opts = [];
+  if (label)          opts.push(`label: '${label}'`);
+  if (required)       opts.push(`required: true`);
+  if (allowSearch)    opts.push(`allowSearch: true`);
+  if (readonly)       opts.push(`readonly: true`);
+  if (type !== 'Text') opts.push(`type: NumberType.${type}`);
+  if (min)            opts.push(`min: ${min}`);
+  if (max)            opts.push(`max: ${max}`);
+  if (step && step !== '1') opts.push(`step: ${step}`);
+  if (decimals)       opts.push(`decimals: ${decimals}`);
+  if (allowZero)      opts.push(`allowZero: true`);
+  if (allowNegative)  opts.push(`allowNegative: true`);
+  if (column)         opts.push(`columnClass: ColumnClassFormat.${column}`);
+  if (tooltip)        opts.push(`tooltip: '${tooltip}'`);
+  if (minDepend)      opts.push(`minDepend: '${minDepend}'`);
+  if (maxDepend)      opts.push(`maxDepend: '${maxDepend}'`);
+
+  const decoratorStr = renderDecorator('@NumberDecorator', opts);
+  const pname = propName || 'PropertyName';
+  const propStr = `${pname}: number;`;
+  window._genNumPlain = decoratorStr + '\n' + propStr;
+  const hlDec  = syntaxHL(decoratorStr);
+  const hlProp = `<span class="prop">${pname}</span>: <span class="kw">number</span>;`;
+  document.getElementById('gen-num-output').innerHTML = hlDec + '<br>' + hlProp;
+}
+
+// Init
+genNumCode();
+</script>

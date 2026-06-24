@@ -1,0 +1,18 @@
+﻿{
+  "DataInvalid": "Data invalid",
+  "TokenInvalid": "Token invalid",
+  "DataNotExists": "Data not exists",
+  "Otp.OtpInvalid": "Otp invalid",
+  "Otp.PhoneInvalid": "Phone invalid",
+  "User.Locked": "User locked",
+  "User.NotExists": "User not exists",
+  "User.PasswordInvalid": "Password invalid",
+  "User.UserInvalid": "User invalid",
+  "User.LoginInvalid": "Phone/Password invalid",
+  "User.UserExists": "User exists",
+  "Folder.NotExists": "Folder exists",
+  "Notify.NotExists": "Notify exists",
+  "Department.NotExists": "Department exists",
+  "SmtpAccount.NotExists": "SmtpAccount exists",
+  "EmailTemplate.NotExists": "EmailTemplate exists"
+}

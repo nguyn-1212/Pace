@@ -1,0 +1,649 @@
+<!-- ═══════════════ Grid — Hướng dẫn tạo Grid ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-module">◈ Module</div>
+  <div class="page-title">Grid — Danh sách dữ liệu</div>
+  <div class="page-desc">Tạo grid (danh sách) cho module. Bao gồm GridData, Properties, Actions, Filters, Export/Import và hơn thế nữa.</div>
+  <div class="page-meta">core/components/grid/grid.component.ts &nbsp;·&nbsp; GridComponent (abstract)</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('grd','data')">📦 GridData</button>
+  <button class="tab-btn" onclick="switchTab('grd','prop')">📋 PropertyData</button>
+  <button class="tab-btn" onclick="switchTab('grd','action')">⚡ Actions</button>
+  <button class="tab-btn" onclick="switchTab('grd','filter')">🔍 Filters</button>
+  <button class="tab-btn" onclick="switchTab('grd','guide')">📝 Hướng dẫn</button>
+  <button class="tab-btn" onclick="switchTab('grd','popup')">🪟 Popup</button>
+</div>
+
+<!-- ═══════════ TAB 1: GridData ═══════════ -->
+<div class="tab-panel active" id="grd-tab-data">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">📦 GridData — Cấu hình Grid</h3>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Khai báo trong component: <code>obj: GridData = { ... }</code>. Tất cả fields đều optional trừ <code>Reference</code>.
+  </p>
+
+  <!-- Core -->
+  <div class="file-label">🔵 Core</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Reference</td><td class="p-type"><span class="t-enum">Entity class</span></td><td class="p-desc"><strong>Bắt buộc.</strong> Entity class. VD: <code>EmailTemplateEntity</code>. Tự sinh <code>ReferenceName</code>, <code>Url</code>, <code>Title</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">ReferenceName</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tên controller (lowercase). <strong>Tự sinh</strong> từ <code>@TableDecorator.name</code>. Override nếu cần.</td></tr>
+        <tr data-level="basic"><td class="p-name">ReferenceKey</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Key phụ cho RefreshUpdateGrids. Tự sinh nếu không set.</td></tr>
+        <tr data-level="basic"><td class="p-name">Url</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Override API url. Mặc định: <code>/admin/{ReferenceName}</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">Title</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tiêu đề grid. Tự sinh từ <code>@TableDecorator.title</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">GridType</td><td class="p-type"><span class="t-enum">GridType</span></td><td class="p-desc"><code>Normal</code> (mặc định) hoặc <code>Excel</code> (Handsontable).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Columns & Data -->
+  <div class="file-label" style="margin-top:14px">📋 Columns & Data</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Properties</td><td class="p-type"><span class="t-arr">(string | PropertyData)[]</span></td><td class="p-desc">Danh sách cột hiển thị. Nếu <code>string</code> → tự detect type từ decorator. VD: <code>['Id', 'Name', { Property: 'SmtpAccountId', Column: 'SmtpAccount.UserName' }]</code></td></tr>
+        <tr data-level="basic"><td class="p-name">Items</td><td class="p-type"><span class="t-arr">any[]</span></td><td class="p-desc">Dữ liệu local (thay vì load từ API).</td></tr>
+        <tr data-level="basic"><td class="p-name">AutoLoad</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Tự load dữ liệu khi filter thay đổi. Mặc định: <code>false</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">KeepPrevData</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Giữ dữ liệu cũ khi chuyển trang.</td></tr>
+        <tr data-level="basic"><td class="p-name">IgnoreIds</td><td class="p-type"><span class="t-arr">number[]</span></td><td class="p-desc">Bỏ qua các item có Id nằm trong mảng.</td></tr>
+        <tr data-level="basic"><td class="p-name">UpdatedBy</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Hiển thị cột "Cập nhật bởi". Mặc định: <code>true</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">TotalTitle</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tiêu đề dòng tổng cộng.</td></tr>
+        <tr data-level="basic"><td class="p-name">LanguageProperties</td><td class="p-type"><span class="t-arr">(string | ObjectEx)[]</span></td><td class="p-desc">Các cột đa ngôn ngữ (expand row).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="file-label" style="margin-top:14px">🔧 Toolbar</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Features</td><td class="p-type"><span class="t-arr">(string | ActionData)[]</span></td><td class="p-desc">Các button trên header toolbar. VD: <code>[ActionData.reload(() => this.loadItems())]</code></td></tr>
+        <tr data-level="basic"><td class="p-name">Exports</td><td class="p-type"><span class="t-arr">ActionData[]</span></td><td class="p-desc">Dropdown xuất dữ liệu. <strong>Tự sinh</strong> Excel/CSV/PDF nếu không set (và user có quyền Export).</td></tr>
+        <tr data-level="basic"><td class="p-name">Imports</td><td class="p-type"><span class="t-arr">ActionData[]</span></td><td class="p-desc">Dropdown nhập dữ liệu. <strong>Tự sinh</strong> tải file mẫu + upload Excel. Set <code>[]</code> để ẩn.</td></tr>
+        <tr data-level="basic"><td class="p-name">ImportSettings</td><td class="p-type"><span class="t-enum">GridImportData</span></td><td class="p-desc">Cấu hình import: <code>ImportUrl</code>, <code>TemplateUrl</code>, <code>MaxRows</code>, <code>Method</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">Filters</td><td class="p-type"><span class="t-arr">ActionData[]</span></td><td class="p-desc">Dropdown lọc trạng thái. <strong>Tự sinh</strong> Draft/Default/Trash. Set <code>[]</code> để ẩn.</td></tr>
+        <tr data-level="basic"><td class="p-name">HideSearch</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Ẩn ô tìm kiếm.</td></tr>
+        <tr data-level="basic"><td class="p-name">SearchText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Placeholder cho ô tìm kiếm.</td></tr>
+        <tr data-level="basic"><td class="p-name">SearchFilters</td><td class="p-type"><span class="t-str">string | string[]</span></td><td class="p-desc">Giới hạn tìm kiếm theo cột cụ thể.</td></tr>
+        <tr data-level="basic"><td class="p-name">HideHeadActions</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Ẩn toàn bộ toolbar trên.</td></tr>
+        <tr data-level="basic"><td class="p-name">HideCustomFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Ẩn nút bộ lọc nâng cao.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Row Actions -->
+  <div class="file-label" style="margin-top:14px">⚡ Row Actions</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Actions</td><td class="p-type"><span class="t-arr">(string | ActionData)[]</span></td><td class="p-desc">Các button action cho từng row. VD: <code>[ActionData.edit(...), ActionData.delete(...)]</code></td></tr>
+        <tr data-level="basic"><td class="p-name">MoreActions</td><td class="p-type"><span class="t-arr">(string | ActionData)[]</span></td><td class="p-desc">Dropdown "..." ở mỗi row cho các action phụ. VD: history, edit member.</td></tr>
+        <tr data-level="basic"><td class="p-name">EditActions</td><td class="p-type"><span class="t-arr">ActionData[]</span></td><td class="p-desc">Actions cho chế độ edit-in-place (khi <code>Editable = true</code>).</td></tr>
+        <tr data-level="basic"><td class="p-name">ContextMenus</td><td class="p-type"><span class="t-arr">ActionData[]</span></td><td class="p-desc">Menu chuột phải (right-click) trên row.</td></tr>
+        <tr data-level="basic"><td class="p-name">MoreFeatures</td><td class="p-type"><span class="t-enum">MoreActionData</span></td><td class="p-desc">Dropdown feature bổ sung: <code>{ Icon, Name, Actions[] }</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Selection -->
+  <div class="file-label" style="margin-top:14px">☑ Selection</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Checkable</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Hiển thị checkbox cho mỗi row.</td></tr>
+        <tr data-level="basic"><td class="p-name">AllowCheckAll</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Cho phép check tất cả (toàn bộ page).</td></tr>
+        <tr data-level="basic"><td class="p-name">Radioable</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Chọn 1 item (radio) thay vì checkbox.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Navigation & Paging -->
+  <div class="file-label" style="margin-top:14px">🧭 Navigation & Paging</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Navigation</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Bật điều hướng addNew/edit/view. Grid tự tạo nút "Thêm mới" nếu <code>true</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">HidePaging</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Ẩn phân trang (hiển thị tất cả item).</td></tr>
+        <tr data-level="basic"><td class="p-name">PageSizes</td><td class="p-type"><span class="t-arr">number[]</span></td><td class="p-desc">Các lựa chọn page size. Mặc định: <code>[20, 50, 100]</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">PagingPositionType</td><td class="p-type"><span class="t-enum">PagingPositionType</span></td><td class="p-desc">Vị trí phân trang: <code>Top</code>, <code>Bottom</code>, <code>Both</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Popup & Embed -->
+  <div class="file-label" style="margin-top:14px">🪟 Popup & Embed</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Size</td><td class="p-type"><span class="t-enum">ModalSizeType</span></td><td class="p-desc">Kích thước popup (khi dùng popup).</td></tr>
+        <tr data-level="basic"><td class="p-name">IsPopup</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Grid đang chạy trong popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">PopupForm</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Component hiển thị khi click add/edit trong popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">EmbedComponent</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Component nhúng phía trên grid.</td></tr>
+        <tr data-level="basic"><td class="p-name">StatisticalComponent</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Component thống kê nhúng phía trên grid.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Editable & Advanced -->
+  <div class="file-label" style="margin-top:14px">✏️ Edit-in-place & Misc</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Editable</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Chế độ edit-in-place (sửa trực tiếp trên grid).</td></tr>
+        <tr data-level="basic"><td class="p-name">EditableObject</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Object khởi tạo khi thêm dòng mới trong chế độ Editable.</td></tr>
+        <tr data-level="basic"><td class="p-name">ScrollX</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Cho phép cuộn ngang.</td></tr>
+        <tr data-level="basic"><td class="p-name">ClassName</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">CSS class bổ sung cho grid.</td></tr>
+        <tr data-level="basic"><td class="p-name">LayoutName</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tên layout grid.</td></tr>
+        <tr data-level="basic"><td class="p-name">SubGridData</td><td class="p-type"><span class="t-enum">GridData</span></td><td class="p-desc">Grid lồng nhau (sub-grid trong row).</td></tr>
+        <tr data-level="basic"><td class="p-name">TimerReload</td><td class="p-type"><span class="t-enum">TimerReloadData</span></td><td class="p-desc">Tự reload theo timer: <code>{ Timer, AutoReload, AllowReload }</code></td></tr>
+        <tr data-level="basic"><td class="p-name">AsynLoad</td><td class="p-type"><span class="t-enum">() => void</span></td><td class="p-desc">Callback sau khi load xong.</td></tr>
+        <tr data-level="basic"><td class="p-name">HideSkeletonLoading</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Ẩn skeleton loading khi đang tải.</td></tr>
+        <tr data-level="basic"><td class="p-name">ColumnFilters</td><td class="p-type"><span class="t-arr">string[]</span></td><td class="p-desc">Cột được phép lọc trên header.</td></tr>
+        <tr data-level="basic"><td class="p-name">Forms</td><td class="p-type"><span class="t-arr">FormData[]</span></td><td class="p-desc">Form data cho grid popup.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 2: PropertyData ═══════════ -->
+<div class="tab-panel" id="grd-tab-prop">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">📋 PropertyData — Cấu hình cột</h3>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Mỗi cột trong grid = 1 <code>PropertyData</code> hoặc 1 <code>string</code> (property name). Nếu là string, type tự detect từ Entity decorator.
+  </p>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Property</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc"><strong>Bắt buộc.</strong> Tên property trên Entity. VD: <code>'Name'</code></td></tr>
+        <tr data-level="basic"><td class="p-name">Title</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tiêu đề cột. Mặc định: lấy từ decorator label hoặc property name.</td></tr>
+        <tr data-level="basic"><td class="p-name">Type</td><td class="p-type"><span class="t-enum">DataType</span></td><td class="p-desc">Kiểu dữ liệu. Tự detect từ decorator nếu không set.</td></tr>
+        <tr data-level="basic"><td class="p-name">Column</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc"><strong>Cột thay thế (join).</strong> Hiển thị dữ liệu từ bảng liên kết qua EF Navigation Property. Gửi đến API dạng <code>Property=Column</code>. ▸ <a href="#" onclick="document.getElementById('grd-column-detail').style.display='block';return false">Xem chi tiết ↓</a></td></tr>
+        <tr data-level="basic"><td class="p-name">Align</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc"><code>'left'</code> (mặc định), <code>'center'</code>, <code>'right'</code>. Tự set: Number→right, Boolean/DateTime→center.</td></tr>
+        <tr data-level="basic"><td class="p-name">ColumnWidth</td><td class="p-type"><span class="t-num">number</span></td><td class="p-desc">Độ rộng cột (px).</td></tr>
+        <tr data-level="basic"><td class="p-name">Hidden</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Ẩn cột.</td></tr>
+        <tr data-level="basic"><td class="p-name">Sticky</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Ghim cột (sticky khi cuộn ngang).</td></tr>
+        <tr data-level="basic"><td class="p-name">PipeType</td><td class="p-type"><span class="t-enum">PipeType</span></td><td class="p-desc">Pipe hiển thị: <code>Date</code>, <code>DateTime</code>, <code>Number</code>, <code>Coin</code>, <code>Color</code>, <code>Toggle</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">Format</td><td class="p-type"><span class="t-enum">(item) => string</span></td><td class="p-desc">Custom render HTML cho cell. VD: <code>Format: (item) => '&lt;a&gt;' + item.Name + '&lt;/a&gt;'</code></td></tr>
+        <tr data-level="basic"><td class="p-name">FormatAsync</td><td class="p-type"><span class="t-enum">(item) => Promise</span></td><td class="p-desc">Format bất đồng bộ.</td></tr>
+        <tr data-level="basic"><td class="p-name">Click</td><td class="p-type"><span class="t-enum">(item) => void</span></td><td class="p-desc">Click handler cho cell. Cell hiển thị dạng link.</td></tr>
+        <tr data-level="basic"><td class="p-name">Order</td><td class="p-type"><span class="t-enum">OrderType</span></td><td class="p-desc">Sắp xếp mặc định: <code>Asc</code>, <code>Desc</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">DisableOrder</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Tắt sắp xếp cho cột này.</td></tr>
+        <tr data-level="basic"><td class="p-name">AllowFilter</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Cho phép lọc trên cột.</td></tr>
+        <tr data-level="basic"><td class="p-name">ColSpan</td><td class="p-type"><span class="t-num">number</span></td><td class="p-desc">Gộp cột (colspan).</td></tr>
+        <tr data-level="basic"><td class="p-name">EditMode</td><td class="p-type"><span class="t-enum">EditModeType</span></td><td class="p-desc">Chế độ chỉnh sửa trong grid (inline edit).</td></tr>
+        <tr data-level="basic"><td class="p-name">EditProperty</td><td class="p-type"><span class="t-enum">ObjectEx</span></td><td class="p-desc">Property config cho inline editor.</td></tr>
+        <tr data-level="basic"><td class="p-name">ValueChange</td><td class="p-type"><span class="t-enum">(item) => void</span></td><td class="p-desc">Callback khi giá trị thay đổi (inline edit).</td></tr>
+        <tr data-level="basic"><td class="p-name">SumOrCount</td><td class="p-type"><span class="t-enum">() => any</span></td><td class="p-desc">Hàm tính tổng/đếm cho dòng total.</td></tr>
+        <tr data-level="basic"><td class="p-name">HideCheckbox</td><td class="p-type"><span class="t-enum">(item) => boolean</span></td><td class="p-desc">Ẩn checkbox cho row cụ thể.</td></tr>
+        <tr data-level="basic"><td class="p-name">Tooltip</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tooltip cho tiêu đề cột.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Column Detail ── -->
+  <div id="grd-column-detail" style="display:none;margin-top:16px">
+    <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🔗 Column — Truy vấn dữ liệu bảng liên kết (Join)</h3>
+    <p style="margin:0 0 8px;font-size:13px;color:var(--text-2);line-height:1.6">
+      Khi khai báo <code>Column</code>, grid sẽ gửi đến API dạng <code>"Property=Column"</code>. API dùng <strong>Dynamic LINQ Select</strong> để truy vấn dữ liệu từ bảng liên kết qua EF Navigation Property.
+    </p>
+
+    <div class="file-label">📐 Cú pháp</div>
+    <div class="opts-table-wrap">
+      <table class="opts-table">
+        <thead><tr><th>Dạng</th><th>Column value</th><th>Kết quả SQL</th></tr></thead>
+        <tbody>
+          <tr data-level="basic"><td class="p-name">Navigation Property</td><td class="p-type"><code>SmtpAccount.UserName</code></td><td class="p-desc">JOIN SmtpAccount → SELECT <code>SmtpAccount.UserName as SmtpAccountId</code></td></tr>
+          <tr data-level="basic"><td class="p-name">Count()</td><td class="p-type"><code>StaffMembers.Count()</code></td><td class="p-desc">SELECT <code>(SELECT COUNT(*) FROM StaffMembers ...) as MemberCount</code></td></tr>
+          <tr data-level="basic"><td class="p-name">Sum()</td><td class="p-type"><code>Deals.Sum(d => d.Amount)</code></td><td class="p-desc">SELECT <code>(SELECT SUM(Amount) FROM Deals ...) as TotalAmount</code></td></tr>
+          <tr data-level="basic"><td class="p-name">Any()</td><td class="p-type"><code>Tasks.Any()</code></td><td class="p-desc">SELECT <code>EXISTS(...) as HasTasks</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="file-label" style="margin-top:12px">💡 Ví dụ</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// 1. Hiển thị UserName từ bảng SmtpAccount (FK: SmtpAccountId)</span>
+{ <span class="prop">Property</span>: <span class="str">'SmtpAccountId'</span>, <span class="prop">Column</span>: <span class="str">'SmtpAccount.UserName'</span> }
+<span class="cm">// → API nhận: "SmtpAccountId=SmtpAccount.UserName"</span>
+<span class="cm">// → LINQ Select: SmtpAccount.UserName as SmtpAccountId</span>
+
+<span class="cm">// 2. Đếm số member trong team</span>
+{ <span class="prop">Property</span>: <span class="str">'MemberCount'</span>, <span class="prop">Column</span>: <span class="str">'StaffMembers.Count()'</span> }
+<span class="cm">// → API nhận: "MemberCount=StaffMembers.Count()"</span>
+
+<span class="cm">// 3. Tổng giá trị đơn hàng</span>
+{ <span class="prop">Property</span>: <span class="str">'TotalAmount'</span>, <span class="prop">Column</span>: <span class="str">'Orders.Sum(o => o.Amount)'</span> }</pre></div></div>
+
+    <div class="file-label" style="margin-top:12px">🔄 Luồng xử lý</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">① Frontend: getColumns()</span>
+   Properties → [<span class="str">"Id"</span>, <span class="str">"Name"</span>, <span class="str">"SmtpAccountId=SmtpAccount.UserName"</span>]
+
+<span class="cm">② Gửi API: POST /admin/{controller}/Items</span>
+   TableData.Columns = [<span class="str">"Id"</span>, <span class="str">"Name"</span>, <span class="str">"SmtpAccountId=SmtpAccount.UserName"</span>]
+
+<span class="cm">③ Backend: GetDynamicQuery(columns)</span>
+   query.Select(<span class="str">"new (Id as Id, Name as Name, SmtpAccount.UserName as SmtpAccountId)"</span>)</pre></div></div>
+
+    <div class="callout callout-blue" style="margin-top:10px">
+      <span>ℹ️</span><span><strong>Auto columns:</strong> API tự thêm <code>IsActive</code>, <code>IsDelete</code>, <code>CreatedDate</code>, <code>UpdatedDate</code>, <code>CreatedBy=CreatedByUser.UserName</code>, <code>UpdatedBy=UpdatedByUser.UserName</code> nếu chưa có.</span>
+    </div>
+    <div class="callout callout-yellow" style="margin-top:8px">
+      <span>⚠️</span><span><code>Column</code> phải trùng với <strong>EF Navigation Property</strong> đã cấu hình trong Entity. Nếu không có navigation → API sẽ lỗi.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 3: Actions ═══════════ -->
+<div class="tab-panel" id="grd-tab-action">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">⚡ ActionData — Các hàm tạo action</h3>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2);line-height:1.6">
+    Import <code>ActionData</code> từ <code>core/domains/data/action.data</code>. Dùng các static method để tạo button nhanh.
+  </p>
+
+  <div class="file-label">🏗 Static Methods</div>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Method</th><th>Dùng cho</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">ActionData.edit(click, hidden?)</td><td class="p-type">Actions</td><td class="p-desc">Nút sửa (🖉). Click nhận <code>item</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.delete(click, hidden?)</td><td class="p-type">Actions</td><td class="p-desc">Nút xoá (🗑). Click nhận <code>item</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.view(click, hidden?)</td><td class="p-type">Actions</td><td class="p-desc">Nút xem (👁). Click nhận <code>item</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.addNew(click)</td><td class="p-type">Features</td><td class="p-desc">Nút thêm mới (+).</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.reload(click)</td><td class="p-type">Features</td><td class="p-desc">Nút tải lại (↻).</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.resetCache(click)</td><td class="p-type">Features</td><td class="p-desc">Nút xoá cache.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.history(click, hidden?)</td><td class="p-type">MoreActions</td><td class="p-desc">Nút lịch sử.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.active(click, hidden?)</td><td class="p-type">Actions</td><td class="p-desc">Nút kích hoạt/publish.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.cancel(click, hidden?)</td><td class="p-type">Actions</td><td class="p-desc">Nút huỷ.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.confirm(click, hidden?)</td><td class="p-type">Actions</td><td class="p-desc">Nút xác nhận.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.config(click, hidden?)</td><td class="p-type">Actions</td><td class="p-desc">Nút cấu hình (⚙).</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.close(click, hidden?)</td><td class="p-type">Actions</td><td class="p-desc">Nút đóng.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.separator()</td><td class="p-type">Any</td><td class="p-desc">Đường phân cách giữa các action.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.multipledelete(click)</td><td class="p-type">Features</td><td class="p-desc">Nút xoá nhiều (hiện khi có checkbox).</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.importData(click)</td><td class="p-type">Features</td><td class="p-desc">Nút import dữ liệu.</td></tr>
+        <tr data-level="basic"><td class="p-name">ActionData.downloadFile(click)</td><td class="p-type">Features</td><td class="p-desc">Nút tải file.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:12px">
+    <span>ℹ️</span><span><code>hidden</code> là optional callback <code>(item) => boolean</code>. Trả về <code>true</code> để ẩn action theo điều kiện.</span>
+  </div>
+
+  <h3 style="margin:18px 0 8px;font-size:14px;color:var(--text)">💡 Custom Action</h3>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Custom action object (thay vì dùng static method)</span>
+{
+  <span class="prop">icon</span>: <span class="str">'la la-users'</span>,
+  <span class="prop">name</span>: <span class="cls">ActionType</span>.EditMember,
+  <span class="prop">systemName</span>: <span class="cls">ActionType</span>.EditMember,
+  <span class="prop">click</span>: ((item) => { <span class="prop">this</span>.popupChoiceUser(item); })
+}</pre></div></div>
+</div>
+
+<!-- ═══════════ TAB 4: Filters ═══════════ -->
+<div class="tab-panel" id="grd-tab-filter">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🔍 Filters — Bộ lọc</h3>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2);line-height:1.6">
+    3 loại filter khác nhau về UI và cách hoạt động.
+  </p>
+
+  <!-- InlineFilters -->
+  <div class="file-label">1️⃣ InlineFilters — Lọc cùng hàng tìm kiếm</div>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2)">Hiển thị ngay bên cạnh ô tìm kiếm, thay đổi → tự filter.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">InlineFilters</span>: [<span class="str">'OrganizationId'</span>]
+<span class="cm">// → render dropdown "Organization" cùng hàng search box</span></pre></div></div>
+
+  <div class="opts-table-wrap" style="margin-top:8px">
+    <table class="opts-table">
+      <thead><tr><th>Type</th><th>Khai báo</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">string</td><td class="p-type">Property name</td><td class="p-desc">Tự tạo editor từ decorator của property đó.</td></tr>
+        <tr data-level="basic"><td class="p-name">GridFilterData</td><td class="p-type">Object</td><td class="p-desc"><code>{ Name, LookupUrl?, Multiple?, AllowClear?, Types? }</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CustomFilters -->
+  <div class="file-label" style="margin-top:14px">2️⃣ CustomFilters — Bộ lọc nâng cao</div>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2)">Ẩn mặc định, bấm nút "Bộ lọc" trên toolbar để mở ra panel filter với nhiều trường.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">CustomFilters</span>: [<span class="str">'Status'</span>, <span class="str">'CreatedDate'</span>, <span class="str">'CategoryId'</span>]
+<span class="cm">// → panel filter với 3 trường: Status, CreatedDate, CategoryId</span></pre></div></div>
+
+  <!-- TabFilters -->
+  <div class="file-label" style="margin-top:14px">3️⃣ TabFilters — Lọc dạng tab</div>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2)">Tạo các tab phía trên grid. Mỗi tab = 1 giá trị filter. Hiện count theo tab.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">TabFilters</span>: [
+  { <span class="prop">Name</span>: <span class="str">'Status'</span>, <span class="prop">Title</span>: <span class="str">'Chờ'</span>,       <span class="prop">Value</span>: <span class="num">0</span>, <span class="prop">CompareType</span>: <span class="cls">CompareType</span>.N_Equals },
+  { <span class="prop">Name</span>: <span class="str">'Status'</span>, <span class="prop">Title</span>: <span class="str">'Đang xử lý'</span>, <span class="prop">Value</span>: <span class="num">1</span>, <span class="prop">CompareType</span>: <span class="cls">CompareType</span>.N_Equals },
+  { <span class="prop">Name</span>: <span class="str">'Status'</span>, <span class="prop">Title</span>: <span class="str">'Đã xử lý'</span>,  <span class="prop">Value</span>: <span class="num">2</span>, <span class="prop">CompareType</span>: <span class="cls">CompareType</span>.N_Equals },
+]</pre></div></div>
+
+  <div class="opts-table-wrap" style="margin-top:8px">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Name</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tên property filter.</td></tr>
+        <tr data-level="basic"><td class="p-name">Title</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text hiển thị trên tab.</td></tr>
+        <tr data-level="basic"><td class="p-name">Value</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Giá trị filter khi tab active.</td></tr>
+        <tr data-level="basic"><td class="p-name">CompareType</td><td class="p-type"><span class="t-enum">CompareType</span></td><td class="p-desc">Kiểu so sánh.</td></tr>
+        <tr data-level="basic"><td class="p-name">Icon</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Icon cho tab.</td></tr>
+        <tr data-level="basic"><td class="p-name">Count</td><td class="p-type"><span class="t-num">number</span></td><td class="p-desc">Số lượng (tự cập nhật từ API).</td></tr>
+        <tr data-level="basic"><td class="p-name">Active</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Tab mặc định active.</td></tr>
+        <tr data-level="basic"><td class="p-name">Url</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">API url riêng cho tab.</td></tr>
+        <tr data-level="basic"><td class="p-name">TabChange</td><td class="p-type"><span class="t-enum">() => any</span></td><td class="p-desc">Callback khi chuyển tab.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- StatisticalData -->
+  <div class="file-label" style="margin-top:14px">📊 StatisticalData — Box thống kê</div>
+  <p style="margin:0 0 8px;font-size:13px;color:var(--text-2)">Các box thống kê hiển thị phía trên grid (count, sum...).</p>
+  <div class="opts-table-wrap">
+    <table class="opts-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">Name</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tên property.</td></tr>
+        <tr data-level="basic"><td class="p-name">Title</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tiêu đề box.</td></tr>
+        <tr data-level="basic"><td class="p-name">Icon</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Icon cho box.</td></tr>
+        <tr data-level="basic"><td class="p-name">Color</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Màu box.</td></tr>
+        <tr data-level="basic"><td class="p-name">Count</td><td class="p-type"><span class="t-num">number</span></td><td class="p-desc">Giá trị hiển thị (tự cập nhật từ API).</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 5: Hướng dẫn ═══════════ -->
+<div class="tab-panel" id="grd-tab-guide">
+
+  <!-- Step bar -->
+  <div class="grd-step-bar">
+    <div class="grd-step-item active" onclick="grdShowStep(0,this)"><span class="grd-step-num">1</span><span class="grd-step-lbl">Entity</span></div>
+    <div class="grd-step-line"></div>
+    <div class="grd-step-item" onclick="grdShowStep(1,this)"><span class="grd-step-num">2</span><span class="grd-step-lbl">Grid Component</span></div>
+    <div class="grd-step-line"></div>
+    <div class="grd-step-item" onclick="grdShowStep(2,this)"><span class="grd-step-num">3</span><span class="grd-step-lbl">Module</span></div>
+    <div class="grd-step-line"></div>
+    <div class="grd-step-item" onclick="grdShowStep(3,this)"><span class="grd-step-num">4</span><span class="grd-step-lbl">Checklist</span></div>
+  </div>
+
+  <!-- STEP 0: Entity -->
+  <div class="grd-step-panel active" id="grd-sp-0">
+    <div class="grd-sp-title">① Entity</div>
+    <p style="margin:0 0 8px;font-size:13px;color:var(--text-2)">Tạo Entity class với <code>@TableDecorator</code> và các field decorator. Grid sẽ tự đọc metadata từ đây.</p>
+    <div class="file-label">📄 category.entity.ts</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="dec">@TableDecorator</span>({ name: <span class="str">'category'</span>, title: <span class="str">'Danh mục'</span> })
+<span class="kw">export class</span> <span class="cls">CategoryEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+  <span class="dec">@StringDecorator</span>({ label: <span class="str">'Tên'</span>, required: <span class="kw">true</span>, max: 150 })
+  Name: <span class="cls">string</span>;
+  <span class="dec">@StringDecorator</span>({ label: <span class="str">'Mã'</span>, max: 50 })
+  Code: <span class="cls">string</span>;
+  <span class="dec">@BooleanDecorator</span>({ label: <span class="str">'Kích hoạt'</span> })
+  IsActive: <span class="cls">boolean</span>;
+}</pre></div></div>
+    <div class="callout callout-blue" style="margin-top:8px">
+      <span>ℹ️</span><span><code>@TableDecorator.name</code> sẽ tự động trở thành <code>ReferenceName</code> (tên controller API).</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: Grid Component -->
+  <div class="grd-step-panel" id="grd-sp-1">
+    <div class="grd-sp-title">② Grid Component</div>
+    <p style="margin:0 0 8px;font-size:13px;color:var(--text-2)">Tạo component kế thừa <code>GridComponent</code>. Khai báo <code>obj: GridData</code> và gọi <code>this.render(obj)</code> trong constructor.</p>
+
+    <div class="file-label">📄 Đơn giản — category.module.ts</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="dec">@Component</span>({ <span class="prop">templateUrl</span>: <span class="str">'../../../core/components/grid/grid.component.html'</span> })
+<span class="kw">export class</span> <span class="cls">CategoryComponent</span> <span class="kw">extends</span> <span class="cls">GridComponent</span> {
+  <span class="prop">obj</span>: <span class="cls">GridData</span> = {
+    <span class="prop">Reference</span>: <span class="cls">CategoryEntity</span>,
+    <span class="prop">Size</span>: <span class="cls">ModalSizeType</span>.FullScreen,
+    <span class="prop">Properties</span>: [<span class="str">'Id'</span>, <span class="str">'Name'</span>, <span class="str">'Code'</span>, <span class="str">'IsActive'</span>],
+  };
+  <span class="kw">constructor</span>() { <span class="kw">super</span>(); <span class="prop">this</span>.render(<span class="prop">this</span>.obj); }
+}</pre></div></div>
+
+    <div class="file-label" style="margin-top:14px">📄 Nâng cao — custom properties + actions</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="dec">@Component</span>({ <span class="prop">templateUrl</span>: <span class="str">'../../../core/components/grid/grid.component.html'</span> })
+<span class="kw">export class</span> <span class="cls">TeamComponent</span> <span class="kw">extends</span> <span class="cls">GridComponent</span> {
+  <span class="prop">obj</span>: <span class="cls">GridData</span> = {
+    <span class="prop">Reference</span>: <span class="cls">TeamEntity</span>,
+    <span class="prop">Navigation</span>: <span class="kw">true</span>,
+    <span class="prop">InlineFilters</span>: [<span class="str">'OrganizationId'</span>],
+    <span class="prop">Actions</span>: [
+      <span class="cls">ActionData</span>.edit((item) => <span class="prop">this</span>.edit(item)),
+      <span class="cls">ActionData</span>.delete((item) => <span class="prop">this</span>.trash(item)),
+    ],
+    <span class="prop">MoreActions</span>: [
+      <span class="cls">ActionData</span>.history((item) => <span class="prop">this</span>.viewHistory(item.Id)),
+    ],
+  };
+  <span class="kw">constructor</span>() {
+    <span class="kw">super</span>();
+    <span class="prop">this</span>.properties = [
+      { <span class="prop">Property</span>: <span class="str">'Id'</span>, <span class="prop">Type</span>: <span class="cls">DataType</span>.Number },
+      { <span class="prop">Property</span>: <span class="str">'Name'</span>, <span class="prop">Format</span>: (item) => <span class="str">'&lt;a&gt;'</span> + item.Name + <span class="str">'&lt;/a&gt;'</span> },
+      { <span class="prop">Property</span>: <span class="str">'Code'</span> },
+      { <span class="prop">Property</span>: <span class="str">'Amount'</span>, <span class="prop">Align</span>: <span class="str">'center'</span>,
+        <span class="prop">Click</span>: (item) => <span class="prop">this</span>.popup(item),
+        <span class="prop">Format</span>: (item) => item.Amount + <span class="str">' nhân viên'</span> },
+    ];
+    <span class="prop">this</span>.render(<span class="prop">this</span>.obj);
+  }
+}</pre></div></div>
+
+    <div class="callout callout-yellow" style="margin-top:8px">
+      <span>⚠️</span><span><code>this.render(this.obj)</code> phải gọi sau khi set <code>this.properties</code>. Nếu khai báo <code>Properties</code> trực tiếp trong <code>obj</code> thì không cần set riêng.</span>
+    </div>
+  </div>
+
+  <!-- STEP 2: Module -->
+  <div class="grd-step-panel" id="grd-sp-2">
+    <div class="grd-sp-title">③ Đăng ký Module + Routes</div>
+    <p style="margin:0 0 8px;font-size:13px;color:var(--text-2)">Khai báo component trong NgModule và đăng ký các routes.</p>
+    <div class="file-label">📄 category.module.ts (phần @NgModule)</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="dec">@NgModule</span>({
+  <span class="prop">declarations</span>: [<span class="cls">CategoryComponent</span>, <span class="cls">EditCategoryComponent</span>],
+  <span class="prop">imports</span>: [
+    <span class="cls">UtilityModule</span>,
+    <span class="cls">RouterModule</span>.forChild([
+      { path: <span class="str">''</span>, component: <span class="cls">CategoryComponent</span>, canActivate: [<span class="cls">AdminAuthGuard</span>] },
+      { path: <span class="str">'add'</span>, component: <span class="cls">EditCategoryComponent</span>, canActivate: [<span class="cls">AdminAuthGuard</span>] },
+      { path: <span class="str">'edit'</span>, component: <span class="cls">EditCategoryComponent</span>, canActivate: [<span class="cls">AdminAuthGuard</span>] },
+      { path: <span class="str">'view'</span>, component: <span class="cls">EditCategoryComponent</span>, canActivate: [<span class="cls">AdminAuthGuard</span>] },
+    ])
+  ]
+})
+<span class="kw">export class</span> <span class="cls">CategoryModule</span> { }</pre></div></div>
+
+    <div class="callout callout-blue" style="margin-top:8px">
+      <span>ℹ️</span><span>Nếu grid dùng <code>Navigation: true</code>, cần override <code>addNew()</code>, <code>edit(item)</code>, <code>view(item)</code> với <code>NavigationStateData</code>.</span>
+    </div>
+
+    <div class="file-label" style="margin-top:12px">📄 addNew / edit / view (khi Navigation = true)</div>
+    <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="fn">addNew</span>() {
+  <span class="kw">let</span> obj: <span class="cls">NavigationStateData</span> = { prevData: <span class="prop">this</span>.itemData, prevUrl: <span class="str">'/admin/category'</span> };
+  <span class="prop">this</span>.router.navigate([<span class="str">'/admin/category/add'</span>], { state: { params: JSON.stringify(obj) } });
+}
+<span class="fn">edit</span>(item: <span class="cls">CategoryEntity</span>) {
+  <span class="kw">let</span> obj: <span class="cls">NavigationStateData</span> = { id: item.Id, prevData: <span class="prop">this</span>.itemData, prevUrl: <span class="str">'/admin/category'</span> };
+  <span class="prop">this</span>.router.navigate([<span class="str">'/admin/category/edit'</span>], { state: { params: JSON.stringify(obj) } });
+}
+<span class="fn">view</span>(item: <span class="cls">CategoryEntity</span>) {
+  <span class="kw">let</span> obj: <span class="cls">NavigationStateData</span> = { id: item.Id, viewer: <span class="kw">true</span>, prevData: <span class="prop">this</span>.itemData, prevUrl: <span class="str">'/admin/category'</span> };
+  <span class="prop">this</span>.router.navigate([<span class="str">'/admin/category/view'</span>], { state: { params: JSON.stringify(obj) } });
+}</pre></div></div>
+  </div>
+
+  <!-- STEP 3: Checklist -->
+  <div class="grd-step-panel" id="grd-sp-3">
+    <div class="grd-sp-title">④ Checklist</div>
+    <div class="opts-table-wrap">
+      <table class="opts-table">
+        <thead><tr><th>✓</th><th>File / Config</th></tr></thead>
+        <tbody>
+          <tr data-level="basic"><td class="p-desc">Entity có <code>@TableDecorator</code> + field decorators</td><td class="p-name">category.entity.ts</td></tr>
+          <tr data-level="basic"><td class="p-desc">GridComponent — <code>obj: GridData</code> + <code>this.render(obj)</code></td><td class="p-name">category.module.ts</td></tr>
+          <tr data-level="basic"><td class="p-desc">templateUrl → <code>grid.component.html</code></td><td class="p-name">@Component</td></tr>
+          <tr data-level="basic"><td class="p-desc">NgModule — declarations + RouterModule.forChild</td><td class="p-name">category.module.ts</td></tr>
+          <tr data-level="basic"><td class="p-desc">Navigation? → override addNew/edit/view</td><td class="p-name">(optional)</td></tr>
+          <tr data-level="basic"><td class="p-desc">Custom Properties? → set this.properties trước render</td><td class="p-name">(optional)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-yellow" style="margin-top:12px">
+      <span>⚠️</span>
+      <span>Exports / Imports / Filters tự sinh. Set <code>[]</code> nếu muốn ẩn bớt.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 6: Popup ═══════════ -->
+<div class="tab-panel" id="grd-tab-popup">
+  <h3 style="margin:0 0 8px;font-size:14px;color:var(--text)">🪟 Popup — Mở popup từ Grid</h3>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">
+    GridComponent có 4 hàm popup. Khác với Forms, Grid tự tối ưu popup (ẩn toolbar, set <code>IsPopup</code>).
+  </p>
+
+  <!-- 1. popupAsync -->
+  <div class="file-label">1️⃣ popupAsync — Popup Component tùy chỉnh</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Mở popup chứa Angular Component. Truyền data qua <code>objectExtra</code>.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.popupAsync({
+  <span class="prop">object</span>: <span class="cls">EditCategoryComponent</span>,
+  <span class="prop">title</span>: <span class="str">'Chỉnh sửa'</span>,
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Large,
+  <span class="prop">objectExtra</span>: { id: item.Id },
+  <span class="prop">confirmText</span>: <span class="str">'Lưu'</span>,
+}, <span class="kw">async</span> (result) => {
+  <span class="kw">await</span> <span class="prop">this</span>.loadItems();
+});</pre></div></div>
+  <div class="opts-table-wrap" style="margin-top:8px">
+    <table class="opts-table">
+      <thead><tr><th>Param (DialogData)</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">object</td><td class="p-type"><span class="t-enum">Component</span></td><td class="p-desc">Angular Component render trong popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">objectExtra</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Data truyền vào component → <code>this.getParamPopup('key')</code>.</td></tr>
+        <tr data-level="basic"><td class="p-name">title</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Tiêu đề popup.</td></tr>
+        <tr data-level="basic"><td class="p-name">size</td><td class="p-type"><span class="t-enum">ModalSizeType</span></td><td class="p-desc"><code>Small</code> · <code>Medium</code> · <code>Large</code> · <code>ExtraLarge</code> · <code>FullScreen</code></td></tr>
+        <tr data-level="basic"><td class="p-name">confirmText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút xác nhận. <code>null</code> → ẩn nút.</td></tr>
+        <tr data-level="basic"><td class="p-name">cancelText</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Text nút đóng (mặc định: 'Đóng').</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmClose</td><td class="p-type"><span class="t-bool">boolean</span></td><td class="p-desc">Tự đóng popup sau confirm.</td></tr>
+        <tr data-level="basic"><td class="p-name">description</td><td class="p-type"><span class="t-str">string</span></td><td class="p-desc">Mô tả phụ dưới tiêu đề.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2. popupAboveAsync -->
+  <div class="file-label" style="margin-top:16px">2️⃣ popupAboveAsync — Popup lớp 2 (chồng lên popup cũ)</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Mở popup thứ 2 phía trên popup hiện tại. Cùng API với <code>popupAsync</code>.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="cm">// Từ trong popup 1, mở popup 2</span>
+<span class="prop">this</span>.popupAboveAsync({
+  <span class="prop">object</span>: <span class="cls">ChoiceUserComponent</span>,
+  <span class="prop">title</span>: <span class="str">'Chọn nhân viên'</span>,
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Large,
+  <span class="prop">confirmText</span>: <span class="str">'Chọn'</span>,
+}, <span class="kw">async</span> (selectedUsers) => {
+  <span class="cm">// xử lý users đã chọn</span>
+});</pre></div></div>
+
+  <!-- 3. popupSubGrid -->
+  <div class="file-label" style="margin-top:16px">3️⃣ popupSubGrid — Sub-grid trong popup</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Mở 1 grid con trong popup. Grid tự ẩn toolbar (Exports/Imports/Filters/Actions).</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.popupSubGrid({
+  <span class="prop">Title</span>: <span class="str">'Danh sách nhân viên'</span>,
+  <span class="prop">Reference</span>: <span class="cls">StaffEntity</span>,
+  <span class="prop">Size</span>: <span class="cls">ModalSizeType</span>.ExtraLarge,
+  <span class="prop">Properties</span>: [<span class="str">'Id'</span>, <span class="str">'Name'</span>, <span class="str">'Email'</span>, <span class="str">'Phone'</span>],
+  <span class="prop">Checkable</span>: <span class="kw">true</span>,
+}, existingItems, <span class="kw">async</span> (selectedItems) => {
+  <span class="cm">// selectedItems = mảng items được check</span>
+  <span class="kw">await</span> <span class="prop">this</span>.saveMembers(selectedItems);
+});</pre></div></div>
+
+  <div class="callout callout-blue" style="margin-top:8px">
+    <span>ℹ️</span>
+    <span><strong>Auto-config:</strong> <code>popupSubGrid</code> tự set: <code>IsPopup = true</code>, ẩn <code>Actions</code>, <code>Imports</code>, <code>Exports</code>, <code>Filters</code>, <code>Features</code>, <code>HideHeadActions = true</code>. Chỉ cần khai báo <code>Title</code>, <code>Reference</code>, <code>Properties</code>.</span>
+  </div>
+
+  <div class="opts-table-wrap" style="margin-top:8px">
+    <table class="opts-table">
+      <thead><tr><th>Param</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">obj (arg 1)</td><td class="p-type"><span class="t-enum">GridData</span></td><td class="p-desc">Config grid con. Tự ẩn toolbar nếu không khai báo.</td></tr>
+        <tr data-level="basic"><td class="p-name">items (arg 2)</td><td class="p-type"><span class="t-arr">BaseEntity[]</span></td><td class="p-desc">Dữ liệu sẵn có (preload). Nếu <code>null</code> → grid tự fetch từ API.</td></tr>
+        <tr data-level="basic"><td class="p-name">okFunction (arg 3)</td><td class="p-type"><span class="t-enum">(items) => Promise</span></td><td class="p-desc">Callback khi bấm xác nhận, nhận mảng items (checked nếu Checkable).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:8px">
+    <span>⚠️</span><span>Nếu muốn giữ <code>CustomFilters</code> → khai báo <code>CustomFilters</code> trong <code>obj</code>. Nếu không → tự ẩn (<code>HideCustomFilter = true</code>).</span>
+  </div>
+
+  <!-- 4. popupAutoAsync -->
+  <div class="file-label" style="margin-top:16px">4️⃣ popupAutoAsync — Auto-form từ Entity</div>
+  <p style="margin:0 0 6px;font-size:13px;color:var(--text-2)">Tự sinh form popup từ Entity decorators. Không cần viết component riêng.</p>
+  <div class="code-wrap"><div class="code-panel active"><pre class="flat"><span class="prop">this</span>.popupAutoAsync({
+  <span class="prop">title</span>: <span class="str">'Thêm nhanh'</span>,
+  <span class="prop">size</span>: <span class="cls">ModalSizeType</span>.Medium,
+  <span class="prop">objectValue</span>: {
+    <span class="prop">reference</span>: <span class="cls">CategoryEntity</span>,
+    <span class="prop">properties</span>: [<span class="str">'Code'</span>, <span class="str">'Name'</span>, <span class="str">'Description'</span>],
+    <span class="prop">object</span>: <span class="kw">new</span> <span class="cls">CategoryEntity</span>(),
+  },
+  <span class="prop">confirmText</span>: <span class="str">'Lưu'</span>,
+  <span class="prop">confirmFunction</span>: <span class="kw">async</span> (item) => {
+    <span class="kw">await</span> <span class="prop">this</span>.service.save(<span class="str">'category'</span>, item);
+    <span class="kw">await</span> <span class="prop">this</span>.loadItems();
+  },
+});</pre></div></div>
+
+  <div class="opts-table-wrap" style="margin-top:8px">
+    <table class="opts-table">
+      <thead><tr><th>Param (DialogAutoData)</th><th>Type</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr data-level="basic"><td class="p-name">objectValue.reference</td><td class="p-type"><span class="t-enum">Entity class</span></td><td class="p-desc">Entity dùng để tự sinh form (đọc decorator).</td></tr>
+        <tr data-level="basic"><td class="p-name">objectValue.properties</td><td class="p-type"><span class="t-arr">(string | ObjectEx)[]</span></td><td class="p-desc">Properties hiển thị trên form.</td></tr>
+        <tr data-level="basic"><td class="p-name">objectValue.object</td><td class="p-type"><span class="t-enum">any</span></td><td class="p-desc">Giá trị mặc định (entity instance).</td></tr>
+        <tr data-level="basic"><td class="p-name">confirmFunction</td><td class="p-type"><span class="t-enum">(item) => Promise</span></td><td class="p-desc">Callback nhận entity khi bấm xác nhận.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:10px">
+    <span>ℹ️</span><span><strong>So sánh:</strong> <code>popupAsync</code> = popup với component tùy chỉnh (full control), <code>popupAutoAsync</code> = auto-form nhanh, <code>popupSubGrid</code> = grid con pick items.</span>
+  </div>
+</div>
+
+<style>
+.grd-step-bar { display:flex; align-items:center; gap:0; margin-bottom:20px; padding:12px 8px; background:var(--surface); border:1px solid var(--border); border-radius:10px }
+.grd-step-item { display:flex; align-items:center; gap:6px; padding:6px 14px; border-radius:8px; cursor:pointer; transition:all .15s; user-select:none }
+.grd-step-item:hover { background:rgba(255,255,255,.06) }
+.grd-step-item.active { background:linear-gradient(135deg,#059669,#10b981); color:#fff; box-shadow:0 2px 8px rgba(16,185,129,.35) }
+.grd-step-item.active .grd-step-num { background:rgba(255,255,255,.25); color:#fff }
+.grd-step-num { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:var(--border); font-size:11px; font-weight:700; color:var(--text-2) }
+.grd-step-lbl { font-size:13px; font-weight:500; color:var(--text-2) }
+.grd-step-item.active .grd-step-lbl { color:#fff }
+.grd-step-line { flex:1; height:2px; background:var(--border); margin:0 2px }
+.grd-step-panel { display:none }
+.grd-step-panel.active { display:block }
+.grd-sp-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:10px }
+</style>
+
+<script>
+function grdShowStep(idx, el) {
+  document.querySelectorAll('.grd-step-item').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.grd-step-panel').forEach(e => e.classList.remove('active'));
+  if (el) el.classList.add('active');
+  var p = document.getElementById('grd-sp-' + idx);
+  if (p) p.classList.add('active');
+}
+</script>
+

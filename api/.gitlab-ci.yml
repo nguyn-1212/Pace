@@ -1,0 +1,38 @@
+image: mcr.microsoft.com/dotnet/sdk:9.0
+
+stages:
+  - build
+  - deploy
+
+variables:
+  DEPLOY_USER: gitdeploy
+  DEPLOY_HOST: 188.246.4.35
+  DEPLOY_PORT: 6922
+  DEPLOY_PATH: /var/www/api.test.kn-asiamarkt.de
+  SERVICE_NAME: api.test.kn-asiamarkt.service
+
+build:
+  stage: build
+  before_script:
+    - git submodule update --init --recursive
+  script:
+    - dotnet restore
+    - dotnet publish -c Release -o publish
+  artifacts:
+    paths:
+      - publish/
+    expire_in: 1 hour
+
+deploy:
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -p $DEPLOY_PORT -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - scp -P $DEPLOY_PORT -r ./publish/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+    - ssh -p $DEPLOY_PORT $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl restart $SERVICE_NAME"

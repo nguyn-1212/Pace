@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Goals</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--f:'Be Vietnam Pro',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--f);background:var(--cr);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px 48px;}
+.phone{width:375px;background:var(--rw);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.18);position:relative;}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp);}
+.hd{background:var(--wb);padding:18px 22px 30px;position:relative;}
+.hd::after{content:'';position:absolute;bottom:-26px;left:-10px;right:-10px;height:52px;background:var(--rw);border-radius:50%;z-index:0;}
+.hd-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.hd-title{font-size:22px;font-weight:600;color:var(--rw);}
+.hd-sub{font-size:12px;color:var(--mu);}
+.hd-add{width:36px;height:36px;border-radius:50%;background:var(--ch);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.hd-add svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;}
+.area-tabs{display:flex;gap:6px;margin-top:14px;position:relative;z-index:1;overflow-x:auto;padding-bottom:2px;}
+.area-tab{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;border:1px solid rgba(255,246,237,.2);color:rgba(255,246,237,.55);background:transparent;transition:all .15s;}
+.area-tab.active{background:var(--ch);color:var(--rw);border-color:var(--ch);}
+.screen{padding:36px 20px 110px;display:flex;flex-direction:column;gap:10px;}
+.dream-card{background:linear-gradient(135deg,var(--ch) 0%,var(--sp) 100%);border-radius:16px;padding:16px 18px;margin-bottom:6px;cursor:pointer;position:relative;overflow:hidden;}
+.dream-card::before{content:'"';position:absolute;top:-10px;right:14px;font-size:80px;font-weight:600;color:rgba(255,246,237,.08);line-height:1;}
+.dream-eyebrow{font-size:10px;font-weight:600;color:rgba(255,246,237,.5);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;}
+.dream-text{font-size:15px;font-weight:600;color:var(--rw);line-height:1.4;}
+.dream-progress{display:flex;align-items:center;gap:8px;margin-top:12px;}
+.dream-bar-wrap{flex:1;height:4px;background:rgba(255,246,237,.15);border-radius:2px;overflow:hidden;}
+.dream-bar-fill{height:4px;background:#6FCF97;border-radius:2px;}
+.dream-pct{font-size:10px;font-weight:600;color:rgba(255,246,237,.6);}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;margin-top:6px;}
+.sl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);}
+.sa{font-size:11px;color:var(--ch);font-weight:600;cursor:pointer;}
+.gc{background:var(--rw);border:1px solid rgba(186,84,28,.12);border-radius:14px;padding:14px 16px;cursor:pointer;transition:border-color .2s,transform .1s;position:relative;overflow:hidden;}
+.gc:hover{border-color:rgba(186,84,28,.28);transform:translateY(-1px);}
+.gc.done{opacity:.55;border-color:rgba(74,124,89,.2);background:#F7FBF4;}
+.gc+.gc{margin-top:8px;}
+.gc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ch);border-radius:3px 0 0 3px;opacity:.6;}
+.gc.done::before{background:var(--gd);}
+.gt{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.gn{font-size:14px;font-weight:600;color:var(--wb);line-height:1.35;flex:1;}
+.gc.done .gn{text-decoration:line-through;color:var(--mu);}
+.at{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.ts{background:#E8E7FC;color:#3C3489;}.th{background:#E1F5EE;color:#085041;}.tf{background:#FFF3E0;color:#7A4000;}.tp{background:#FCE8E8;color:#7A1010;}
+.gm{display:flex;align-items:center;gap:5px;margin-top:4px;font-size:11px;color:var(--mu);}
+.gm svg{width:11px;height:11px;fill:none;stroke:var(--mu);stroke-width:1.5;}
+.gm.ok{color:var(--gd);}.gm.ok svg{stroke:var(--gd);}
+.gm.adj{color:var(--ch);}.gm.adj svg{stroke:var(--ch);}
+.gfooter{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.gfreq{font-size:10px;color:var(--mu);display:flex;align-items:center;gap:4px;}
+.gfreq svg{width:10px;height:10px;fill:none;stroke:var(--mu);stroke-width:1.5;}
+.ga{display:flex;gap:7px;margin-top:10px;}
+.bd{flex:1;padding:9px 0;border-radius:20px;background:var(--ch);color:var(--rw);border:none;font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;}
+.bd:hover{background:var(--sp);}
+.bj{flex:1;padding:9px 0;border-radius:20px;background:transparent;color:var(--sp);border:1px solid rgba(186,84,28,.25);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;}
+.bj:hover{background:rgba(186,84,28,.05);}
+.add-fab{position:fixed;bottom:90px;right:calc(50% - 187px + 20px);width:52px;height:52px;border-radius:50%;background:var(--ch);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(186,84,28,.35);}
+.add-fab svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;}
+.tab-bar{display:flex;justify-content:space-around;padding:10px 8px 20px;border-top:1px solid rgba(186,84,28,.1);background:var(--rw);}
+.ti{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1;}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.ti.a .tic svg{stroke:var(--ch);}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;}
+.tl{font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;}
+.ti.a .tl{color:var(--ch);}
+.sheet-bd{display:none;position:absolute;inset:0;background:rgba(43,15,4,.5);z-index:30;border-radius:44px;align-items:flex-end;}
+.sheet-bd.open{display:flex;}
+.sheet{background:var(--rw);border-radius:24px 24px 0 0;width:100%;padding:0 20px 36px;max-height:85vh;overflow-y:auto;}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(186,84,28,.2);margin:14px auto 16px;}
+.sheet-title{font-size:17px;font-weight:600;color:var(--wb);margin-bottom:4px;}
+.sheet-sub{font-size:13px;color:var(--mu);margin-bottom:20px;line-height:1.5;}
+.add-step{display:none;}.add-step.active{display:block;}
+.step-q{font-size:18px;font-weight:600;color:var(--wb);margin-bottom:6px;line-height:1.3;}
+.step-hint{font-size:12px;color:var(--mu);margin-bottom:16px;line-height:1.5;}
+.inp{width:100%;border:1px solid rgba(186,84,28,.2);border-radius:12px;padding:12px 14px;font-family:var(--f);font-size:15px;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s;}
+.inp:focus{border-color:var(--ch);}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.chip{padding:6px 12px;border-radius:20px;border:1px solid rgba(186,84,28,.2);background:var(--rw);font-family:var(--f);font-size:12px;color:var(--sp);cursor:pointer;transition:all .15s;}
+.chip.sel,.chip:hover{background:#FFF3E0;border-color:var(--ch);color:var(--ch);}
+.area-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+.area-opt{padding:12px;border-radius:12px;border:1px solid rgba(186,84,28,.12);cursor:pointer;transition:all .15s;background:var(--rw);}
+.area-opt:hover,.area-opt.sel{border-color:var(--ch);background:#FFF3E0;}
+.area-opt-icon{font-size:20px;margin-bottom:4px;}
+.area-opt-name{font-size:13px;font-weight:600;color:var(--wb);}
+.area-opt.sel .area-opt-name{color:var(--ch);}
+.freq-list{display:flex;flex-direction:column;gap:8px;}
+.freq-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;border:1px solid rgba(186,84,28,.12);cursor:pointer;background:var(--rw);transition:all .15s;}
+.freq-item:hover,.freq-item.sel{border-color:var(--ch);background:#FFF3E0;}
+.freq-name{font-size:13px;font-weight:600;color:var(--wb);}
+.freq-item.sel .freq-name{color:var(--ch);}
+.freq-desc{font-size:11px;color:var(--mu);margin-top:2px;}
+.radio{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(186,84,28,.3);flex-shrink:0;}
+.radio.on{background:var(--ch);border-color:var(--ch);display:flex;align-items:center;justify-content:center;}
+.radio.on::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff;}
+.time-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.time-chip{padding:8px 14px;border-radius:20px;border:1px solid rgba(186,84,28,.2);background:var(--rw);font-family:var(--f);font-size:13px;color:var(--sp);cursor:pointer;transition:all .15s;}
+.time-chip.sel,.time-chip:hover{background:var(--ch);border-color:var(--ch);color:#fff;}
+.step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:18px;}
+.sdot{width:6px;height:6px;border-radius:50%;background:rgba(186,84,28,.2);}
+.sdot.on{background:var(--ch);width:18px;border-radius:3px;}
+.btn-next{width:100%;padding:14px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--f);font-size:15px;font-weight:600;cursor:pointer;margin-top:20px;transition:opacity .15s;}
+.btn-next:disabled{opacity:.35;cursor:default;}
+.btn-next.ghost{background:transparent;color:var(--mu);border:1px solid rgba(186,84,28,.15);}
+.success-wrap{text-align:center;padding:20px 0 10px;}
+.success-icon{width:64px;height:64px;border-radius:50%;background:#EAF3DE;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.success-icon svg{width:28px;height:28px;fill:none;stroke:var(--gd);stroke-width:2;}
+.success-title{font-size:20px;font-weight:600;color:var(--wb);margin-bottom:8px;}
+.success-sub{font-size:13px;color:var(--mu);line-height:1.6;}
+.no-guilt-box{background:#FFF3E0;border-radius:12px;padding:12px 14px;margin-top:16px;}
+.ng-title{font-size:12px;font-weight:600;color:var(--ch);margin-bottom:3px;}
+.ng-body{font-size:11px;color:var(--sp);line-height:1.5;}
+.adj-options{display:flex;flex-direction:column;gap:8px;}
+.adj-opt{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-radius:12px;border:1px solid rgba(186,84,28,.12);cursor:pointer;background:var(--rw);transition:background .15s,border-color .15s;}
+.adj-opt:hover{background:var(--cr);border-color:rgba(186,84,28,.3);}
+.adj-opt-name{font-size:14px;font-weight:600;color:var(--wb);}
+.adj-opt-desc{font-size:11px;color:var(--mu);margin-top:2px;}
+.adj-arrow{font-size:18px;color:var(--mu);}
+.sheet-cancel{width:100%;padding:12px;border-radius:14px;border:none;background:transparent;color:var(--mu);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+
+<div class="hd">
+  <div class="hd-top">
+    <div>
+      <div class="hd-title">Goals</div>
+      <div class="hd-sub">5 goals đang hoạt động · hôm nay</div>
+    </div>
+    <button class="hd-add" onclick="openAdd()">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div class="area-tabs">
+    <div class="area-tab active" onclick="setTab(this)">Tất cả</div>
+    <div class="area-tab" onclick="setTab(this)">Study</div>
+    <div class="area-tab" onclick="setTab(this)">Health</div>
+    <div class="area-tab" onclick="setTab(this)">Tài chính</div>
+    <div class="area-tab" onclick="setTab(this)">Personal</div>
+  </div>
+</div>
+
+<div class="screen">
+  <div class="dream-card">
+    <div class="dream-eyebrow">Ước mơ của tôi</div>
+    <div class="dream-text">Trở thành UI designer chuyên nghiệp và làm việc remote</div>
+    <div class="dream-progress">
+      <div class="dream-bar-wrap"><div class="dream-bar-fill" style="width:38%"></div></div>
+      <div class="dream-pct">38%</div>
+    </div>
+  </div>
+
+  <div class="sh"><span class="sl">Hôm nay</span><span class="sa">22/6</span></div>
+
+  <div class="gc done">
+    <div class="gt"><div class="gn">Đọc 10 trang sách</div><span class="at ts">Study</span></div>
+    <div class="gm ok"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Đã hoàn thành · 7:20 sáng</div>
+    <div class="gfooter"><span class="gfreq"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Hàng ngày · 7:00</span></div>
+  </div>
+
+  <div class="gc" id="g2">
+    <div class="gt"><div class="gn">Chạy bộ 20 phút</div><span class="at th">Health</span></div>
+    <div class="gm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Nhắc lúc 6:30 sáng</div>
+    <div class="gfooter"><span class="gfreq"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> T2, T4, T6, CN</span></div>
+    <div class="ga">
+      <button class="bd" onclick="markDone('g2')">Xong</button>
+      <button class="bj" onclick="openAdj('g2','Chạy bộ 20 phút')">Dời lại</button>
+    </div>
+  </div>
+
+  <div class="gc" id="g3">
+    <div class="gt"><div class="gn">Học từ vựng tiếng Anh 15 phút</div><span class="at ts">Study</span></div>
+    <div class="gm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Nhắc lúc 8:00 tối</div>
+    <div class="gfooter"><span class="gfreq"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Hàng ngày</span></div>
+    <div class="ga">
+      <button class="bd" onclick="markDone('g3')">Xong</button>
+      <button class="bj" onclick="openAdj('g3','Học từ vựng')">Dời lại</button>
+    </div>
+  </div>
+
+  <div class="sh"><span class="sl">Sắp tới</span></div>
+
+  <div class="gc">
+    <div class="gt"><div class="gn">Tiết kiệm 500k tuần này</div><span class="at tf">Finance</span></div>
+    <div class="gm adj"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Đã dời — cuối tuần</div>
+    <div class="gfooter"><span class="gfreq"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Hàng tuần</span></div>
+  </div>
+
+  <div class="gc">
+    <div class="gt"><div class="gn">Thiền 10 phút buổi sáng</div><span class="at tp">Personal</span></div>
+    <div class="gm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Nhắc lúc 6:00 sáng</div>
+    <div class="gfooter"><span class="gfreq"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Hàng ngày</span></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="tl">Home</span></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div><span class="tl">Goals</span></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Habits</span></div>
+  <div class="ti" onclick="location.href='more.html'"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><span class="tl">More</span></div>
+</div>
+</div>
+</div>
+  <div class="ti"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Thói quen</span></div>
+  <div class="ti" onclick="location.href='finance.html'"><div class="tic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><span class="tl">Finance</span></div>
+</div>
+
+<!-- ADD GOAL SHEET -->
+<div class="sheet-bd" id="add-sheet" onclick="closeSheet('add-sheet',event)">
+<div class="sheet">
+  <div class="sheet-handle"></div>
+  <div class="step-dots" id="add-dots">
+    <div class="sdot on" id="sd0"></div>
+    <div class="sdot" id="sd1"></div>
+    <div class="sdot" id="sd2"></div>
+    <div class="sdot" id="sd3"></div>
+  </div>
+
+  <div class="add-step active" id="as0">
+    <div class="step-q">Bạn muốn làm gì?</div>
+    <div class="step-hint">Gõ tên goal hoặc chọn gợi ý bên dưới.</div>
+    <input class="inp" id="goal-inp" placeholder="VD: Đọc 10 trang sách mỗi ngày" oninput="document.getElementById('btn-as0').disabled=this.value.trim().length===0">
+    <div class="chip-row">
+      <div class="chip" onclick="setGoalName(this,'Đọc 10 trang sách')">Đọc 10 trang sách</div>
+      <div class="chip" onclick="setGoalName(this,'Học 15 phút/ngày')">Học 15 phút/ngày</div>
+      <div class="chip" onclick="setGoalName(this,'Chạy bộ 20 phút')">Chạy bộ 20 phút</div>
+      <div class="chip" onclick="setGoalName(this,'Uống 2L nước')">Uống 2L nước</div>
+      <div class="chip" onclick="setGoalName(this,'Thiền 10 phút')">Thiền 10 phút</div>
+      <div class="chip" onclick="setGoalName(this,'Tiết kiệm 500k/tuần')">Tiết kiệm 500k/tuần</div>
+    </div>
+    <button class="btn-next" id="btn-as0" onclick="goStep(1)" disabled>Tiếp theo</button>
+  </div>
+
+  <div class="add-step" id="as1">
+    <div class="step-q">Thuộc lĩnh vực nào?</div>
+    <div class="step-hint">Pace sẽ nhóm goal theo lĩnh vực.</div>
+    <div class="area-grid">
+      <div class="area-opt" onclick="pickArea(this,'Study')"><div class="area-opt-icon">📚</div><div class="area-opt-name">Study</div></div>
+      <div class="area-opt" onclick="pickArea(this,'Health')"><div class="area-opt-icon">💪</div><div class="area-opt-name">Health</div></div>
+      <div class="area-opt" onclick="pickArea(this,'Finance')"><div class="area-opt-icon">💰</div><div class="area-opt-name">Tài chính</div></div>
+      <div class="area-opt" onclick="pickArea(this,'Personal')"><div class="area-opt-icon">🌱</div><div class="area-opt-name">Personal</div></div>
+    </div>
+    <button class="btn-next ghost" onclick="goStep(2)" style="margin-top:16px">Bỏ qua</button>
+    <button class="btn-next" id="btn-as1" onclick="goStep(2)" disabled style="margin-top:8px">Tiếp theo</button>
+  </div>
+
+  <div class="add-step" id="as2">
+    <div class="step-q">Lặp lại như thế nào?</div>
+    <div class="step-hint">Chọn tần suất phù hợp với lịch của bạn.</div>
+    <div class="freq-list">
+      <div class="freq-item sel" id="fr-daily" onclick="pickFreq('daily')">
+        <div><div class="freq-name">Hàng ngày</div><div class="freq-desc">Lặp mỗi ngày</div></div>
+        <div class="radio on" id="rd"></div>
+      </div>
+      <div class="freq-item" id="fr-custom" onclick="pickFreq('custom')">
+        <div><div class="freq-name">Chọn thứ cụ thể</div><div class="freq-desc">T2, T4, T6...</div></div>
+        <div class="radio" id="rc"></div>
+      </div>
+      <div class="freq-item" id="fr-perday" onclick="pickFreq('perday')">
+        <div><div class="freq-name">Từng ngày khác giờ</div><div class="freq-desc">T2 lúc 7h, T7 lúc 10h</div></div>
+        <div class="radio" id="rp"></div>
+      </div>
+    </div>
+    <button class="btn-next" onclick="goStep(3)" style="margin-top:16px">Tiếp theo</button>
+  </div>
+
+  <div class="add-step" id="as3">
+    <div class="step-q">Nhắc lúc mấy giờ?</div>
+    <div class="step-hint">Chọn giờ — có thể chỉnh sau bất cứ lúc nào.</div>
+    <div class="time-grid">
+      <div class="time-chip" onclick="pickTime(this)">6:00 sáng</div>
+      <div class="time-chip sel" onclick="pickTime(this)">7:00 sáng</div>
+      <div class="time-chip" onclick="pickTime(this)">8:00 sáng</div>
+      <div class="time-chip" onclick="pickTime(this)">12:00 trưa</div>
+      <div class="time-chip" onclick="pickTime(this)">6:00 tối</div>
+      <div class="time-chip" onclick="pickTime(this)">9:00 tối</div>
+    </div>
+    <div class="no-guilt-box" style="margin-top:16px">
+      <div class="ng-title">No-guilt reminder</div>
+      <div class="ng-body">Nếu hôm nay bận, bạn luôn có thể bấm "Dời lại" — không mất gì cả.</div>
+    </div>
+    <button class="btn-next" onclick="showSuccess()">Lưu goal ✓</button>
+  </div>
+
+  <div class="add-step" id="as-success">
+    <div class="success-wrap">
+      <div class="success-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="success-title">That's a great start.</div>
+      <div class="success-sub" id="success-msg">Goal đã được thêm.<br>Bạn sẽ nhận nhắc nhở đúng giờ.</div>
+    </div>
+    <button class="btn-next" onclick="closeSheet('add-sheet')">Về danh sách</button>
+  </div>
+</div>
+</div>
+
+<!-- ADJUST SHEET -->
+<div class="sheet-bd" id="adj-sheet" onclick="closeSheet('adj-sheet',event)">
+<div class="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="adj-title">Dời lại goal</div>
+  <div class="sheet-sub">Không phải bỏ cuộc — chỉ là điều chỉnh nhịp độ.</div>
+  <div class="adj-options">
+    <div class="adj-opt" onclick="doAdj('later')"><div><div class="adj-opt-name">Làm sau hôm nay</div><div class="adj-opt-desc">Dời sang cuối ngày</div></div><div class="adj-arrow">›</div></div>
+    <div class="adj-opt" onclick="doAdj('tomorrow')"><div><div class="adj-opt-name">Dời sang ngày mai</div><div class="adj-opt-desc">Ngày mai là trang mới</div></div><div class="adj-arrow">›</div></div>
+    <div class="adj-opt" onclick="doAdj('pick')"><div><div class="adj-opt-name">Chọn ngày khác</div><div class="adj-opt-desc">Chủ động sắp xếp lại lịch</div></div><div class="adj-arrow">›</div></div>
+  </div>
+  <button class="sheet-cancel" onclick="closeSheet('adj-sheet')">Để sau</button>
+</div>
+</div>
+
+<script>
+var adjTarget=null,curStep=0,selArea=null,selFreq='daily',goalName='';
+function markDone(id){var c=document.getElementById(id);if(c.classList.contains('done'))return;c.classList.add('done');var a=c.querySelector('.ga');if(a)a.remove();var m=c.querySelector('.gm');if(m){m.className='gm ok';m.innerHTML='<svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:none;stroke:#4A7C59;stroke-width:1.5"><polyline points="20 6 9 17 4 12"/></svg> Đã hoàn thành';}}
+function openAdj(id,name){adjTarget=id;document.getElementById('adj-title').textContent=name;document.getElementById('adj-sheet').classList.add('open');}
+function doAdj(t){document.getElementById('adj-sheet').classList.remove('open');if(!adjTarget)return;var c=document.getElementById(adjTarget),m=c.querySelector('.gm'),a=c.querySelector('.ga');var labels={later:'Đã dời — cuối ngày hôm nay',tomorrow:'Đã dời — ngày mai',pick:'Đã lên lịch ngày khác'};if(m){m.className='gm adj';m.innerHTML='<svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:none;stroke:#BA541C;stroke-width:1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> '+labels[t];}if(a)a.style.display='none';}
+function openAdd(){curStep=0;document.querySelectorAll('.add-step').forEach(function(e){e.classList.remove('active');});document.getElementById('as0').classList.add('active');updateDots(0);document.getElementById('add-sheet').classList.add('open');}
+function goStep(n){document.getElementById('as'+(n-1)).classList.remove('active');document.getElementById('as'+n).classList.add('active');curStep=n;updateDots(n);}
+function updateDots(n){for(var i=0;i<4;i++){var d=document.getElementById('sd'+i);if(d){d.classList.remove('on');if(i===n)d.classList.add('on');}};}
+function setGoalName(el,name){document.getElementById('goal-inp').value=name;goalName=name;document.getElementById('btn-as0').disabled=false;document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
+function pickArea(el,area){selArea=area;document.querySelectorAll('.area-opt').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');document.getElementById('btn-as1').disabled=false;}
+function pickFreq(f){selFreq=f;['daily','custom','perday'].forEach(function(k){document.getElementById('fr-'+k).classList.remove('sel');document.getElementById('r'+k[0]).classList.remove('on');});document.getElementById('fr-'+f).classList.add('sel');document.getElementById('r'+f[0]).classList.add('on');}
+function pickTime(el){document.querySelectorAll('.time-chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
+function showSuccess(){document.getElementById('as3').classList.remove('active');document.getElementById('as-success').classList.add('active');document.getElementById('add-dots').style.display='none';var n=document.getElementById('goal-inp').value||'Goal mới';document.getElementById('success-msg').innerHTML='"'+n+'" đã được thêm.<br>Bạn sẽ nhận nhắc nhở đúng giờ.';}
+function closeSheet(id,e){if(!e||e.target===document.getElementById(id)){document.getElementById(id).classList.remove('open');document.getElementById('add-dots').style.display='flex';}}
+function setTab(el){document.querySelectorAll('.area-tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');}
+</script>
+</div>
+</body>
+</html>

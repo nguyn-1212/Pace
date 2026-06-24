@@ -1,0 +1,67 @@
+﻿<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--desktop kt-grid--ver-desktop kt-grid--hor-tablet-and-mobile kt-login__fluid">
+    <div class="kt-grid__item kt-grid__item--order-tablet-and-mobile-2 kt-grid kt-grid--hor kt-login__aside">
+        <div class="kt-grid__item">
+            <a class="kt-login__logo">
+                <img [src]="logo" style="background-color: #fff; border-radius: 12px;">
+            </a>
+        </div>
+        <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver">
+            <div class="kt-grid__item kt-grid__item--middle">
+                <h3 class="kt-login__title">Lazy Travel ✈️</h3>
+                <h4 class="kt-login__subtitle">Hệ thống quản trị</h4>
+                <div class="kt-login__features">
+                    <div class="feature-item"><i class="la la-map-marker"></i> Quản lý chuyến đi & lịch trình</div>
+                    <div class="feature-item"><i class="la la-users"></i> Quản lý thành viên & nhóm</div>
+                    <div class="feature-item"><i class="la la-dollar"></i> Theo dõi chi phí & quyết toán</div>
+                    <div class="feature-item"><i class="la la-image"></i> Album ảnh & kỷ niệm</div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-grid__item kt-grid--ver">
+            <div class="kt-login__info">
+                <div class="kt-login__copyright">
+                    2025&nbsp;&copy;&nbsp;Lazy Travel
+                </div>
+                <div class="kt-login__menu">
+                    <a class="kt-link" (click)="tutorial()">
+                        <i class="fas fa-book-open" style="margin-right: 5px;"></i>Hướng dẫn
+                    </a>
+                    <a class="kt-link" (click)="contact()">
+                        <i class="fas fa-headset" style="margin-right: 5px;"></i>Hỗ trợ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="kt-grid__item kt-grid__item--fluid kt-grid__item--order-tablet-and-mobile-1 kt-login__wrapper">
+        <div class="kt-login__body">
+            <div class="kt-login__form">
+                <div class="kt-login__title">
+                    <h3>{{ formOtp ? 'Nhập mã OTP' : 'Đăng nhập' }}</h3>
+                </div>
+                <form class="kt-form" action="" novalidate="novalidate" id="kt_login_form">
+                    <div class="form-group">
+                        <editor [(object)]="item" property="UserName" [decorator]="{ label : ''}"></editor>
+                    </div>
+                    <div class="form-group">
+                        <editor [(object)]="item" property="Password" [decorator]="{ label : ''}"></editor>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px; margin-bottom: 0;">
+                        <editor [(object)]="item" property="RememberMe"></editor>
+                    </div>
+                    <div class="kt-login__actions">
+                        <editor-button className="btn btn-primary w-100 py-3" label="Đăng nhập" [(process)]="processing" (click)="signin()"></editor-button>
+                    </div>
+                </form>
+                <form class="kt-form" action="" novalidate="novalidate" id="kt_otp_form" style="display: none; text-align: center;">
+                    <div class="form-group">
+                        <editor [(object)]="item" property="Otp" (keyPressEnter)="loginOtp()" [decorator]="{ label : ''}"></editor>
+                    </div>
+                    <div class="kt-login__actions loginOtp">
+                        <editor-button className="btn btn-primary w-100 py-3" label="Xác nhận OTP" [(process)]="processing" (click)="loginOtp()"></editor-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,885 @@
+<!-- ═══════════════ @StringDecorator ═══════════════ -->
+<div class="page-header">
+  <div class="page-tag tag-editor">✦ Editor</div>
+  <div class="page-title">@StringDecorator</div>
+  <div class="page-desc">Decorator cho tất cả input dạng văn bản: text, email, phone, password, HTML editor, color picker, tag, link...</div>
+  <div class="page-meta">core/decorators/string.decorator.ts &nbsp;·&nbsp; DataType.String &nbsp;·&nbsp; StringEx extends ObjectEx</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('string','opts')">⚙ Options</button>
+  <button class="tab-btn" onclick="switchTab('string','types')">◈ StringType</button>
+  <button class="tab-btn" onclick="switchTab('string','examples')">{ } Examples</button>
+  <button class="tab-btn" onclick="switchTab('string','gen')">⚡ Code Generator</button>
+</div>
+
+<!-- ─── OPTIONS TAB ─── -->
+<div class="tab-panel active" id="string-tab-opts">
+  <div class="opts-toolbar">
+    <div class="opts-count"><strong>14</strong> / 36 thuộc tính (cơ bản)</div>
+    <div class="opts-level-btns">
+      <button class="opts-level-btn active" onclick="toggleLevel('str-opts','basic',this)">Cơ bản</button>
+      <button class="opts-level-btn" onclick="toggleLevel('str-opts','advanced',this)">Nâng cao</button>
+      <button class="opts-level-btn" onclick="toggleLevel('str-opts','all',this)">Tất cả</button>
+    </div>
+  </div>
+  <div class="opts-table-wrap">
+    <table class="opts-table" id="str-opts">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Mô tả</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- ObjectEx -->
+        <tr class="group-row"><td colspan="4"><span>📦 ObjectEx — chung cho mọi decorator</span></td></tr>
+        <tr data-level="basic">
+          <td class="p-name">label</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">auto</td>
+          <td class="p-desc">Nhãn hiển thị trên form. Nếu không truyền, tự transform từ tên property (camelCase → Title Case).</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">required <span class="badge-v">validate</span></td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Bắt buộc nhập. Tự thêm validator <code>PatternType.Required</code>.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">allowSearch</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">false</td>
+          <td class="p-desc">Cho phép lọc theo cột này trong grid/table.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">readonly</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Hiển thị nhưng không cho chỉnh sửa.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">allowClear</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">true</td>
+          <td class="p-desc">Cho phép xoá giá trị (hiện nút ×).</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">unique <span class="badge-v">validate</span></td>
+          <td class="p-type"><span class="t-bool">boolean</span> | <span class="t-enum type-link" onclick="showModal('modal-lookupuniquedata')">LookupUniqueData</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Kiểm tra trùng. <code>true</code> → tự tạo URL <code>/EntityName/exists</code>. Hoặc dùng <code>LookupUniqueData.Reference(Entity, 'Property')</code>.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">columnClass</td>
+          <td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-columnclass')">ColumnClassFormat</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Độ rộng cột form: <code>Column3</code>, <code>Column4</code>, <code>Column6</code>, <code>Column8</code>, <code>Column12</code>.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">tooltip</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Tooltip hiển thị khi hover vào label.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">placeholder</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">= label</td>
+          <td class="p-desc">Placeholder của input. Mặc định lấy từ <code>label</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">icon</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">auto</td>
+          <td class="p-desc">Icon class (Line Awesome). Tự gán theo type: Email→envelope, Phone→phone, Code→code, Password→key...</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">description</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Mô tả / ghi chú phụ hiển thị dưới input.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">defaultValue</td>
+          <td class="p-type"><span class="t-str">any</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Giá trị mặc định ban đầu cho field.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">index</td>
+          <td class="p-type"><span class="t-num">number</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Thứ tự hiển thị trên form. Dùng để sắp xếp lại vị trí các field.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">viewer</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Chỉ hiển thị ở chế độ xem (view), ẩn ở chế độ chỉnh sửa (edit).</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">sticky</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Giữ cố định cột trên grid khi scroll ngang.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">unit</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Đơn vị hiển thị (VD: <code>VNĐ</code>, <code>%</code>).</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">subfix</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Hậu tố hiển thị nối vào sau giá trị.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">allowFilter</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">false</td>
+          <td class="p-desc">Cho phép filter column trên Grid.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">autoSelect</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Tự động select toàn bộ text khi focus vào input.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">lookup</td>
+          <td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-lookupdata')">LookupData</span></td>
+          <td class="p-default">new LookupData()</td>
+          <td class="p-desc">Cấu hình lookup cho autocomplete, dropdown. Truyền lookup → tự chuyển <code>type: AutoComplete</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">compareType</td>
+          <td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-comparetype')">CompareType</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Kiểu so sánh khi filter trên grid. VD: <code>S_Contains</code>, <code>S_Equals</code>, <code>S_StartWith</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">customValidators</td>
+          <td class="p-type"><span class="t-arr">Validator[]</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Mảng custom validator tùy chỉnh. Mỗi item gồm <code>pattern</code> (RegExp) + <code>message</code>.</td>
+        </tr>
+
+        <!-- StringEx -->
+        <tr class="group-row"><td colspan="4"><span>🔤 StringEx — riêng cho @StringDecorator</span></td></tr>
+        <tr data-level="basic">
+          <td class="p-name">type</td>
+          <td class="p-type"><span class="t-enum type-link" onclick="switchTab('string','types');document.querySelector('[onclick*=switchTab].tab-btn:nth-child(2)').click()">StringType</span></td>
+          <td class="p-default">StringType.Text</td>
+          <td class="p-desc">Loại input. Xem tab <strong>StringType</strong> để biết toàn bộ giá trị.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">min <span class="badge-v">validate</span></td>
+          <td class="p-type"><span class="t-num">number</span></td>
+          <td class="p-default">0</td>
+          <td class="p-desc">Độ dài ký tự tối thiểu. Tự thêm validator nếu <code>&gt; 0</code>.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">max <span class="badge-v">validate</span></td>
+          <td class="p-type"><span class="t-num">number</span></td>
+          <td class="p-default">auto theo type</td>
+          <td class="p-desc">Độ dài tối đa. Mặc định: Text=250, Email=50, MultiText=2000, Code=20, Phone=15, Link=1000, Password=20.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">requiredMatch <span class="badge-v">validate</span></td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Tên property khác mà giá trị phải bằng. Dùng để xác nhận mật khẩu: <code>requiredMatch: 'Password'</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">duplicates <span class="badge-v">validate</span></td>
+          <td class="p-type"><span class="t-arr">string[]</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Validate không được trùng với các property khác trong cùng form. Ví dụ: <code>['Email2', 'Email3']</code>.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">textTransform</td>
+          <td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-texttransform')">TextTransformType</span></td>
+          <td class="p-default">None</td>
+          <td class="p-desc">Tự động chuyển đổi text khi nhập: <code>None</code> | <code>LowerCase</code> | <code>UpperCase</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">slugField</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Tên property khác sẽ tự động được fill dạng slug khi trường này thay đổi.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">variables</td>
+          <td class="p-type"><span class="t-arr type-link" onclick="showModal('modal-editorparam')">EditorParamData[]</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Dùng cho <code>type: Html</code>. Danh sách biến được insert vào editor. Ví dụ: <code>[{name:'FullName'}, {name:'Link'}]</code>.</td>
+        </tr>
+        <tr data-level="basic">
+          <td class="p-name">rows</td>
+          <td class="p-type"><span class="t-num">number</span></td>
+          <td class="p-default">3</td>
+          <td class="p-desc">Số dòng của textarea. Dùng khi <code>type: MultiText</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">htmlToolbar</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">full toolbar</td>
+          <td class="p-desc">Cấu hình toolbar của TinyMCE editor. Chỉ dùng khi <code>type: Html</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">colorType</td>
+          <td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-colortype')">ColorType</span></td>
+          <td class="p-default">ColorType.All</td>
+          <td class="p-desc">Dùng khi <code>type: Color</code>. Chọn format màu: <code>Hex</code> | <code>Rgb</code> | <code>Hsl</code> | <code>All</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">maxTags</td>
+          <td class="p-type"><span class="t-num">number</span></td>
+          <td class="p-default">10</td>
+          <td class="p-desc">Số lượng tag tối đa. Dùng cho <code>Tag</code>, <code>TagEmail</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">delimiters</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">,</td>
+          <td class="p-desc">Ký tự phân cách tag. Mặc định là dấu phẩy. Dùng cho <code>Tag</code>, <code>TagEmail</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">titleTags</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">Tags</td>
+          <td class="p-desc">Tiêu đề hiển thị cho khu vực tags.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">htmlMenubar</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">true</td>
+          <td class="p-desc">Ẩn/hiện menubar của TinyMCE editor. Dùng khi <code>type: Html</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">onlyCountries</td>
+          <td class="p-type"><span class="t-arr">string[]</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Giới hạn quốc gia cho <code>StringType.Phone</code>. VD: <code>['vn','us']</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">propertyPhoneCode</td>
+          <td class="p-type"><span class="t-str">string</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Tên property lưu mã quốc gia riêng khi dùng <code>StringType.Phone</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">allowComment</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">false</td>
+          <td class="p-desc">Cho phép chú thích trong HTML editor.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">generateFunction</td>
+          <td class="p-type"><span class="t-str">() =&gt; string</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Hàm tự sinh giá trị. Dùng với <code>StringType.AutoGenerate</code>.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">popupImage</td>
+          <td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-dialogdata')">DialogData</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Config popup chọn ảnh từ kho cho HTML editor.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">popupFile</td>
+          <td class="p-type"><span class="t-enum type-link" onclick="showModal('modal-dialogdata')">DialogData</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Config popup chọn file tài liệu cho HTML editor.</td>
+        </tr>
+        <tr data-level="advanced">
+          <td class="p-name">requiredHashTag</td>
+          <td class="p-type"><span class="t-bool">boolean</span></td>
+          <td class="p-default">undefined</td>
+          <td class="p-desc">Bắt buộc tag phải có dấu <code>#</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-yellow" style="margin-top:16px">
+    <span>⚠️</span>
+    <span><code>@StringDecorator()</code> không truyền options → mặc định là <code>StringType.Text</code>, max=250, không required, không allowSearch. Thường dùng cho các trường phụ trong <code>BaseEntity</code>.</span>
+  </div>
+</div>
+
+<!-- ─── STRINGTYPE TAB ─── -->
+<div class="tab-panel" id="string-tab-types">
+  <div class="type-filter">
+    <button class="tf-btn all active" onclick="filterTypes('all',this)">Tất cả (25)</button>
+    <button class="tf-btn common"  onclick="filterTypes('common',this)">🟢 Thông dụng</button>
+    <button class="tf-btn special" onclick="filterTypes('special',this)">🔵 Đặc biệt</button>
+    <button class="tf-btn rich"    onclick="filterTypes('rich',this)">🟡 Rich content</button>
+  </div>
+  <div class="types-grid2">
+    <div class="type-card2 common"><div class="tc2-name">StringType.Text</div><div class="tc2-em">Input text thông thường.</div><div class="tc2-max">max 250</div><div class="tc2-note">Tên, tiêu đề, mô tả ngắn</div></div>
+    <div class="type-card2 common"><div class="tc2-name">StringType.MultiText</div><div class="tc2-em">Textarea nhiều dòng. Dùng thêm <code style="font-family:var(--mono);font-size:11px">rows</code>.</div><div class="tc2-max">max 2000</div><div class="tc2-note">Mô tả dài, ghi chú</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Code</div><div class="tc2-em">Validate regex code. Kết hợp textTransform: UpperCase.</div><div class="tc2-max">max 20</div><div class="tc2-note">Mã danh mục, mã hệ thống</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Email</div><div class="tc2-em">Validate định dạng email. Auto icon envelope.</div><div class="tc2-max">max 50</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Password</div><div class="tc2-em">Toggle ẩn/hiện mật khẩu. Kết hợp requiredMatch.</div><div class="tc2-max">max 20</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.PhoneText</div><div class="tc2-em">Phone plain text, không country picker.</div><div class="tc2-max">max 15</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Phone</div><div class="tc2-em">Phone có country picker. Dùng onlyCountries.</div><div class="tc2-max">max 15</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Link</div><div class="tc2-em">Validate URL (http/https/ftp). Auto icon link.</div><div class="tc2-max">max 1000</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.LinkYoutube</div><div class="tc2-em">Validate YouTube URL dạng watch?v=...</div></div>
+    <div class="type-card2 rich"><div class="tc2-name">StringType.Html</div><div class="tc2-em">TinyMCE editor. Hỗ trợ variables, htmlToolbar.</div><div class="tc2-max">max 2,000,000</div><div class="tc2-note">Email template, bài viết</div></div>
+    <div class="type-card2 rich"><div class="tc2-name">StringType.Json</div><div class="tc2-em">Textarea syntax highlight JSON.</div></div>
+    <div class="type-card2 rich"><div class="tc2-name">StringType.JsCode</div><div class="tc2-em">Textarea syntax highlight JavaScript.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Color</div><div class="tc2-em">Color picker. Kết hợp colorType: All|Hex|Rgb|Hsl.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Tag</div><div class="tc2-em">Input nhiều tag (chips). Dùng maxTags, delimiters.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.TagEmail</div><div class="tc2-em">Như Tag nhưng mỗi tag phải là email hợp lệ.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Account</div><div class="tc2-em">Tên tài khoản. Auto icon user.</div><div class="tc2-max">max 100</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Address</div><div class="tc2-em">Địa chỉ. Auto icon map-marker.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Search</div><div class="tc2-em">Ô tìm kiếm. Auto icon search.</div><div class="tc2-max">max 50</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.AutoGenerate</div><div class="tc2-em">Kèm generateFunction để sinh giá trị tự động.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.AutoComplete</div><div class="tc2-em">Tự set khi truyền lookup. Thường dùng DropDownDecorator.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Otp</div><div class="tc2-em">Input mã OTP ngắn.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Card</div><div class="tc2-em">Số thẻ tín dụng. Validate pattern thẻ.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Cvc</div><div class="tc2-em">Mã CVC thẻ tín dụng.</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Number</div><div class="tc2-em">Nhập số nhưng lưu string (không có min/max/step).</div></div>
+    <div class="type-card2 special"><div class="tc2-name">StringType.Skype</div><div class="tc2-em">Skype ID. Auto icon skype.</div><div class="tc2-max">max 50</div></div>
+  </div>
+</div>
+
+<!-- ─── EXAMPLES TAB ─── -->
+<div class="tab-panel" id="string-tab-examples">
+  <div class="code-tabs">
+    <div class="code-tab active" onclick="switchCode('s','basic',this)">Basic</div>
+    <div class="code-tab" onclick="switchCode('s','auth',this)">Auth fields</div>
+    <div class="code-tab" onclick="switchCode('s','rich',this)">Rich content</div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-panel active" id="s-cp-basic"><pre class="flat">
+<span class="dec">@TableDecorator</span>({ <span class="prop">title</span>: <span class="str">'Product'</span> })
+<span class="kw">export class</span> <span class="cls">ProductEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Text thường — bắt buộc, cho search</span>
+  <span class="dec">@StringDecorator</span>({ <span class="prop">label</span>: <span class="str">'Tên'</span>, <span class="prop">required</span>: <span class="kw">true</span>, <span class="prop">allowSearch</span>: <span class="kw">true</span>, <span class="prop">type</span>: <span class="cls">StringType</span>.Text, <span class="prop">max</span>: <span class="num">250</span> })
+  <span class="prop">Name</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Code — unique + uppercase</span>
+  <span class="dec">@StringDecorator</span>({ <span class="prop">required</span>: <span class="kw">true</span>, <span class="prop">type</span>: <span class="cls">StringType</span>.Code, <span class="prop">max</span>: <span class="num">20</span>,
+    <span class="prop">unique</span>: <span class="cls">LookupUniqueData</span>.<span class="fn">Reference</span>(<span class="cls">ProductEntity</span>, <span class="str">'Code'</span>),
+    <span class="prop">textTransform</span>: <span class="cls">TextTransformType</span>.UpperCase })
+  <span class="prop">Code</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Textarea</span>
+  <span class="dec">@StringDecorator</span>({ <span class="prop">type</span>: <span class="cls">StringType</span>.MultiText, <span class="prop">rows</span>: <span class="num">5</span> })
+  <span class="prop">Description</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Color picker</span>
+  <span class="dec">@StringDecorator</span>({ <span class="prop">label</span>: <span class="str">'Màu sắc'</span>, <span class="prop">type</span>: <span class="cls">StringType</span>.Color })
+  <span class="prop">Color</span>: <span class="kw">string</span>;
+}</pre></div>
+    <div class="code-panel" id="s-cp-auth"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">UserEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// Email — unique</span>
+  <span class="dec">@StringDecorator</span>({ <span class="prop">required</span>: <span class="kw">true</span>, <span class="prop">type</span>: <span class="cls">StringType</span>.Email, <span class="prop">max</span>: <span class="num">80</span>,
+    <span class="prop">unique</span>: <span class="cls">LookupUniqueData</span>.<span class="fn">Reference</span>(<span class="cls">UserEntity</span>, <span class="str">'Email'</span>) })
+  <span class="prop">Email</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Phone plain text</span>
+  <span class="dec">@StringDecorator</span>({ <span class="prop">type</span>: <span class="cls">StringType</span>.PhoneText, <span class="prop">min</span>: <span class="num">10</span>, <span class="prop">max</span>: <span class="num">10</span> })
+  <span class="prop">Phone</span>: <span class="kw">string</span>;
+
+  <span class="cm">// Password + xác nhận</span>
+  <span class="dec">@StringDecorator</span>({ <span class="prop">required</span>: <span class="kw">true</span>, <span class="prop">type</span>: <span class="cls">StringType</span>.Password })
+  <span class="prop">Password</span>: <span class="kw">string</span>;
+
+  <span class="dec">@StringDecorator</span>({ <span class="prop">required</span>: <span class="kw">true</span>, <span class="prop">type</span>: <span class="cls">StringType</span>.Password,
+    <span class="prop">requiredMatch</span>: <span class="str">'Password'</span> })
+  <span class="prop">ConfirmPassword</span>: <span class="kw">string</span>;
+}</pre></div>
+    <div class="code-panel" id="s-cp-rich"><pre class="flat">
+<span class="kw">export class</span> <span class="cls">EmailTemplateEntity</span> <span class="kw">extends</span> <span class="cls">BaseEntity</span> {
+
+  <span class="cm">// HTML editor với inject biến</span>
+  <span class="dec">@StringDecorator</span>({
+    <span class="prop">required</span>: <span class="kw">true</span>, <span class="prop">type</span>: <span class="cls">StringType</span>.Html, <span class="prop">max</span>: <span class="num">2000000</span>,
+    <span class="prop">variables</span>: [
+      { <span class="prop">name</span>: <span class="str">'FullName'</span> }, { <span class="prop">name</span>: <span class="str">'Link'</span> }, { <span class="prop">name</span>: <span class="str">'Email'</span> }
+    ]
+  })
+  <span class="prop">Content</span>: <span class="kw">string</span>;
+
+  <span class="dec">@StringDecorator</span>({ <span class="prop">type</span>: <span class="cls">StringType</span>.Json })
+  <span class="prop">Settings</span>: <span class="kw">string</span>;
+
+  <span class="dec">@StringDecorator</span>({ <span class="prop">type</span>: <span class="cls">StringType</span>.Tag, <span class="prop">maxTags</span>: <span class="num">20</span> })
+  <span class="prop">Keywords</span>: <span class="kw">string</span>;
+}</pre></div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:16px"><span>ℹ️</span><span><strong>Import path từ <code>_app.core/domains/entities/</code>:</strong> dùng <code>../../../core/decorators/string.decorator</code></span></div>
+  <div class="callout callout-green" style="margin-top:10px"><span>✓</span><span><strong>Quy tắc:</strong> Hay tìm kiếm → <code>allowSearch: true</code> &nbsp;|&nbsp; Không được trùng → <code>unique: LookupUniqueData.Reference(Entity, 'Field')</code></span></div>
+</div>
+
+<!-- ─── CODE GENERATOR TAB ─── -->
+<div class="tab-panel" id="string-tab-gen">
+  <div class="gen-layout">
+
+    <!-- LEFT: Form -->
+    <div class="gen-form-panel">
+      <div class="gen-form-header">
+        ⚡ Tham số decorator
+      </div>
+      <div class="gen-form-body">
+
+        <!-- Property name -->
+        <div class="gen-field">
+          <label class="gen-label">Property name <span class="gl-type">string</span></label>
+          <input id="g-propname" class="gen-input mono" placeholder="VD: Name, Email, Code..." oninput="genStringCode()">
+        </div>
+
+        <!-- Type -->
+        <div class="gen-field">
+          <label class="gen-label">type <span class="gl-type">StringType</span></label>
+          <select id="g-type" class="gen-select" onchange="onTypeChange()">
+            <option value="Text">StringType.Text</option>
+            <option value="MultiText">StringType.MultiText</option>
+            <option value="Code">StringType.Code</option>
+            <option value="Email">StringType.Email</option>
+            <option value="Phone">StringType.Phone</option>
+            <option value="PhoneText">StringType.PhoneText</option>
+            <option value="Password">StringType.Password</option>
+            <option value="Link">StringType.Link</option>
+            <option value="LinkYoutube">StringType.LinkYoutube</option>
+            <option value="Html">StringType.Html</option>
+            <option value="Json">StringType.Json</option>
+            <option value="JsCode">StringType.JsCode</option>
+            <option value="Color">StringType.Color</option>
+            <option value="Tag">StringType.Tag</option>
+            <option value="TagEmail">StringType.TagEmail</option>
+            <option value="Account">StringType.Account</option>
+            <option value="Address">StringType.Address</option>
+            <option value="Search">StringType.Search</option>
+            <option value="AutoGenerate">StringType.AutoGenerate</option>
+            <option value="AutoComplete">StringType.AutoComplete</option>
+            <option value="Otp">StringType.Otp</option>
+            <option value="Card">StringType.Card</option>
+            <option value="Cvc">StringType.Cvc</option>
+            <option value="Number">StringType.Number</option>
+            <option value="Skype">StringType.Skype</option>
+          </select>
+        </div>
+
+        <!-- Label -->
+        <div class="gen-field">
+          <label class="gen-label">label <span class="gl-type">string</span></label>
+          <input id="g-label" class="gen-input" placeholder="Để trống = auto từ tên property" oninput="genStringCode()">
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <!-- Boolean flags -->
+        <div class="gen-field">
+          <label class="gen-label" style="margin-bottom:2px">Flags</label>
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genStringCode,0)">
+              <input type="checkbox" id="g-required" onchange="genStringCode()">
+              <span class="gc-label">required</span>
+              <span class="gc-desc" style="color:var(--rose);font-size:10px;font-weight:700">validate</span>
+            </label>
+            <label class="gen-check" onclick="setTimeout(genStringCode,0)">
+              <input type="checkbox" id="g-allowSearch" onchange="genStringCode()">
+              <span class="gc-label">allowSearch</span>
+              <span class="gc-desc">filter grid</span>
+            </label>
+            <label class="gen-check" onclick="setTimeout(genStringCode,0)">
+              <input type="checkbox" id="g-readonly" onchange="genStringCode()">
+              <span class="gc-label">readonly</span>
+              <span class="gc-desc">chỉ xem</span>
+            </label>
+            <label class="gen-check" onclick="setTimeout(genStringCode,0)">
+              <input type="checkbox" id="g-allowClear" onchange="genStringCode()">
+              <span class="gc-label">allowClear = false</span>
+              <span class="gc-desc">tắt nút xoá</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <!-- min / max -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="gen-field">
+            <label class="gen-label">min <span class="gl-validate">validate</span></label>
+            <input id="g-min" class="gen-input mono" type="number" min="0" placeholder="0" oninput="genStringCode()">
+          </div>
+          <div class="gen-field">
+            <label class="gen-label">max <span class="gl-validate">validate</span></label>
+            <input id="g-max" class="gen-input mono" type="number" min="0" placeholder="auto" oninput="genStringCode()">
+          </div>
+        </div>
+
+        <!-- unique -->
+        <div class="gen-field">
+          <label class="gen-label">unique <span class="gl-validate">validate</span> <span class="gl-type">boolean | LookupUniqueData</span></label>
+          <select id="g-unique" class="gen-select" onchange="onUniqueChange()">
+            <option value="">— không dùng</option>
+            <option value="true">true (tự tạo /Entity/exists)</option>
+            <option value="ref">LookupUniqueData.Reference(...)</option>
+          </select>
+          <div class="gen-subfield" id="sf-unique">
+            <label class="gen-label">Entity class <span class="gl-type">string</span></label>
+            <input id="g-unique-entity" class="gen-input mono" placeholder="VD: ProductEntity" oninput="genStringCode()">
+            <label class="gen-label" style="margin-top:4px">Property <span class="gl-type">string</span></label>
+            <input id="g-unique-prop" class="gen-input mono" placeholder="VD: Email" oninput="genStringCode()">
+          </div>
+        </div>
+
+        <!-- textTransform -->
+        <div class="gen-field">
+          <label class="gen-label">textTransform <span class="gl-type">TextTransformType</span></label>
+          <select id="g-transform" class="gen-select" onchange="genStringCode()">
+            <option value="">— None (mặc định)</option>
+            <option value="UpperCase">TextTransformType.UpperCase</option>
+            <option value="LowerCase">TextTransformType.LowerCase</option>
+          </select>
+        </div>
+
+        <!-- columnClass -->
+        <div class="gen-field">
+          <label class="gen-label">columnClass <span class="gl-type">ColumnClassFormat</span></label>
+          <select id="g-column" class="gen-select" onchange="genStringCode()">
+            <option value="">— auto</option>
+            <option value="Column3">Column3 (25%)</option>
+            <option value="Column4">Column4 (33%)</option>
+            <option value="Column6">Column6 (50%)</option>
+            <option value="Column8">Column8 (67%)</option>
+            <option value="Column12">Column12 (100%)</option>
+          </select>
+        </div>
+
+        <!-- placeholder / tooltip -->
+        <div class="gen-field">
+          <label class="gen-label">placeholder <span class="gl-type">string</span></label>
+          <input id="g-placeholder" class="gen-input" placeholder="Để trống = lấy từ label" oninput="genStringCode()">
+        </div>
+        <div class="gen-field">
+          <label class="gen-label">tooltip <span class="gl-type">string</span></label>
+          <input id="g-tooltip" class="gen-input" placeholder="Tooltip khi hover label..." oninput="genStringCode()">
+        </div>
+
+        <!-- Conditional: Password → requiredMatch -->
+        <div class="gen-field" id="sf-wrap-match" style="display:none">
+          <div class="gen-divider"></div>
+          <label class="gen-label">requiredMatch <span class="gl-validate">validate</span> <span class="gl-type">string</span></label>
+          <input id="g-match" class="gen-input mono" placeholder="VD: Password" oninput="genStringCode()">
+        </div>
+
+        <!-- Conditional: MultiText → rows -->
+        <div class="gen-field" id="sf-wrap-rows" style="display:none">
+          <div class="gen-divider"></div>
+          <label class="gen-label">rows <span class="gl-type">number</span></label>
+          <input id="g-rows" class="gen-input mono" type="number" min="1" value="3" oninput="genStringCode()">
+        </div>
+
+        <!-- Conditional: Color → colorType -->
+        <div class="gen-field" id="sf-wrap-color" style="display:none">
+          <div class="gen-divider"></div>
+          <label class="gen-label">colorType <span class="gl-type">ColorType</span></label>
+          <select id="g-colortype" class="gen-select" onchange="genStringCode()">
+            <option value="">— All (mặc định)</option>
+            <option value="Hex">ColorType.Hex</option>
+            <option value="Rgb">ColorType.Rgb</option>
+            <option value="Hsl">ColorType.Hsl</option>
+          </select>
+        </div>
+
+        <!-- Conditional: Tag/TagEmail → maxTags, delimiters -->
+        <div class="gen-field" id="sf-wrap-tag" style="display:none">
+          <div class="gen-divider"></div>
+          <label class="gen-label">maxTags <span class="gl-type">number</span></label>
+          <input id="g-maxtags" class="gen-input mono" type="number" min="1" placeholder="10" oninput="genStringCode()">
+          <label class="gen-label" style="margin-top:8px">delimiters <span class="gl-type">string</span></label>
+          <input id="g-delimiters" class="gen-input mono" placeholder="Mặc định: ," oninput="genStringCode()">
+        </div>
+
+        <!-- Conditional: Html → variables -->
+        <div class="gen-field" id="sf-wrap-html" style="display:none">
+          <div class="gen-divider"></div>
+          <label class="gen-label">variables <span class="gl-type">EditorParamData[]</span></label>
+          <input id="g-variables" class="gen-input" placeholder="FullName, Link, Email (cách nhau bởi dấu ,)" oninput="genStringCode()">
+        </div>
+
+        <!-- slugField -->
+        <div class="gen-field">
+          <label class="gen-label">slugField <span class="gl-type">string</span></label>
+          <input id="g-slug" class="gen-input mono" placeholder="VD: Slug (để trống nếu không dùng)" oninput="genStringCode()">
+        </div>
+
+        <div class="gen-divider"></div>
+
+        <!-- description -->
+        <div class="gen-field">
+          <label class="gen-label">description <span class="gl-type">string</span></label>
+          <input id="g-description" class="gen-input" placeholder="Mô tả hiển thị dưới input" oninput="genStringCode()">
+        </div>
+
+        <!-- icon -->
+        <div class="gen-field">
+          <label class="gen-label">icon <span class="gl-type">string (Line Awesome)</span></label>
+          <input id="g-icon" class="gen-input mono" placeholder="VD: la la-envelope (để trống = auto)" oninput="genStringCode()">
+        </div>
+
+        <!-- index -->
+        <div class="gen-field">
+          <label class="gen-label">index <span class="gl-type">number</span></label>
+          <input id="g-index" class="gen-input mono" type="number" min="0" placeholder="Thứ tự hiển thị" oninput="genStringCode()">
+        </div>
+
+        <!-- More boolean flags -->
+        <div class="gen-field">
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genStringCode,0)">
+              <input type="checkbox" id="g-allowFilter" onchange="genStringCode()">
+              <span class="gc-label">allowFilter</span>
+              <span class="gc-desc">filter column grid</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Conditional: Phone → onlyCountries, propertyPhoneCode -->
+        <div class="gen-field" id="sf-wrap-phone" style="display:none">
+          <div class="gen-divider"></div>
+          <label class="gen-label">onlyCountries <span class="gl-type">string[]</span></label>
+          <input id="g-countries" class="gen-input mono" placeholder="vn, us (cách nhau bởi dấu ,)" oninput="genStringCode()">
+          <label class="gen-label" style="margin-top:8px">propertyPhoneCode <span class="gl-type">string</span></label>
+          <input id="g-phonecode" class="gen-input mono" placeholder="VD: PhoneCode" oninput="genStringCode()">
+        </div>
+
+        <!-- Conditional: Html → htmlMenubar -->
+        <div class="gen-field" id="sf-wrap-htmlmenu" style="display:none">
+          <div class="gen-checks">
+            <label class="gen-check" onclick="setTimeout(genStringCode,0)">
+              <input type="checkbox" id="g-htmlMenubar" onchange="genStringCode()">
+              <span class="gc-label">htmlMenubar = false</span>
+              <span class="gc-desc">ẩn menubar</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Conditional: AutoComplete → lookup -->
+        <div id="sf-wrap-autocomplete" style="display:none">
+          <div class="gen-divider"></div>
+          <div class="gen-lookup-box">
+            <div class="gen-lookup-title">📦 LookupData — nguồn dữ liệu (AutoComplete)</div>
+            <div class="gen-field">
+              <label class="gen-label">Phương thức <span class="gl-type">LookupData</span></label>
+              <select id="sg-lookupMethod" class="gen-select" onchange="strToggleLookupFields();genStringCode()">
+                <option value="Reference">LookupData.Reference(Entity)</option>
+                <option value="ReferenceAjax">LookupData.ReferenceAjax(Entity)</option>
+                <option value="ReferenceUrl">LookupData.ReferenceUrl(url)</option>
+                <option value="ReferenceUrlAjax">LookupData.ReferenceUrlAjax(url)</option>
+                <option value="ReferenceEnum">LookupData.ReferenceEnum(Enum)</option>
+                <option value="ReferenceStrings">LookupData.ReferenceStrings([...])</option>
+              </select>
+            </div>
+            <div class="gen-field" id="sg-wrap-entity">
+              <label class="gen-label">Entity class <span class="gl-type">class</span></label>
+              <input id="sg-lookupEntity" class="gen-input mono" placeholder="VD: CategoryEntity" oninput="genStringCode()">
+            </div>
+            <div class="gen-field" id="sg-wrap-enumName" style="display:none">
+              <label class="gen-label">Enum name <span class="gl-type">enum</span></label>
+              <input id="sg-enumName" class="gen-input mono" placeholder="VD: StatusType" oninput="genStringCode()">
+            </div>
+            <div class="gen-field" id="sg-wrap-url" style="display:none">
+              <label class="gen-label">URL <span class="gl-type">string</span></label>
+              <input id="sg-url" class="gen-input mono" placeholder="VD: /Category/lookup" oninput="genStringCode()">
+            </div>
+            <div class="gen-field" id="sg-wrap-items" style="display:none">
+              <label class="gen-label">Items (dấu phẩy) <span class="gl-type">string[]</span></label>
+              <input id="sg-items" class="gen-input mono" placeholder="VD: Item1, Item2, Item3" oninput="genStringCode()">
+            </div>
+            <div class="gen-field" id="sg-wrap-propDisplay">
+              <label class="gen-label">propertyDisplay <span class="gl-type">string[]</span></label>
+              <input id="sg-propDisplay" class="gen-input mono" placeholder="Mặc định: Name" oninput="genStringCode()">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: Output -->
+    <div class="gen-output-panel">
+      <div class="gen-output-header">
+        <span class="gen-output-title">📋 Generated code</span>
+        <button class="copy-btn" id="copy-btn-string" onclick="doCopy('_genStringPlain','copy-btn-string')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="gen-preview-code" id="gen-string-output"></div>
+      <div class="gen-hint">
+        <span>💡</span>
+        <span>Điền tên property và chọn các tham số bên trái, code sẽ tự sinh. Nhấn <strong>Copy</strong> để copy vào clipboard. Import cần thêm: <code>StringDecorator</code>, <code>StringType</code> từ core decorator.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── STRING-SPECIFIC JS ── */
+function onTypeChange() {
+  const type = document.getElementById('g-type').value;
+  const showIf = (id, condition) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = condition ? '' : 'none';
+  };
+  showIf('sf-wrap-match', type === 'Password');
+  showIf('sf-wrap-rows',  type === 'MultiText');
+  showIf('sf-wrap-color', type === 'Color');
+  showIf('sf-wrap-tag',   type === 'Tag' || type === 'TagEmail');
+  showIf('sf-wrap-html',  type === 'Html');
+  showIf('sf-wrap-phone', type === 'Phone');
+  showIf('sf-wrap-htmlmenu', type === 'Html');
+  showIf('sf-wrap-autocomplete', type === 'AutoComplete');
+  if (type === 'AutoComplete') strToggleLookupFields();
+  genStringCode();
+}
+
+function onUniqueChange() {
+  const val = document.getElementById('g-unique').value;
+  const sf = document.getElementById('sf-unique');
+  sf.classList.toggle('show', val === 'ref');
+  genStringCode();
+}
+
+function strToggleLookupFields() {
+  const method = document.getElementById('sg-lookupMethod').value;
+  const show = (id, v) => { const el = document.getElementById(id); if(el) el.style.display = v ? '' : 'none'; };
+  const isEntity = ['Reference','ReferenceAjax'].includes(method);
+  const isUrl = ['ReferenceUrl','ReferenceUrlAjax'].includes(method);
+  show('sg-wrap-entity', isEntity);
+  show('sg-wrap-enumName', method === 'ReferenceEnum');
+  show('sg-wrap-url', isUrl);
+  show('sg-wrap-items', method === 'ReferenceStrings');
+  show('sg-wrap-propDisplay', isEntity || isUrl);
+}
+
+function buildStrLookup() {
+  const method = document.getElementById('sg-lookupMethod').value;
+  const entity = document.getElementById('sg-lookupEntity').value.trim();
+  const enumName = document.getElementById('sg-enumName').value.trim();
+  const url = document.getElementById('sg-url').value.trim();
+  const items = document.getElementById('sg-items').value.trim();
+  const pd = document.getElementById('sg-propDisplay').value.trim();
+  const pdArr = pd ? (pd.includes(',') ? `[${pd.split(',').map(s=>`'${s.trim()}'`).join(', ')}]` : `'${pd}'`) : '';
+  switch(method) {
+    case 'Reference': return entity ? `LookupData.Reference(${entity}${pdArr ? ', '+pdArr : ''})` : '';
+    case 'ReferenceAjax': return entity ? `LookupData.ReferenceAjax(${entity}${pdArr ? ', '+pdArr : ''})` : '';
+    case 'ReferenceUrl': return url ? `LookupData.ReferenceUrl('${url}'${pdArr ? ', ['+pdArr+']' : ''})` : '';
+    case 'ReferenceUrlAjax': return url ? `LookupData.ReferenceUrlAjax('${url}'${pdArr ? ', ['+pdArr+']' : ''})` : '';
+    case 'ReferenceEnum': return enumName ? `LookupData.ReferenceEnum(${enumName})` : '';
+    case 'ReferenceStrings': return items ? `LookupData.ReferenceStrings([${items.split(',').map(s=>`'${s.trim()}'`).join(', ')}])` : '';
+    default: return '';
+  }
+}
+
+function genStringCode() {
+  const propName  = document.getElementById('g-propname').value.trim() || 'PropertyName';
+  const type      = document.getElementById('g-type').value;
+  const label     = document.getElementById('g-label').value.trim();
+  const required  = document.getElementById('g-required').checked;
+  const allowSearch = document.getElementById('g-allowSearch').checked;
+  const readonly  = document.getElementById('g-readonly').checked;
+  const allowClearOff = document.getElementById('g-allowClear').checked;
+  const min       = document.getElementById('g-min').value.trim();
+  const max       = document.getElementById('g-max').value.trim();
+  const uniqueVal = document.getElementById('g-unique').value;
+  const uniqueEntity = document.getElementById('g-unique-entity').value.trim();
+  const uniqueProp   = document.getElementById('g-unique-prop').value.trim();
+  const transform = document.getElementById('g-transform').value;
+  const column    = document.getElementById('g-column').value;
+  const placeholder = document.getElementById('g-placeholder').value.trim();
+  const tooltip   = document.getElementById('g-tooltip').value.trim();
+  const match     = document.getElementById('g-match').value.trim();
+  const rows      = document.getElementById('g-rows').value.trim();
+  const colorType = document.getElementById('g-colortype').value;
+  const maxTags   = document.getElementById('g-maxtags').value.trim();
+  const delimiters= document.getElementById('g-delimiters').value.trim();
+  const variables = document.getElementById('g-variables').value.trim();
+  const slug      = document.getElementById('g-slug').value.trim();
+  const description = document.getElementById('g-description').value.trim();
+  const icon      = document.getElementById('g-icon').value.trim();
+  const index     = document.getElementById('g-index').value.trim();
+  const allowFilter = document.getElementById('g-allowFilter').checked;
+  const countries = document.getElementById('g-countries').value.trim();
+  const phonecode = document.getElementById('g-phonecode').value.trim();
+  const htmlMenubarOff = document.getElementById('g-htmlMenubar').checked;
+
+  const opts = [];
+  if (label)       opts.push(`label: '${label}'`);
+  if (required)    opts.push(`required: true`);
+  if (allowSearch) opts.push(`allowSearch: true`);
+  if (readonly)    opts.push(`readonly: true`);
+  if (allowClearOff) opts.push(`allowClear: false`);
+  if (type !== 'Text') opts.push(`type: StringType.${type}`);
+  if (min && parseInt(min) > 0) opts.push(`min: ${min}`);
+  if (max)         opts.push(`max: ${max}`);
+  if (placeholder) opts.push(`placeholder: '${placeholder}'`);
+  if (tooltip)     opts.push(`tooltip: '${tooltip}'`);
+  if (uniqueVal === 'true') {
+    opts.push(`unique: true`);
+  } else if (uniqueVal === 'ref') {
+    const e = uniqueEntity || 'EntityName';
+    const p = uniqueProp   || propName;
+    opts.push(`unique: LookupUniqueData.Reference(${e}, '${p}')`);
+  }
+  if (transform)   opts.push(`textTransform: TextTransformType.${transform}`);
+  if (column)      opts.push(`columnClass: ColumnClassFormat.${column}`);
+  if (slug)        opts.push(`slugField: '${slug}'`);
+  if (description) opts.push(`description: '${description}'`);
+  if (icon)        opts.push(`icon: '${icon}'`);
+  if (index)       opts.push(`index: ${index}`);
+  if (allowFilter) opts.push(`allowFilter: true`);
+  if (type === 'Password' && match) opts.push(`requiredMatch: '${match}'`);
+  if (type === 'MultiText' && rows && rows !== '3') opts.push(`rows: ${rows}`);
+  if (type === 'Color' && colorType) opts.push(`colorType: ColorType.${colorType}`);
+  if ((type === 'Tag' || type === 'TagEmail')) {
+    if (maxTags) opts.push(`maxTags: ${maxTags}`);
+    if (delimiters) opts.push(`delimiters: '${delimiters}'`);
+  }
+  if (type === 'Html' && variables) {
+    const vars = variables.split(',').map(v => v.trim()).filter(Boolean);
+    const varStr = vars.map(v => `{ name: '${v}' }`).join(', ');
+    opts.push(`variables: [${varStr}]`);
+  }
+  if (type === 'Html' && htmlMenubarOff) opts.push(`htmlMenubar: false`);
+  if (type === 'Phone' && countries) {
+    const cs = countries.split(',').map(v => "'" + v.trim() + "'").join(', ');
+    opts.push(`onlyCountries: [${cs}]`);
+  }
+  if (type === 'Phone' && phonecode) opts.push(`propertyPhoneCode: '${phonecode}'`);
+  // AutoComplete lookup
+  if (type === 'AutoComplete') {
+    const lookupStr = buildStrLookup();
+    if (lookupStr) opts.push(`lookup: ${lookupStr}`);
+  }
+
+  const decoratorStr = renderDecorator('@StringDecorator', opts);
+  const pname = propName || 'PropertyName';
+  const propStr = `${pname}: string;`;
+  window._genStringPlain = decoratorStr + '\n' + propStr;
+  const hlDec  = syntaxHL(decoratorStr);
+  const hlProp = `<span class="prop">${pname}</span>: <span class="kw">string</span>;`;
+  document.getElementById('gen-string-output').innerHTML = hlDec + '<br>' + hlProp;
+}
+
+// Init on load
+strToggleLookupFields();
+genStringCode();
+</script>
