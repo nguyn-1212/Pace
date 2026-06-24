@@ -1,212 +1,53 @@
-﻿using System;
+using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ClosedXML.Excel;
-using iText.IO.Font.Constants;
-using iText.Kernel.Font;
-using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using Microsoft.AspNetCore.Mvc;
-using URF.Core.EF.Trackable.Enums;
-using URF.Core.EF.Trackable.Models;
-using URF.Core.Helper.Extensions;
 
-namespace Lazy.Travel.Api.Helpers
+namespace Pace.Api.Helpers
 {
     public static class ExportHelper
     {
-        public static void CorrectExportData(TableData obj)
-        {
-            if (obj.Paging == null) obj.Paging = new PagingData
-            {
-                Index = 1,
-                Size = obj.Export != null ? obj.Export.Limit : 1000
-            };
-            else
-            {
-                obj.Paging.Index = 1;
-                obj.Paging.Size = obj.Export != null ? obj.Export.Limit : 1000;
-            }
-            var filters = obj.Filters ?? new List<FilterData>();
-            var dateFilter = filters.Where(c => c.Name == "LookupDate").FirstOrDefault();
-            if (dateFilter == null && obj.Export != null && !obj.Export.DateRange.IsNullOrEmpty())
-            {
-                dateFilter = new FilterData
-                {
-                    Name = "LookupDate",
-                    Compare = CompareType.D_Between,
-                    Value = obj.Export.DateRange[0],
-                    Value2 = obj.Export.DateRange[1],
-                };
-                obj.Filters.Add(dateFilter);
-            }
-        }
-
         public static FileContentResult ExportToCsv(string name, DataTable table)
         {
-            var index = 0;
-            var workbook = new XLWorkbook();
-            IXLWorksheet worksheet = workbook.Worksheets.Add(name);
-            foreach (var column in table.Columns.Cast<DataColumn>())
-            {
-                index += 1;
-                worksheet.Cell(1, index).Style.Font.Bold = true;
-                worksheet.Cell(1, index).Value = column.ColumnName;
-                worksheet.Cell(1, index).Style.Font.FontColor = XLColor.White;
-                worksheet.Cell(1, index).Style.Fill.BackgroundColor = XLColor.Blue;
-                worksheet.Cell(1, index).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                worksheet.Cell(1, index).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            }
+            var sb = new StringBuilder();
+            sb.AppendLine(string.Join(",", table.Columns.Cast<DataColumn>().Select(c => $"\"{c.ColumnName}\"")));
+            foreach (DataRow row in table.Rows)
+                sb.AppendLine(string.Join(",", table.Columns.Cast<DataColumn>().Select(c => $"\"{row[c]}\"")));
 
-            index = 0;
-            foreach (var row in table.Rows.Cast<DataRow>())
-            {
-                index += 1;
-                for (var i = 0; i < table.Columns.Count; i++)
-                {
-                    worksheet.Cell(index + 1, i + 1).Value = row[i] != null ? row[i].ToString() : string.Empty;
-                }
-            }
-            worksheet.Rows().AdjustToContents();
-            worksheet.Columns().AdjustToContents();
-
-            var lastCellAddress = worksheet.RangeUsed().LastCell().Address;
-            var contentText = string.Join(Environment.NewLine, worksheet.Rows(1, lastCellAddress.RowNumber)
-                .Select(r => string.Join(",", r.Cells(1, lastCellAddress.ColumnNumber)
-                        .Select(cell =>
-                        {
-                            var cellValue = cell.GetValue<string>();
-                            return $"\"{cellValue}\"";
-                        }))));
-            var contentType = "application/csv";
-            var data = Encoding.UTF8.GetBytes(contentText);
-            var result = Encoding.UTF8.GetPreamble().Concat(data).ToArray();
-
-            return new FileContentResult(result, contentType);
+            var data = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
+            return new FileContentResult(data, "application/csv") { FileDownloadName = $"{name}.csv" };
         }
 
-        public static FileContentResult ExportToPdf(ExportData obj, DataTable table)
+        public static FileContentResult ExportToExcel(string name, DataTable table)
         {
-            PageSize pageSize = obj.PageSize switch
-            {
-                PdfPageSizeType.A0 => iText.Kernel.Geom.PageSize.A0,
-                PdfPageSizeType.A1 => iText.Kernel.Geom.PageSize.A1,
-                PdfPageSizeType.A2 => iText.Kernel.Geom.PageSize.A2,
-                PdfPageSizeType.A3 => iText.Kernel.Geom.PageSize.A3,
-                PdfPageSizeType.A4 => iText.Kernel.Geom.PageSize.A4,
-                PdfPageSizeType.A5 => iText.Kernel.Geom.PageSize.A5,
-                PdfPageSizeType.A6 => iText.Kernel.Geom.PageSize.A6,
-                _ => iText.Kernel.Geom.PageSize.A4,
-            };
-            if (obj.Landscape) pageSize = pageSize.Rotate();
-
-            MemoryStream PDFData = new MemoryStream();
-            var writer = new PdfWriter(PDFData);
-            var pdfDocument = new PdfDocument(writer);
-            var document = new Document(pdfDocument, pageSize);
-
-            var font5 = PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
-
-            float[] widths = new float[table.Columns.Count];
-            for (int i = 0; i < widths.Length; i++)
-            {
-                widths[i] = 4f;
-            }
-            Table pdfTable = new Table(widths);
-            pdfTable.SetWidth(UnitValue.CreatePercentValue(100));
+            var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add(name);
+            var col = 1;
             foreach (DataColumn c in table.Columns)
             {
-                pdfTable.AddCell(new Cell().Add(new Paragraph(c.ColumnName).SetFont(font5).SetFontSize(5)));
+                ws.Cell(1, col).Value = c.ColumnName;
+                ws.Cell(1, col).Style.Font.Bold = true;
+                ws.Cell(1, col).Style.Fill.BackgroundColor = XLColor.FromHtml("#2B5BFF");
+                ws.Cell(1, col).Style.Font.FontColor = XLColor.White;
+                col++;
             }
-
+            var row = 2;
             foreach (DataRow r in table.Rows)
             {
-                if (table.Columns.Count > 0)
-                {
-                    for (int i = 0; i < table.Columns.Count; i++)
-                    {
-                        pdfTable.AddCell(new Cell().Add(new Paragraph(r[i].ToString()).SetFont(font5).SetFontSize(5)));
-                    }
-                }
-            }
-            document.Add(pdfTable);
-            document.Close();
-            string contentType = "application/pdf";
-            var content = PDFData.ToArray();
-            return new FileContentResult(content, contentType);
-        }
-
-        public static FileContentResult ExportToExcelByWorkbook(XLWorkbook workbook)
-        {
-            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            using (var stream = new MemoryStream())
-            {
-                workbook.SaveAs(stream);
-                var content = stream.ToArray();
-                return new FileContentResult(content, contentType);
-            }
-        }
-
-        public static void ChangeTableColumns(DataTable table, string oldColumn, string newColumn)
-        {
-            if (table.Columns[oldColumn] != null)
-            {
-                table.Columns[oldColumn].ColumnName = newColumn;
-            }
-        }
-
-        public static FileContentResult ExportToExcel(string name, DataTable table, int? AdjustColumnsStart = 100, int? AdjustColumnsEnd = 250)
-        {
-            var index = 0;
-            var workbook = new XLWorkbook();
-            IXLWorksheet worksheet = workbook.Worksheets.Add(name);
-            foreach (var column in table.Columns.Cast<DataColumn>())
-            {
-                index += 1;
-                worksheet.Cell(1, index).Style.Font.Bold = true;
-                worksheet.Cell(1, index).Value = column.ColumnName;
-                worksheet.Cell(1, index).Style.Font.FontColor = XLColor.White;
-                worksheet.Cell(1, index).Style.Fill.BackgroundColor = XLColor.Blue;
-                worksheet.Cell(1, index).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                worksheet.Cell(1, index).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            }
-
-            index = 0;
-            foreach (var row in table.Rows.Cast<DataRow>())
-            {
-                index += 1;
                 for (var i = 0; i < table.Columns.Count; i++)
-                {
-                    var columnName = table.Columns[i].ColumnName;
-                    if (columnName.ContainsEx("ngày") ||
-                        columnName.ContainsEx("tiền") ||
-                        columnName.ContainsEx("thời gian") ||
-                        columnName.ContainsEx("điện thoại"))
-                        worksheet.Cell(index + 1, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                    var value = row[i] != null ? row[i].ToString() : string.Empty;
-                    worksheet.Cell(index + 1, i + 1).SetValue(value);
-                }
+                    ws.Cell(row, i + 1).SetValue(r[i]?.ToString() ?? "");
+                row++;
             }
-            worksheet.Rows().AdjustToContents();
-            if (AdjustColumnsStart.HasValue && AdjustColumnsEnd.HasValue)
-            {
-                worksheet.Columns().AdjustToContents(AdjustColumnsStart.Value, AdjustColumnsEnd.Value);
-            }
-            else worksheet.Columns().AdjustToContents();
+            ws.Columns().AdjustToContents();
 
-            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            using (var stream = new MemoryStream())
-            {
-                workbook.SaveAs(stream);
-                var content = stream.ToArray();
-                return new FileContentResult(content, contentType);
-            }
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return new FileContentResult(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            { FileDownloadName = $"{name}.xlsx" };
         }
     }
 }

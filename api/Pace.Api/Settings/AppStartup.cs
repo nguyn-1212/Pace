@@ -42,6 +42,7 @@ namespace Pace.Api.Settings
             services.AddScoped<IRepositoryX<Habit>, RepositoryX<Habit>>();
             services.AddScoped<IRepositoryX<HabitLog>, RepositoryX<HabitLog>>();
             services.AddScoped<IRepositoryX<Reminder>, RepositoryX<Reminder>>();
+            services.AddScoped<IRepositoryX<Journal>, RepositoryX<Journal>>();
 
             return services;
         }
