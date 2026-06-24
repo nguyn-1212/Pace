@@ -1,4 +1,4 @@
-﻿namespace Lazy.Travel.Api.Settings
+﻿namespace Pace.Api.Settings
 {
     public class CacheKeys
     {

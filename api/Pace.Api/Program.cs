@@ -1,11 +1,3 @@
-using Lazy.Travel.Api.Data;
-using Lazy.Travel.Api.Data.Entities;
-using Lazy.Travel.Api.Helpers;
-using Lazy.Travel.Api.Middlewares;
-using Lazy.Travel.Api.Service.Caching;
-using Lazy.Travel.Api.Services.Contract;
-using Lazy.Travel.Api.Services.Implement;
-using Lazy.Travel.Api.Worker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -22,6 +14,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Pace.Api.Data;
+using Pace.Api.Data.Entities;
+using Pace.Api.Middlewares;
+using Pace.Api.Worker;
 using System;
 using System.IO;
 using System.Text;
@@ -34,11 +30,7 @@ using URF.Core.EF.Trackable.Entities;
 using URF.Core.EF.Trackable.Entities.Message;
 using URF.Core.EF.Trackable.Models;
 using URF.Core.Helper.Extensions;
-using URF.Core.Services.Contract;
 using URF.Core.Services.Hubs;
-using URF.Core.Services.Implement;
-using Category = Lazy.Travel.Api.Data.Entities.Category;
-using Configuration = Lazy.Travel.Api.Data.Entities.Configuration;
 
 internal class Program
 {
@@ -46,15 +38,12 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // configuration
         var configuration = builder.Configuration;
 
-        // appSettings
         var appSettingsSection = configuration.GetSection("AppSettings");
         var appSettings = appSettingsSection.Get<AppSettings>();
         builder.Services.Configure<AppSettings>(appSettingsSection);
 
-        // startup
         builder.Services.Configure<IISServerOptions>(options =>
         {
             options.AllowSynchronousIO = true;
@@ -81,22 +70,18 @@ internal class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         builder.Services.AddControllers()
-                        .AddNewtonsoftJson(options =>
-                        {
-                            options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-                            options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                        })
-                        .AddJsonOptions(options =>
-                        {
-                            options.JsonSerializerOptions.PropertyNamingPolicy = null;
-                        });
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
 
-        // swagger
-        builder.Services.ConfigureSwaggerGen(options =>
-        {
-            options.CustomSchemaIds(x => x.FullName);
-        });
+        builder.Services.ConfigureSwaggerGen(options => options.CustomSchemaIds(x => x.FullName));
         builder.Services.AddHostedService<BackgroundInitialWorker>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -109,26 +94,25 @@ internal class Program
                 policy.WithOrigins(
                     "http://localhost:8080",
                     "https://localhost:8080",
-                    "http://travel.lazy.vn",
-                    "https://travel.lazy.vn",
-                    "http://api-travel.lazy.vn",
-                    "https://api-travel.lazy.vn"
+                    "http://pace.lazy.vn",
+                    "https://pace.lazy.vn",
+                    "http://api-pace.lazy.vn",
+                    "https://api-pace.lazy.vn"
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()
-                .WithExposedHeaders("*"); // Expose all headers
+                .WithExposedHeaders("*");
             });
         });
 
-        // base
-        builder.Services.AddScoped<ICacheBase, CacheBase>();
+        // Base services
         builder.Services.AddScoped<INotifyHub, NotifyHub>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IMemoryCache, MemoryCache>();
-        builder.Services.AddScoped<DbContext, LazyContext>();
+        builder.Services.AddScoped<DbContext, PaceContext>();
 
-        // identity
+        // Identity
         builder.Services.AddIdentity<User, Role>(o =>
         {
             o.Password.RequiredLength = 8;
@@ -138,10 +122,10 @@ internal class Program
             o.Password.RequireNonAlphanumeric = false;
             o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
         })
-        .AddEntityFrameworkStores<LazyContext>()
+        .AddEntityFrameworkStores<PaceContext>()
         .AddDefaultTokenProviders();
 
-        // jwt authentication
+        // JWT
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.TokenKey));
         builder.Services.AddAuthentication()
             .AddCookie(c => c.SlidingExpiration = true)
@@ -160,7 +144,7 @@ internal class Program
                 };
             });
 
-        // repository
+        // Framework repositories
         builder.Services.AddScoped<IRepositoryX<User>, RepositoryX<User>>();
         builder.Services.AddScoped<IRepositoryX<Role>, RepositoryX<Role>>();
         builder.Services.AddScoped<IRepositoryX<Team>, RepositoryX<Team>>();
@@ -175,98 +159,39 @@ internal class Program
         builder.Services.AddScoped<IRepositoryX<SmtpAccount>, RepositoryX<SmtpAccount>>();
         builder.Services.AddScoped<IRepositoryX<UserActivity>, RepositoryX<UserActivity>>();
         builder.Services.AddScoped<IRepositoryX<LogException>, RepositoryX<LogException>>();
-        builder.Services.AddScoped<IRepositoryX<Configuration>, RepositoryX<Configuration>>();
         builder.Services.AddScoped<IRepositoryX<EmailTemplate>, RepositoryX<EmailTemplate>>();
         builder.Services.AddScoped<IRepositoryX<RequestFilter>, RepositoryX<RequestFilter>>();
         builder.Services.AddScoped<IRepositoryX<LanguageDetail>, RepositoryX<LanguageDetail>>();
         builder.Services.AddScoped<IRepositoryX<LinkPermission>, RepositoryX<LinkPermission>>();
         builder.Services.AddScoped<IRepositoryX<UserPermission>, RepositoryX<UserPermission>>();
         builder.Services.AddScoped<IRepositoryX<RolePermission>, RepositoryX<RolePermission>>();
-
-        // chat
         builder.Services.AddScoped<IRepositoryX<Group>, RepositoryX<Group>>();
         builder.Services.AddScoped<IRepositoryX<Message>, RepositoryX<Message>>();
         builder.Services.AddScoped<IRepositoryX<UserGroup>, RepositoryX<UserGroup>>();
-
-        // builder.Services
-        builder.Services.AddScoped<ITeamService, TeamService>();
-        builder.Services.AddScoped<IRoleService, RoleService>();
-        builder.Services.AddScoped<IUserService, UserService>();
-        builder.Services.AddScoped<IEmailService, EmailService>();
-        builder.Services.AddScoped<INotifyService, NotifyService>();
-        builder.Services.AddScoped<IUploadService, UploadService>();
-        builder.Services.AddScoped<ITenantService, TenantService>();
-        builder.Services.AddScoped<IUtilityService, UtilityService>();
-        builder.Services.AddScoped<ISecurityService, SecurityService>();
-        builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-        builder.Services.AddScoped<IPermissionService, PermissionService>();
-        builder.Services.AddScoped<IRefreshDataService, RefreshDataService>();
-        
-        
-        // CRM
         builder.Services.AddScoped<IRepositoryX<Category>, RepositoryX<Category>>();
 
-        // Lazy Travel
-        builder.Services.AddScoped<IRepositoryX<UserProfile>, RepositoryX<UserProfile>>();
-        builder.Services.AddScoped<IRepositoryX<UserInterest>, RepositoryX<UserInterest>>();
-        builder.Services.AddScoped<IRepositoryX<UserBadge>, RepositoryX<UserBadge>>();
-        builder.Services.AddScoped<IRepositoryX<UserBankAccount>, RepositoryX<UserBankAccount>>();
-        builder.Services.AddScoped<IRepositoryX<Friendship>, RepositoryX<Friendship>>();
-        builder.Services.AddScoped<IRepositoryX<Trip>, RepositoryX<Trip>>();
-        builder.Services.AddScoped<IRepositoryX<TripMember>, RepositoryX<TripMember>>();
-        builder.Services.AddScoped<IRepositoryX<TripDay>, RepositoryX<TripDay>>();
-        builder.Services.AddScoped<IRepositoryX<TripActivity>, RepositoryX<TripActivity>>();
-        builder.Services.AddScoped<IRepositoryX<TripDestination>, RepositoryX<TripDestination>>();
-        builder.Services.AddScoped<IRepositoryX<TripInviteLink>, RepositoryX<TripInviteLink>>();
-        builder.Services.AddScoped<IRepositoryX<Place>, RepositoryX<Place>>();
-        builder.Services.AddScoped<IRepositoryX<PlaceTag>, RepositoryX<PlaceTag>>();
-        builder.Services.AddScoped<IRepositoryX<PlaceWeather>, RepositoryX<PlaceWeather>>();
-        builder.Services.AddScoped<IRepositoryX<PlaceReview>, RepositoryX<PlaceReview>>();
-        builder.Services.AddScoped<IRepositoryX<CheckIn>, RepositoryX<CheckIn>>();
-        builder.Services.AddScoped<IRepositoryX<CheckInReaction>, RepositoryX<CheckInReaction>>();
-        builder.Services.AddScoped<IRepositoryX<Expense>, RepositoryX<Expense>>();
-        builder.Services.AddScoped<IRepositoryX<ExpenseSplit>, RepositoryX<ExpenseSplit>>();
-        builder.Services.AddScoped<IRepositoryX<TripSettlement>, RepositoryX<TripSettlement>>();
-        builder.Services.AddScoped<IRepositoryX<ExpenseSettlement>, RepositoryX<ExpenseSettlement>>();
-        builder.Services.AddScoped<IRepositoryX<PhotoAlbum>, RepositoryX<PhotoAlbum>>();
-        builder.Services.AddScoped<IRepositoryX<TripPhoto>, RepositoryX<TripPhoto>>();
-        builder.Services.AddScoped<IRepositoryX<PhotoComment>, RepositoryX<PhotoComment>>();
-        builder.Services.AddScoped<IRepositoryX<PhotoReaction>, RepositoryX<PhotoReaction>>();
-        builder.Services.AddScoped<IRepositoryX<PhotoTag>, RepositoryX<PhotoTag>>();
-        builder.Services.AddScoped<IRepositoryX<Vote>, RepositoryX<Vote>>();
-        builder.Services.AddScoped<IRepositoryX<VoteOption>, RepositoryX<VoteOption>>();
-        builder.Services.AddScoped<IRepositoryX<VoteResponse>, RepositoryX<VoteResponse>>();
-        builder.Services.AddScoped<IRepositoryX<TripAnnouncement>, RepositoryX<TripAnnouncement>>();
-        builder.Services.AddScoped<IRepositoryX<TripChat>, RepositoryX<TripChat>>();
-        builder.Services.AddScoped<IRepositoryX<ChatMessage>, RepositoryX<ChatMessage>>();
-        builder.Services.AddScoped<IRepositoryX<ChatMessageAttachment>, RepositoryX<ChatMessageAttachment>>();
-        builder.Services.AddScoped<IRepositoryX<TripDoc>, RepositoryX<TripDoc>>();
-        builder.Services.AddScoped<IRepositoryX<TripDocTag>, RepositoryX<TripDocTag>>();
-        builder.Services.AddScoped<IRepositoryX<TimelineEntry>, RepositoryX<TimelineEntry>>();
-        builder.Services.AddScoped<IRepositoryX<ExploreArticle>, RepositoryX<ExploreArticle>>();
-        builder.Services.AddScoped<IRepositoryX<TripTemplate>, RepositoryX<TripTemplate>>();
-        builder.Services.AddScoped<IRepositoryX<TripTemplateActivity>, RepositoryX<TripTemplateActivity>>();
-        builder.Services.AddScoped<IRepositoryX<NotificationSetting>, RepositoryX<NotificationSetting>>();
-        builder.Services.AddScoped<IRepositoryX<UserPrivacySetting>, RepositoryX<UserPrivacySetting>>();
-        builder.Services.AddScoped<IRepositoryX<UserAppSetting>, RepositoryX<UserAppSetting>>();
-        builder.Services.AddScoped<IRepositoryX<UserActivityStat>, RepositoryX<UserActivityStat>>();
-        builder.Services.AddScoped<IRepositoryX<UserLocationHistory>, RepositoryX<UserLocationHistory>>();
+        // Pace repositories
+        builder.Services.AddScoped<IRepositoryX<TransactionCategory>, RepositoryX<TransactionCategory>>();
+        builder.Services.AddScoped<IRepositoryX<Transaction>, RepositoryX<Transaction>>();
+        builder.Services.AddScoped<IRepositoryX<SavingGoal>, RepositoryX<SavingGoal>>();
+        builder.Services.AddScoped<IRepositoryX<Debt>, RepositoryX<Debt>>();
+        builder.Services.AddScoped<IRepositoryX<Goal>, RepositoryX<Goal>>();
+        builder.Services.AddScoped<IRepositoryX<GoalLog>, RepositoryX<GoalLog>>();
+        builder.Services.AddScoped<IRepositoryX<Habit>, RepositoryX<Habit>>();
+        builder.Services.AddScoped<IRepositoryX<HabitLog>, RepositoryX<HabitLog>>();
+        builder.Services.AddScoped<IRepositoryX<Reminder>, RepositoryX<Reminder>>();
 
-
-        // config
+        // Config & DB
         builder.Services.Configure<TenantSettings>(configuration.GetSection(nameof(TenantSettings)));
-        builder.Services.AddAndMigrateTenantDatabases<LazyContext>(configuration);
-        StoreHelper.SchemaWebAdmin = appSettings.SchemaWebAdmin;
-        StoreHelper.SchemaWeb = appSettings.SchemaWeb;
+        builder.Services.AddAndMigrateTenantDatabases<PaceContext>(configuration);
         StoreHelper.SchemaApi = appSettings.SchemaApi;
+        StoreHelper.SchemaWebAdmin = appSettings.SchemaWebAdmin;
 
-        // sentry
         if (!appSettings.SentryDsn.IsStringNullOrEmpty())
             Sentry.SentrySdk.Init(appSettings.SentryDsn);
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -274,30 +199,26 @@ internal class Program
         }
 
         app.UseMiddleware<LoggerMiddleware>();
-        
-        // CORS phải đặt TRƯỚC UseRouting và UseAuthorization
         app.UseCors("AllowedOrigins");
-        
-        //app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseStaticFiles();
-        
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
             endpoints.MapHub<NotifyHub>("/notifyhub");
         });
-        
-        app.UseStaticFiles(new StaticFileOptions()
+
+        app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"resources")),
             RequestPath = new PathString("/resources")
         });
         app.Use(async (context, next) =>
         {
-            context.Features.Get<IHttpMaxRequestBodySizeFeature>().MaxRequestBodySize = null; // unlimited I guess
+            context.Features.Get<IHttpMaxRequestBodySizeFeature>().MaxRequestBodySize = null;
             await next.Invoke();
         });
         app.UseForwardedHeaders(new ForwardedHeadersOptions

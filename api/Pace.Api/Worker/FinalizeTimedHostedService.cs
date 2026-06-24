@@ -1,33 +1,25 @@
-﻿using Lazy.Travel.Api.Data;
-using Lazy.Travel.Api.Data.Enums;
-using Lazy.Travel.Api.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
-using System.Configuration;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using URF.Core.EF.Trackable;
+using URF.Core.EF.Trackable.Models;
 
-namespace Lazy.Travel.Api.Worker
+namespace Pace.Api.Worker
 {
     public class FinalizeTimedHostedService : IHostedService, IDisposable
     {
-
         private Timer _timer;
         private static bool processing = false;
         private readonly IConfiguration _configuration;
-        private readonly IServiceProvider _serviceProvider;
 
-        public FinalizeTimedHostedService(
-            IConfiguration configuration,
-            IServiceProvider serviceProvider)
+        public FinalizeTimedHostedService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _serviceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
@@ -49,77 +41,41 @@ namespace Lazy.Travel.Api.Worker
             {
                 KillSleepingConnections(100);
             }
-            catch
-            {
-
-            }
+            catch { }
             processing = false;
         }
 
-        public void Dispose()
+        public void Dispose() => _timer?.Dispose();
+
+        private void KillSleepingConnections(int minSecondsToExpire)
         {
-            _timer?.Dispose();
-        }
+            var options = _configuration.GetSection(nameof(TenantSettings)).Get<TenantSettings>();
+            var connectionString = options?.Defaults?.ConnectionString;
+            if (string.IsNullOrEmpty(connectionString)) return;
 
-        public int KillSleepingConnections(int iMinSecondsToExpire)
-        {
-            string strSQL = "show processlist";
-            System.Collections.ArrayList m_ProcessesToKill = new ArrayList();
-
-            var appSettingsSection = _configuration.GetSection("AppSettings");
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var connectionString = _configuration.GetConnectionString(nameof(LazyContext));
-
-            MySqlConnection myConn = new MySqlConnection(connectionString);
-            MySqlCommand myCmd = new MySqlCommand(strSQL, myConn);
-            MySqlDataReader MyReader = null;
-
+            var processesToKill = new ArrayList();
+            using var conn = new MySqlConnection(connectionString);
+            using var cmd = new MySqlCommand("show processlist", conn);
             try
             {
-                myConn.Open();
-
-                // Get a list of processes to kill.
-                MyReader = myCmd.ExecuteReader();
-                while (MyReader.Read())
+                conn.Open();
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    // Find all processes sleeping with a timeout value higher than our threshold.
-                    int iPID = Convert.ToInt32(MyReader["Id"].ToString());
-                    string strState = MyReader["Command"].ToString();
-                    int iTime = Convert.ToInt32(MyReader["Time"].ToString());
-
-                    if (strState == "Sleep" && iTime >= iMinSecondsToExpire && iPID > 0)
-                    {
-                        // This connection is sitting around doing nothing. Kill it.
-                        m_ProcessesToKill.Add(iPID);
-                    }
+                    int pid = Convert.ToInt32(reader["Id"].ToString());
+                    string state = reader["Command"].ToString();
+                    int time = Convert.ToInt32(reader["Time"].ToString());
+                    if (state == "Sleep" && time >= minSecondsToExpire && pid > 0)
+                        processesToKill.Add(pid);
                 }
-
-                MyReader.Close();
-
-                foreach (int aPID in m_ProcessesToKill)
+                reader.Close();
+                foreach (int pid in processesToKill)
                 {
-                    strSQL = "kill " + aPID;
-                    myCmd.CommandText = strSQL;
-                    myCmd.ExecuteNonQuery();
+                    cmd.CommandText = $"kill {pid}";
+                    cmd.ExecuteNonQuery();
                 }
             }
-            catch
-            {
-            }
-            finally
-            {
-                if (MyReader != null && !MyReader.IsClosed)
-                {
-                    MyReader.Close();
-                }
-
-                if (myConn != null && myConn.State == ConnectionState.Open)
-                {
-                    myConn.Close();
-                }
-            }
-
-            return m_ProcessesToKill.Count;
+            catch { }
         }
     }
 }
