@@ -51,6 +51,7 @@ namespace Pace.Api.Data
         public DbSet<Habit> Habits { get; set; }
         public DbSet<HabitLog> HabitLogs { get; set; }
         public DbSet<Reminder> Reminders { get; set; }
+        public DbSet<Journal> Journals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder m)
         {
@@ -479,6 +480,21 @@ namespace Pace.Api.Data
                 e.Property(x => x.ReminderTime).HasMaxLength(10);
                 e.HasOne(d => d.User).WithMany()
                     .HasForeignKey(d => d.UserId).HasConstraintName("FK_Reminders_UserId").OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(d => d.CreatedByUser).WithMany().HasForeignKey(c => c.CreatedBy).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(d => d.UpdatedByUser).WithMany().HasForeignKey(c => c.UpdatedBy).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            m.Entity<Journal>(e =>
+            {
+                e.ToTable("journal");
+                e.HasKey(x => x.Id);
+                e.HasIndex(x => x.UserId);
+                e.HasIndex(x => x.JournalDate);
+                e.Property(x => x.Title).IsRequired().HasMaxLength(300);
+                e.Property(x => x.Tags).HasMaxLength(500);
+                e.Property(x => x.CoverEmoji).HasMaxLength(10);
+                e.HasOne(d => d.User).WithMany()
+                    .HasForeignKey(d => d.UserId).HasConstraintName("FK_Journals_UserId").OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(d => d.CreatedByUser).WithMany().HasForeignKey(c => c.CreatedBy).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(d => d.UpdatedByUser).WithMany().HasForeignKey(c => c.UpdatedBy).OnDelete(DeleteBehavior.Restrict);
             });

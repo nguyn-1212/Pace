@@ -180,6 +180,7 @@ internal class Program
         builder.Services.AddScoped<IRepositoryX<Habit>, RepositoryX<Habit>>();
         builder.Services.AddScoped<IRepositoryX<HabitLog>, RepositoryX<HabitLog>>();
         builder.Services.AddScoped<IRepositoryX<Reminder>, RepositoryX<Reminder>>();
+        builder.Services.AddScoped<IRepositoryX<Journal>, RepositoryX<Journal>>();
 
         // Config & DB
         builder.Services.Configure<TenantSettings>(configuration.GetSection(nameof(TenantSettings)));

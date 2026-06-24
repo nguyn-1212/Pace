@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Pace.Api.Data;
 using Pace.Api.Data.Entities;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using URF.Core.Abstractions;
 using URF.Core.Abstractions.Trackable;
@@ -11,11 +15,47 @@ namespace Pace.Api.Controllers
     {
         private readonly IRepositoryX<Transaction> _repo;
         private readonly IUnitOfWork _uow;
+        private readonly PaceContext _db;
 
-        public TransactionsController(IRepositoryX<Transaction> repo, IUnitOfWork uow)
+        public TransactionsController(IRepositoryX<Transaction> repo, IUnitOfWork uow, PaceContext db)
         {
             _repo = repo;
             _uow = uow;
+            _db = db;
+        }
+
+        /// <summary>Monthly summary: income, expense, balance + breakdown by category</summary>
+        [HttpGet("summary")]
+        public async Task<IActionResult> Summary([FromQuery] int year = 0, [FromQuery] int month = 0)
+        {
+            if (year == 0) year = DateTime.UtcNow.Year;
+            if (month == 0) month = DateTime.UtcNow.Month;
+
+            var from = new DateTime(year, month, 1);
+            var to = from.AddMonths(1);
+
+            var txs = await _db.Transactions
+                .Where(t => !t.IsDelete && t.UserId == UserId
+                    && t.TransactionDate >= from && t.TransactionDate < to)
+                .Include(t => t.Category)
+                .ToListAsync();
+
+            var income = txs.Where(t => t.Type == 1).Sum(t => t.Amount);
+            var expense = txs.Where(t => t.Type == 0).Sum(t => t.Amount);
+
+            var byCategory = txs
+                .GroupBy(t => new { t.CategoryId, Name = t.Category?.Name ?? "Khác" })
+                .Select(g => new
+                {
+                    g.Key.CategoryId,
+                    g.Key.Name,
+                    Total = g.Sum(t => t.Amount),
+                    Count = g.Count(),
+                })
+                .OrderByDescending(x => x.Total)
+                .ToList();
+
+            return Ok(new { Year = year, Month = month, Income = income, Expense = expense, Balance = income - expense, ByCategory = byCategory });
         }
 
         [HttpGet]

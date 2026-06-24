@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Lazy.Travel.Api.Helpers
+namespace Pace.Api.Helpers
 {
     public static class Validation
     {

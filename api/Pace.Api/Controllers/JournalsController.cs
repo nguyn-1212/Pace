@@ -1,64 +1,34 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Pace.Api.Data;
 using Pace.Api.Data.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using URF.Core.Abstractions;
 using URF.Core.Abstractions.Trackable;
 
 namespace Pace.Api.Controllers
 {
-    public class HabitsController : PaceBaseController
+    public class JournalsController : PaceBaseController
     {
-        private readonly IRepositoryX<Habit> _repo;
+        private readonly IRepositoryX<Journal> _repo;
         private readonly IUnitOfWork _uow;
-        private readonly PaceContext _db;
 
-        public HabitsController(IRepositoryX<Habit> repo, IUnitOfWork uow, PaceContext db)
+        public JournalsController(IRepositoryX<Journal> repo, IUnitOfWork uow)
         {
             _repo = repo;
             _uow = uow;
-            _db = db;
-        }
-
-        /// <summary>Today's active habits with completion status</summary>
-        [HttpGet("today")]
-        public async Task<IActionResult> Today()
-        {
-            var today = DateTime.UtcNow.Date;
-            var uid = UserId;
-
-            var habits = await _db.Habits
-                .Where(h => !h.IsDelete && h.UserId == uid && h.Status == 0)
-                .ToListAsync();
-
-            var logs = await _db.HabitLogs
-                .Where(l => !l.IsDelete && l.UserId == uid && l.LogDate.Date == today)
-                .ToListAsync();
-
-            var result = habits.Select(h => new
-            {
-                h.Id, h.Name, h.Icon, h.Color, h.Type,
-                h.CurrentStreak, h.LongestStreak,
-                IsDoneToday = logs.Any(l => l.HabitId == h.Id && l.IsCompleted),
-                LogId = logs.FirstOrDefault(l => l.HabitId == h.Id)?.Id,
-            });
-
-            return Ok(result);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Habit>> Get()
+        public async Task<IEnumerable<Journal>> Get([FromQuery] int page = 1, [FromQuery] int size = 20)
             => await _repo.Query()
                 .Where(x => !x.IsDelete && x.UserId == UserId)
-                .OrderByDescending(x => x.CreatedDate)
+                .OrderByDescending(x => x.JournalDate)
+                .Skip((page - 1) * size)
+                .Take(size)
                 .SelectAsync();
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Habit>> Get(int id)
+        public async Task<ActionResult<Journal>> Get(int id)
         {
             var item = await _repo.FindAsync(id);
             if (item == null || item.IsDelete || item.UserId != UserId)
@@ -67,7 +37,7 @@ namespace Pace.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Habit>> Post([FromBody] Habit item)
+        public async Task<ActionResult<Journal>> Post([FromBody] Journal item)
         {
             item.UserId = UserId;
             _repo.Insert(item);
@@ -76,7 +46,7 @@ namespace Pace.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Habit item)
+        public async Task<IActionResult> Put(int id, [FromBody] Journal item)
         {
             var existing = await _repo.FindAsync(id);
             if (existing == null || existing.IsDelete || existing.UserId != UserId)
