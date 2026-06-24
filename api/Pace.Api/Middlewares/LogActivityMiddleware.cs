@@ -1,8 +1,8 @@
-﻿using Lazy.Travel.Api.Helper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
+using Pace.Api.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,11 +12,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using URF.Core.Abstractions;
-using URF.Core.Helper.Extensions;
-using URF.Core.EF.Trackable.Entities;
 using URF.Core.Abstractions.Trackable;
+using URF.Core.EF.Trackable.Entities;
+using URF.Core.Helper.Extensions;
 
-namespace Lazy.Travel.Api.Middlewares
+namespace Pace.Api.Middlewares
 {
     public class LoggerMiddleware
     {

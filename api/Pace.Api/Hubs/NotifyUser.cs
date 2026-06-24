@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Lazy.Travel.Api.Hubs
+namespace Pace.Api.Hubs
 {
     public class HubUser
     {

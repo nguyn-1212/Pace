@@ -1,4 +1,4 @@
-﻿namespace Lazy.Travel.Api.Helpers
+﻿namespace Pace.Api.Helpers
 {
     public static class ConstantHelper
     {

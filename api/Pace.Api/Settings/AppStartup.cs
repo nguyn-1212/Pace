@@ -1,28 +1,23 @@
-﻿using URF.Core.EF.Trackable.Entities;
-using URF.Core.EF.Trackable;
-using Lazy.Travel.Api.Service.Caching;
 using Microsoft.Extensions.DependencyInjection;
+using Pace.Api.Data.Entities;
 using URF.Core.Abstractions;
-using URF.Core.EF;
-using URF.Core.Services;
-using URF.Core.Services.Hubs;
 using URF.Core.Abstractions.Trackable;
-using Lazy.Travel.Api.Services.Contract;
-using Lazy.Travel.Api.Services.Implement;
-using Lazy.Travel.Api.Data.Entities;
+using URF.Core.EF;
+using URF.Core.EF.Trackable;
+using URF.Core.EF.Trackable.Entities;
+using URF.Core.EF.Trackable.Entities.Message;
+using URF.Core.Services.Hubs;
 
-namespace Lazy.Travel.Api.Settings
+namespace Pace.Api.Settings
 {
     public static class AppStartup
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            // unitOfWork, context
-            services.AddScoped<ICacheBase, CacheBase>();
             services.AddScoped<INotifyHub, NotifyHub>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // base repo
+            // Framework repos
             services.AddScoped<IRepositoryX<Role>, RepositoryX<Role>>();
             services.AddScoped<IRepositoryX<User>, RepositoryX<User>>();
             services.AddScoped<IRepositoryX<Notify>, RepositoryX<Notify>>();
@@ -35,20 +30,18 @@ namespace Lazy.Travel.Api.Settings
             services.AddScoped<IRepositoryX<LinkPermission>, RepositoryX<LinkPermission>>();
             services.AddScoped<IRepositoryX<UserPermission>, RepositoryX<UserPermission>>();
             services.AddScoped<IRepositoryX<RolePermission>, RepositoryX<RolePermission>>();
+            services.AddScoped<IRepositoryX<Category>, RepositoryX<Category>>();
 
-            // services
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IHttpClientEx, HttpClientEx>();
-            services.AddScoped<INotifyService, NotifyService>();
-            services.AddScoped<IUtilityService, UtilityService>();
-            services.AddScoped<ISecurityService, SecurityService>();
-            services.AddScoped<IPermissionService, PermissionService>();
-            services.AddScoped<IRefreshDataService, RefreshDataService>();
-
-            // repositories
-            services.AddScoped<IRepositoryX<Configuration>, RepositoryX<Configuration>>();
-            services.AddScoped<IRepositoryX<Data.Entities.Category>, RepositoryX<Data.Entities.Category>>();
+            // Pace repos
+            services.AddScoped<IRepositoryX<TransactionCategory>, RepositoryX<TransactionCategory>>();
+            services.AddScoped<IRepositoryX<Transaction>, RepositoryX<Transaction>>();
+            services.AddScoped<IRepositoryX<SavingGoal>, RepositoryX<SavingGoal>>();
+            services.AddScoped<IRepositoryX<Debt>, RepositoryX<Debt>>();
+            services.AddScoped<IRepositoryX<Goal>, RepositoryX<Goal>>();
+            services.AddScoped<IRepositoryX<GoalLog>, RepositoryX<GoalLog>>();
+            services.AddScoped<IRepositoryX<Habit>, RepositoryX<Habit>>();
+            services.AddScoped<IRepositoryX<HabitLog>, RepositoryX<HabitLog>>();
+            services.AddScoped<IRepositoryX<Reminder>, RepositoryX<Reminder>>();
 
             return services;
         }

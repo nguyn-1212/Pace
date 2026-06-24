@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Lazy.Travel.Api.Hubs
+namespace Pace.Api.Hubs
 {
     public class ConnectionMapping<T>
     {

@@ -10,9 +10,9 @@ using URF.Core.Helper.Extensions;
 using URF.Core.Helper.Helpers;
 using URF.Core.EF.Trackable.Entities;
 using URF.Core.EF.Trackable;
-using Lazy.Travel.Api.Helpers;
+using Pace.Api.Helpers;
 
-namespace Lazy.Travel.Api.Worker
+namespace Pace.Api.Worker
 {
     public class BackgroundInitialWorker : BackgroundService
     {

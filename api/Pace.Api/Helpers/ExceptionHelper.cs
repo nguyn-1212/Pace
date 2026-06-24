@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Sentry;
 
-namespace Lazy.Travel.Api.Helper
+namespace Pace.Api.Helpers
 {
     public class ExceptionHelper
     {
