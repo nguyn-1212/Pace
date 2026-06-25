@@ -18,17 +18,17 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--f);background:var(--bg2);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px 48px;transition:background .3s;}
-.phone{width:375px;background:var(--bg);border-radius:44px;overflow:hidden;border:1.5px solid var(--border);position:relative;transition:background .3s,border-color .3s;}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid var(--border);position:relative;transition:background .3s,border-color .3s;}
 .sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp);}
 /* HEADER */
-.hd{background:var(--wb);padding:18px 22px 28px;position:relative;transition:background .3s;}
-.hd::after{content:'';position:absolute;bottom:-24px;left:-10px;right:-10px;height:48px;background:var(--bg);border-radius:50%;z-index:0;transition:background .3s;}
+.hd{background:var(--wb);padding:18px 22px 40px;position:relative;transition:background .3s;}
+
 .hd-title{font-size:22px;font-weight:600;color:var(--rw);transition:color .3s;}
 .hd-sub{font-size:12px;color:var(--mu);}
 [data-theme="dark"] .hd{background:#3D1F08;}
 [data-theme="dark"] .hd-title{color:#F5EDE0;}
 /* SCREEN */
-.screen{padding:30px 20px 110px;display:flex;flex-direction:column;gap:20px;transition:background .3s;}
+.screen{padding:30px 20px 110px;display:flex;flex-direction:column;gap:20px;transition:background .3s;;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
 /* USER CARD */
 .user-card{background:var(--wb);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:opacity .15s,background .3s;}
 .user-card:hover{opacity:.9;}
@@ -136,6 +136,33 @@ body{font-family:var(--f);background:var(--bg2);min-height:100vh;display:flex;al
 .stat-m{background:var(--bg2);border-radius:12px;padding:10px;text-align:center;transition:background .3s;}
 .stat-m-val{font-size:18px;font-weight:600;color:var(--text);}
 .stat-m-label{font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.04em;text-transform:uppercase;margin-top:2px;}
+
+/* ── DEPTH & SHADOW ENHANCEMENTS ── */
+.phone{background:var(--wb);box-shadow:0 24px 60px rgba(43,15,4,.22),0 8px 20px rgba(43,15,4,.14);}
+.gc,.goal-card{box-shadow:0 1px 4px rgba(43,15,4,.07);}
+.gc:hover,.goal-card:hover{box-shadow:0 4px 12px rgba(43,15,4,.11);}
+.list-wrap,.habits-wrap,.hw,.notif-list,.lang-list,.cat-list,.txn-list,.prog-list{box-shadow:0 1px 4px rgba(43,15,4,.06);}
+.fin-card,.sum-card,.stat-card,.fc{box-shadow:0 1px 3px rgba(43,15,4,.06);}
+.saving-card,.sv,.saving-prog{box-shadow:0 2px 8px rgba(43,15,4,.14);}
+.dream-card-home,.dream-card{box-shadow:0 3px 12px rgba(43,15,4,.18);}
+.user-card{box-shadow:0 2px 10px rgba(43,15,4,.2);}
+.sheet{box-shadow:0 -4px 24px rgba(43,15,4,.18);}
+.hd-add,.add-btn-sm{box-shadow:0 2px 8px rgba(186,84,28,.3);}
+.plus-btn,.td-btn{box-shadow:0 3px 10px rgba(186,84,28,.38);}
+.tab-bar,.tab-bar{box-shadow:0 -1px 0 rgba(186,84,28,.08),0 -4px 12px rgba(43,15,4,.06);}
+.view-dropdown{box-shadow:0 8px 28px rgba(43,15,4,.2);}
+.btn-primary,.bd,.focus-btn-done{box-shadow:0 2px 8px rgba(186,84,28,.28);}
+.monthly-card,.mc,.mc-row,.debt-card,.fin-categories-card,.fin-cats{box-shadow:0 1px 4px rgba(43,15,4,.06);}
+.wins-card,.win-card{box-shadow:0 3px 12px rgba(43,15,4,.2);}
+.quiet-card,.saving-card{box-shadow:0 2px 10px rgba(43,15,4,.18);}
+.quota-card,.area-opt.sel,.freq-item.sel,.theme-opt.sel{box-shadow:0 0 0 1.5px var(--ch, #BA541C);}
+
+
+/* ── NAVBAR ICON THICKNESS ── */
+.tic svg{stroke-width:2.0 !important;}
+.tab-icon svg{stroke-width:2.0 !important;}
+.ti.a .tic svg{stroke-width:2.2 !important;}
+.ti.a .tab-icon svg{stroke-width:2.2 !important;}
 </style>
 </head>
 <body>
@@ -249,11 +276,11 @@ body{font-family:var(--f);background:var(--bg2);min-height:100vh;display:flex;al
 
 <!-- TAB BAR -->
 <div class="tab-bar">
-  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="tl">Home</span></div>
-  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div><span class="tl">Goals</span></div>
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div></div>
   <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
-  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tl">Habits</span></div>
-  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><span class="tl">More</span></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
 </div>
 
 <!-- ═══════════ SUB SCREENS ═══════════ -->

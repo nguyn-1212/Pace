@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Thanh điều hướng</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22)}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--mu)}
+.hd{background:var(--wb);padding:14px 22px 36px}
+.hd-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-family:var(--fb);font-size:12px;color:var(--mu)}
+.screen{background:var(--rw);border-radius:24px 24px 0 0;padding:24px 20px 60px;display:flex;flex-direction:column;gap:20px}
+.sl{font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:12px}
+/* Tab preview */
+.tab-preview{background:var(--cr);border-radius:14px;padding:12px;margin-bottom:4px}
+.tp-label{font-family:var(--fb);font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.tp-bar{background:var(--rw);border-radius:10px;display:flex;justify-content:space-around;align-items:center;padding:10px 8px 14px;box-shadow:0 1px 4px rgba(43,15,4,.08)}
+.tp-item{display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.35;transition:opacity .2s}
+.tp-item.on{opacity:1}
+.tp-icon{font-size:18px}
+.tp-name{font-family:var(--fb);font-size:8px;font-weight:700;color:var(--mu)}
+.tp-item.on .tp-name{color:var(--ch)}
+/* Tab list */
+.tab-list{display:flex;flex-direction:column;gap:8px}
+.tab-item{background:var(--cr);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:grab;transition:box-shadow .15s}
+.tab-item:active{cursor:grabbing;box-shadow:0 4px 16px rgba(43,15,4,.15);background:#EDE3D4}
+.ti-drag{font-size:18px;color:var(--mu);flex-shrink:0;cursor:grab}
+.ti-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ti-body{flex:1}
+.ti-name{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--wb)}
+.ti-sub{font-family:var(--fb);font-size:11px;color:var(--mu);margin-top:2px}
+.tg{width:40px;height:22px;border-radius:11px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s}
+.tg.on{background:var(--gd)}
+.tg::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s}
+.tg.on::after{left:21px}
+/* note */
+.note-box{background:rgba(186,84,28,.06);border-radius:10px;padding:10px 14px;border-left:3px solid rgba(186,84,28,.3)}
+.note-text{font-family:var(--fb);font-size:12px;color:var(--sp);line-height:1.55}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div><div class="hd-title">Thanh điều hướng</div></div>
+  </div>
+  <div class="hd-sub">Bật/tắt tab và sắp xếp thứ tự theo ý muốn.</div>
+</div>
+<div class="screen">
+
+  <!-- Preview -->
+  <div class="tab-preview">
+    <div class="tp-label">Xem trước</div>
+    <div class="tp-bar">
+      <div class="tp-item on"><div class="tp-icon">🏠</div><div class="tp-name">Home</div></div>
+      <div class="tp-item on"><div class="tp-icon">🎯</div><div class="tp-name">Goals</div></div>
+      <div class="tp-item on"><div class="tp-icon" style="font-size:14px;background:var(--ch);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff">+</div><div class="tp-name" style="color:var(--ch)">Thêm</div></div>
+      <div class="tp-item on"><div class="tp-icon">💬</div><div class="tp-name">Habits</div></div>
+      <div class="tp-item on"><div class="tp-icon">⋯</div><div class="tp-name">More</div></div>
+    </div>
+  </div>
+
+  <!-- Tab list -->
+  <div>
+    <div class="sl">Tuỳ chỉnh tabs</div>
+    <div class="tab-list">
+      <div class="tab-item">
+        <div class="ti-drag">⠿</div>
+        <div class="ti-icon" style="background:#FFF3E0">🏠</div>
+        <div class="ti-body"><div class="ti-name">Home</div><div class="ti-sub">Màn chính · Không thể tắt</div></div>
+        <button class="tg on" disabled style="opacity:.4"></button>
+      </div>
+      <div class="tab-item">
+        <div class="ti-drag">⠿</div>
+        <div class="ti-icon" style="background:#FCE8E8">🎯</div>
+        <div class="ti-body"><div class="ti-name">Goals</div><div class="ti-sub">Danh sách goals</div></div>
+        <button class="tg on" onclick="this.classList.toggle('on')"></button>
+      </div>
+      <div class="tab-item">
+        <div class="ti-drag">⠿</div>
+        <div class="ti-icon" style="background:#E1F5EE">💬</div>
+        <div class="ti-body"><div class="ti-name">Habits</div><div class="ti-sub">Thói quen & check-in</div></div>
+        <button class="tg on" onclick="this.classList.toggle('on')"></button>
+      </div>
+      <div class="tab-item">
+        <div class="ti-drag">⠿</div>
+        <div class="ti-icon" style="background:#E8E7FC">📊</div>
+        <div class="ti-body"><div class="ti-name">Journey</div><div class="ti-sub">Lịch & tiến độ</div></div>
+        <button class="tg" onclick="this.classList.toggle('on')"></button>
+      </div>
+      <div class="tab-item">
+        <div class="ti-drag">⠿</div>
+        <div class="ti-icon" style="background:var(--cr)">⋯</div>
+        <div class="ti-body"><div class="ti-name">More</div><div class="ti-sub">Thêm · Không thể tắt</div></div>
+        <button class="tg on" disabled style="opacity:.4"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <div class="note-text">Nút <strong>+</strong> ở giữa luôn cố định — bấm để thêm goal, chi tiêu hoặc ghi chú nhanh. Kéo thả để thay đổi thứ tự các tabs.</div>
+  </div>
+</div>
+</div>
+</body>
+</html>

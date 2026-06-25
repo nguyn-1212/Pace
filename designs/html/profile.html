@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Hồ sơ</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22)}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--mu)}
+.hd{background:var(--wb);padding:18px 22px 36px;position:relative}
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.edit-lbl{font-family:var(--fb);font-size:12px;font-weight:700;color:var(--ch);cursor:pointer;background:none;border:none}
+/* Avatar */
+.avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--ch),var(--sp));display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:32px;font-weight:700;color:var(--rw);position:relative;border:3px solid rgba(255,246,237,.15)}
+.avatar-change{position:absolute;bottom:0;right:0;width:24px;height:24px;border-radius:50%;background:var(--ch);border:2px solid var(--wb);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px}
+.user-name{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw)}
+.user-joined{font-family:var(--fb);font-size:11px;color:var(--mu)}
+/* Stats strip */
+.stats-strip{display:flex;gap:0;margin-top:16px;background:rgba(255,246,237,.06);border-radius:12px;overflow:hidden}
+.ss-item{flex:1;text-align:center;padding:10px 6px}
+.ss-item+.ss-item{border-left:1px solid rgba(255,246,237,.08)}
+.ss-val{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--rw)}
+.ss-label{font-family:var(--fb);font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+/* Screen */
+.screen{background:var(--rw);border-radius:24px 24px 0 0;padding:24px 20px 40px;display:flex;flex-direction:column;gap:18px}
+.field-group{display:flex;flex-direction:column;gap:10px}
+.fl{font-family:var(--fb);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:2px}
+/* Info rows (read mode) */
+.info-list{background:var(--cr);border-radius:14px;overflow:hidden}
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(186,84,28,.07);cursor:pointer;transition:background .15s}
+.info-row:last-child{border-bottom:none}
+.info-row:hover{background:#EDE3D4}
+.ir-left{display:flex;align-items:center;gap:12px}
+.ir-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ir-key{font-family:var(--fb);font-size:11px;font-weight:600;color:var(--mu);margin-bottom:2px}
+.ir-val{font-family:var(--fh);font-size:14px;font-weight:600;color:var(--wb)}
+.ir-arrow{color:var(--mu);font-size:16px}
+/* Editable inputs (edit mode, hidden by default) */
+.edit-fields{display:none}
+.inp{width:100%;border:1.5px solid rgba(186,84,28,.2);border-radius:12px;padding:12px 14px;font-family:var(--fh);font-size:15px;font-weight:600;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--ch)}
+/* Gender selector */
+.gender-row{display:flex;gap:8px}
+.g-opt{flex:1;padding:12px;border-radius:12px;border:1.5px solid rgba(186,84,28,.18);background:var(--rw);font-family:var(--fh);font-size:13px;font-weight:700;color:var(--mu);cursor:pointer;text-align:center;transition:all .15s}
+.g-opt.sel{border-color:var(--ch);background:rgba(186,84,28,.06);color:var(--ch)}
+/* Achievements */
+.ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ach-item{background:var(--cr);border-radius:12px;padding:10px;text-align:center;cursor:pointer;transition:transform .15s}
+.ach-item:hover{transform:scale(1.05)}
+.ach-item.locked{opacity:.35;filter:grayscale(1)}
+.ach-emoji{font-size:22px;display:block;margin-bottom:4px}
+.ach-name{font-family:var(--fb);font-size:9px;font-weight:700;color:var(--sp);line-height:1.3}
+/* Danger zone */
+.danger-card{background:var(--cr);border-radius:14px;overflow:hidden}
+.danger-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(186,84,28,.07);cursor:pointer;transition:background .15s}
+.danger-row:last-child{border-bottom:none}
+.danger-row:hover{background:#EDE3D4}
+.dr-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.dr-label{font-family:var(--fh);font-size:13px;font-weight:700}
+/* Buttons */
+.btn-save{width:100%;padding:14px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3);display:none}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="edit-lbl" id="edit-btn" onclick="toggleEdit()">Chỉnh sửa</button>
+  </div>
+  <div class="avatar-wrap">
+    <div class="avatar">M<div class="avatar-change">📷</div></div>
+    <div class="user-name" id="display-name">Minh</div>
+    <div class="user-joined">Tham gia tháng 5, 2026 · 22 ngày</div>
+  </div>
+  <div class="stats-strip">
+    <div class="ss-item"><div class="ss-val">12</div><div class="ss-label">Goals</div></div>
+    <div class="ss-item"><div class="ss-val">21</div><div class="ss-label">Streak</div></div>
+    <div class="ss-item"><div class="ss-val">75%</div><div class="ss-label">Tuần này</div></div>
+    <div class="ss-item"><div class="ss-val">4</div><div class="ss-label">Thói quen</div></div>
+  </div>
+</div>
+
+<div class="screen">
+  <!-- Info (read mode) -->
+  <div id="read-mode">
+    <div class="info-list">
+      <div class="info-row"><div class="ir-left"><div class="ir-icon" style="background:#FFF3E0">😊</div><div><div class="ir-key">Tên</div><div class="ir-val">Minh</div></div></div><span class="ir-arrow">›</span></div>
+      <div class="info-row"><div class="ir-left"><div class="ir-icon" style="background:#E6F1FB">🎂</div><div><div class="ir-key">Ngày sinh</div><div class="ir-val">15 tháng 3, 2000</div></div></div><span class="ir-arrow">›</span></div>
+      <div class="info-row"><div class="ir-left"><div class="ir-icon" style="background:#E8E7FC">⚧️</div><div><div class="ir-key">Giới tính</div><div class="ir-val">Nam</div></div></div><span class="ir-arrow">›</span></div>
+      <div class="info-row"><div class="ir-left"><div class="ir-icon" style="background:#E1F5EE">📧</div><div><div class="ir-key">Email</div><div class="ir-val">minh@gmail.com</div></div></div><span class="ir-arrow">›</span></div>
+    </div>
+  </div>
+
+  <!-- Edit mode (hidden) -->
+  <div class="edit-fields" id="edit-mode">
+    <div class="field-group">
+      <div class="fl">Tên hiển thị</div>
+      <input class="inp" type="text" value="Minh" id="inp-name">
+    </div>
+    <div class="field-group">
+      <div class="fl">Ngày sinh</div>
+      <input class="inp" type="date" value="2000-03-15">
+    </div>
+    <div class="field-group">
+      <div class="fl">Giới tính</div>
+      <div class="gender-row">
+        <div class="g-opt sel" onclick="selG(this)">Nam</div>
+        <div class="g-opt" onclick="selG(this)">Nữ</div>
+        <div class="g-opt" onclick="selG(this)">Khác</div>
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="fl">Email</div>
+      <input class="inp" type="email" value="minh@gmail.com">
+    </div>
+    <button class="btn-save" id="btn-save" onclick="saveProfile()">Lưu thay đổi ✓</button>
+  </div>
+
+  <!-- Achievements -->
+  <div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)">Thành tích</span>
+      <span style="font-family:var(--fb);font-size:12px;color:var(--ch);font-weight:700">5 / 12 mở khoá</span>
+    </div>
+    <div class="ach-grid">
+      <div class="ach-item"><span class="ach-emoji">🔥</span><div class="ach-name">Streak 7 ngày</div></div>
+      <div class="ach-item"><span class="ach-emoji">📚</span><div class="ach-name">Đọc sách 30 ngày</div></div>
+      <div class="ach-item"><span class="ach-emoji">💰</span><div class="ach-name">Tiết kiệm 1tr</div></div>
+      <div class="ach-item"><span class="ach-emoji">🎯</span><div class="ach-name">10 goals xong</div></div>
+      <div class="ach-item"><span class="ach-emoji">🌅</span><div class="ach-name">Ngủ sớm 7 ngày</div></div>
+      <div class="ach-item locked"><span class="ach-emoji">⚡</span><div class="ach-name">Streak 30 ngày</div></div>
+      <div class="ach-item locked"><span class="ach-emoji">🏆</span><div class="ach-name">Hoàn hảo 1 tuần</div></div>
+      <div class="ach-item locked"><span class="ach-emoji">💎</span><div class="ach-name">100 goals xong</div></div>
+    </div>
+  </div>
+
+  <!-- Danger zone -->
+  <div>
+    <div style="font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:10px">Tài khoản</div>
+    <div class="danger-card">
+      <div class="danger-row"><div class="dr-icon" style="background:#FFF3E0">🔒</div><div class="dr-label" style="color:var(--wb)">Đổi mật khẩu</div><span style="color:var(--mu);font-size:16px">›</span></div>
+      <div class="danger-row"><div class="dr-icon" style="background:#FCE8E8">🗑</div><div class="dr-label" style="color:var(--rs)">Xoá tài khoản</div><span style="color:var(--mu);font-size:16px">›</span></div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+var isEdit=false;
+function toggleEdit(){
+  isEdit=!isEdit;
+  document.getElementById('read-mode').style.display=isEdit?'none':'';
+  document.getElementById('edit-mode').style.display=isEdit?'flex':'none';
+  document.getElementById('edit-mode').style.flexDirection='column';
+  document.getElementById('edit-mode').style.gap='14px';
+  document.getElementById('btn-save').style.display=isEdit?'block':'none';
+  document.getElementById('edit-btn').textContent=isEdit?'Huỷ':'Chỉnh sửa';
+  document.getElementById('edit-btn').style.color=isEdit?'var(--mu)':'var(--ch)';
+}
+function selG(el){document.querySelectorAll('.g-opt').forEach(function(g){g.classList.remove('sel')});el.classList.add('sel');}
+function saveProfile(){
+  document.getElementById('display-name').textContent=document.getElementById('inp-name').value||'Minh';
+  toggleEdit();
+}
+</script>
+</body>
+</html>

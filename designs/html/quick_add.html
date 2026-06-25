@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Thêm nhanh</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);min-height:700px;display:flex;flex-direction:column}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--mu)}
+/* Tab selector */
+.type-tabs{display:flex;background:rgba(255,246,237,.06);padding:3px 16px;gap:0;border-bottom:1px solid rgba(255,246,237,.08)}
+.tt{flex:1;padding:10px 0;font-family:var(--fh);font-size:12px;font-weight:700;color:rgba(255,246,237,.35);border:none;background:transparent;cursor:pointer;text-align:center;transition:color .15s;position:relative}
+.tt.on{color:var(--rw)}
+.tt.on::after{content:'';position:absolute;bottom:-1px;left:15%;right:15%;height:2px;background:var(--ch);border-radius:2px}
+/* VIEWS */
+.view{display:none;flex:1;flex-direction:column}
+.view.active{display:flex}
+/* Common header inside view */
+.view-hd{padding:18px 22px 22px;background:var(--wb)}
+.vh-title{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.vh-sub{font-family:var(--fb);font-size:12px;color:var(--mu)}
+/* Common body */
+.view-body{background:var(--rw);border-radius:24px 24px 0 0;flex:1;padding:22px 20px 30px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.fl{font-family:var(--fb);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:7px}
+.inp{width:100%;border:1.5px solid rgba(186,84,28,.18);border-radius:12px;padding:12px 14px;font-family:var(--fh);font-size:15px;font-weight:600;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--ch)}
+.inp::placeholder{color:var(--mu);font-weight:400;font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:7px 13px;border-radius:20px;border:1px solid rgba(186,84,28,.18);background:var(--rw);font-family:var(--fb);font-size:12px;font-weight:600;color:var(--sp);cursor:pointer;transition:all .15s}
+.chip:hover,.chip.sel{background:var(--ch);border-color:var(--ch);color:#fff}
+/* Amount for expense */
+.amt-wrap{position:relative}
+.amt-c{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:var(--fh);font-size:16px;font-weight:700;color:var(--mu)}
+.amt-inp{padding-left:30px;font-size:22px;font-weight:800}
+.btn-save{width:100%;padding:14px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3);margin-top:auto}
+.btn-skip{width:100%;padding:11px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer}
+/* Note colors for quick note */
+.color-row{display:flex;gap:8px}
+.nc{width:28px;height:28px;border-radius:50%;cursor:pointer;transition:transform .15s;border:2px solid transparent}
+.nc.sel{transform:scale(1.2);border-color:var(--ch)}
+/* Textarea */
+.ta{width:100%;border:1.5px solid rgba(186,84,28,.18);border-radius:12px;padding:12px 14px;font-family:var(--fb);font-size:14px;color:var(--wb);background:var(--rw);outline:none;resize:none;line-height:1.6}
+.ta:focus{border-color:var(--ch)}
+.ta::placeholder{color:var(--mu);font-size:13px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>100%</span></div>
+
+<!-- Type tabs -->
+<div class="type-tabs">
+  <button class="tt on" onclick="showView('goal',this)">🎯 Goal</button>
+  <button class="tt" onclick="showView('expense',this)">💰 Chi tiêu</button>
+  <button class="tt" onclick="showView('habit',this)">🔄 Thói quen</button>
+  <button class="tt" onclick="showView('note',this)">📝 Ghi chú</button>
+</div>
+
+<!-- ── QUICK GOAL ── -->
+<div class="view active" id="view-goal">
+  <div class="view-hd">
+    <div class="vh-title">Thêm goal nhanh</div>
+    <div class="vh-sub">Chỉ cần tên — cài đặt sau cũng được.</div>
+  </div>
+  <div class="view-body">
+    <div>
+      <div class="fl">Hôm nay bạn muốn làm gì?</div>
+      <input class="inp" type="text" id="q-goal-inp" placeholder="VD: Đọc 10 trang sách..." oninput="document.getElementById('q-goal-btn').disabled=this.value.trim().length===0;document.getElementById('q-goal-btn').style.opacity=this.value.trim().length>0?'1':'.35'">
+    </div>
+    <div>
+      <div class="fl">Gợi ý</div>
+      <div class="chips">
+        <div class="chip" onclick="setQ('q-goal-inp','Đọc 10 trang sách')">📚 Đọc sách</div>
+        <div class="chip" onclick="setQ('q-goal-inp','Chạy bộ 20 phút')">🏃 Chạy bộ</div>
+        <div class="chip" onclick="setQ('q-goal-inp','Thiền 10 phút')">🧘 Thiền</div>
+        <div class="chip" onclick="setQ('q-goal-inp','Học từ vựng 15 phút')">🗣️ Từ vựng</div>
+        <div class="chip" onclick="setQ('q-goal-inp','Uống đủ 2L nước')">💧 Uống nước</div>
+        <div class="chip" onclick="setQ('q-goal-inp','Viết nhật ký')">✏️ Nhật ký</div>
+      </div>
+    </div>
+    <button class="btn-save" id="q-goal-btn" disabled style="opacity:.35" onclick="location.href='goal_add_success.html'">Thêm goal ✓</button>
+    <button class="btn-skip" onclick="location.href='goal_add_1.html'">Thêm đầy đủ →</button>
+  </div>
+</div>
+
+<!-- ── QUICK EXPENSE ── -->
+<div class="view" id="view-expense">
+  <div class="view-hd">
+    <div class="vh-title">Ghi chi tiêu nhanh</div>
+    <div class="vh-sub">Nhập số tiền và danh mục là xong.</div>
+  </div>
+  <div class="view-body">
+    <div>
+      <div class="fl">Số tiền</div>
+      <div class="amt-wrap">
+        <span class="amt-c">₫</span>
+        <input class="inp amt-inp" type="number" placeholder="0" id="q-amt" oninput="document.getElementById('q-exp-btn').disabled=!this.value;document.getElementById('q-exp-btn').style.opacity=this.value?'1':'.35'">
+      </div>
+      <div class="chips" style="margin-top:8px">
+        <div class="chip" onclick="setAmt(50000)">50k</div>
+        <div class="chip" onclick="setAmt(100000)">100k</div>
+        <div class="chip" onclick="setAmt(200000)">200k</div>
+        <div class="chip" onclick="setAmt(500000)">500k</div>
+      </div>
+    </div>
+    <div>
+      <div class="fl">Danh mục</div>
+      <div class="chips">
+        <div class="chip sel" onclick="selChip(this)">🍜 Ăn uống</div>
+        <div class="chip" onclick="selChip(this)">🚗 Đi lại</div>
+        <div class="chip" onclick="selChip(this)">🎮 Giải trí</div>
+        <div class="chip" onclick="selChip(this)">📚 Học tập</div>
+        <div class="chip" onclick="selChip(this)">💊 Sức khoẻ</div>
+        <div class="chip" onclick="selChip(this)">📦 Khác</div>
+      </div>
+    </div>
+    <div>
+      <div class="fl">Ghi chú (tuỳ chọn)</div>
+      <input class="inp" type="text" placeholder="VD: Cơm trưa, Grab đi làm...">
+    </div>
+    <button class="btn-save" id="q-exp-btn" disabled style="opacity:.35" onclick="location.href='finance.html'">Lưu chi tiêu ✓</button>
+    <button class="btn-skip" onclick="location.href='expense_add.html'">Thêm đầy đủ →</button>
+  </div>
+</div>
+
+<!-- ── QUICK HABIT ── -->
+<div class="view" id="view-habit">
+  <div class="view-hd">
+    <div class="vh-title">Thêm thói quen nhanh</div>
+    <div class="vh-sub">Chọn loại và đặt tên — xong ngay.</div>
+  </div>
+  <div class="view-body">
+    <div>
+      <div class="fl">Loại thói quen</div>
+      <div style="display:flex;gap:8px">
+        <div class="chip sel" id="ht-bad" onclick="selHType('bad')">🚫 Cần bỏ</div>
+        <div class="chip" id="ht-good" onclick="selHType('good')">✅ Cần làm</div>
+      </div>
+    </div>
+    <div>
+      <div class="fl">Tên thói quen</div>
+      <input class="inp" id="q-habit-inp" type="text" placeholder="VD: Không dùng điện thoại sau 10pm..." oninput="document.getElementById('q-hab-btn').disabled=this.value.trim().length===0;document.getElementById('q-hab-btn').style.opacity=this.value.trim().length>0?'1':'.35'">
+    </div>
+    <div>
+      <div class="fl">Gợi ý</div>
+      <div class="chips" id="habit-chips-bad">
+        <div class="chip" onclick="setQ('q-habit-inp','Ngủ muộn sau 12h')">😴 Ngủ muộn</div>
+        <div class="chip" onclick="setQ('q-habit-inp','MXH hơn 2h/ngày')">📱 Mạng xã hội</div>
+        <div class="chip" onclick="setQ('q-habit-inp','Ăn vặt sau 10pm')">🍟 Ăn vặt đêm</div>
+        <div class="chip" onclick="setQ('q-habit-inp','Trì hoãn công việc')">⏳ Trì hoãn</div>
+      </div>
+      <div class="chips" id="habit-chips-good" style="display:none">
+        <div class="chip" onclick="setQ('q-habit-inp','Uống đủ 2L nước')">💧 Uống nước</div>
+        <div class="chip" onclick="setQ('q-habit-inp','Đọc sách 20 phút')">📚 Đọc sách</div>
+        <div class="chip" onclick="setQ('q-habit-inp','Thiền buổi sáng')">🧘 Thiền</div>
+        <div class="chip" onclick="setQ('q-habit-inp','Tập thể dục 30 phút')">💪 Tập thể dục</div>
+      </div>
+    </div>
+    <button class="btn-save" id="q-hab-btn" disabled style="opacity:.35" onclick="location.href='habits.html'">Thêm thói quen ✓</button>
+    <button class="btn-skip" onclick="location.href='habit_add.html'">Thêm đầy đủ →</button>
+  </div>
+</div>
+
+<!-- ── QUICK NOTE ── -->
+<div class="view" id="view-note">
+  <div class="view-hd">
+    <div class="vh-title">Ghi chú nhanh</div>
+    <div class="vh-sub">Viết ra — trước khi quên mất.</div>
+  </div>
+  <div class="view-body">
+    <div>
+      <div class="fl">Màu card</div>
+      <div class="color-row">
+        <div class="nc sel" onclick="selNC(this,'#FFFBEB')" style="background:#FEF9C3"></div>
+        <div class="nc" onclick="selNC(this,'#F0FAF4')" style="background:#DCFCE7"></div>
+        <div class="nc" onclick="selNC(this,'#F3F0FF')" style="background:#EDE9FE"></div>
+        <div class="nc" onclick="selNC(this,'#EFF6FF')" style="background:#DBEAFE"></div>
+        <div class="nc" onclick="selNC(this,'#FFF0F5')" style="background:#FCE7F3"></div>
+        <div class="nc" onclick="selNC(this,null)" style="background:var(--cr);border:1px solid rgba(186,84,28,.18)"></div>
+      </div>
+    </div>
+    <div>
+      <div class="fl">Tiêu đề (tuỳ chọn)</div>
+      <input class="inp" type="text" placeholder="Tiêu đề ghi chú...">
+    </div>
+    <div style="flex:1">
+      <div class="fl">Nội dung</div>
+      <textarea class="ta" rows="5" id="q-note-ta" placeholder="Viết ghi chú nhanh..." oninput="document.getElementById('q-note-btn').disabled=this.value.trim().length===0;document.getElementById('q-note-btn').style.opacity=this.value.trim().length>0?'1':'.35'"></textarea>
+    </div>
+    <button class="btn-save" id="q-note-btn" disabled style="opacity:.35" onclick="location.href='notes.html'">Lưu ghi chú ✓</button>
+    <button class="btn-skip" onclick="location.href='note_edit.html'">Mở trình soạn thảo →</button>
+  </div>
+</div>
+
+</div>
+<script>
+function showView(id,btn){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.tt').forEach(function(t){t.classList.remove('on')});
+  btn.classList.add('on');
+}
+function setQ(inp,val){
+  document.getElementById(inp).value=val;
+  document.getElementById(inp).dispatchEvent(new Event('input'));
+}
+function setAmt(v){
+  document.getElementById('q-amt').value=v;
+  document.getElementById('q-exp-btn').disabled=false;
+  document.getElementById('q-exp-btn').style.opacity='1';
+}
+function selChip(el){document.querySelectorAll('#view-expense .chip').forEach(function(c){c.classList.remove('sel')});el.classList.add('sel');}
+function selHType(t){
+  var bad=t==='bad';
+  document.getElementById('ht-bad').classList.toggle('sel',bad);
+  document.getElementById('ht-good').classList.toggle('sel',!bad);
+  document.getElementById('habit-chips-bad').style.display=bad?'flex':'none';
+  document.getElementById('habit-chips-good').style.display=bad?'none':'flex';
+  document.getElementById('q-habit-inp').placeholder=bad?'VD: Không dùng điện thoại sau 10pm...':'VD: Uống đủ 2L nước mỗi ngày...';
+}
+function selNC(el,c){
+  document.querySelectorAll('.nc').forEach(function(n){n.classList.remove('sel')});
+  el.classList.add('sel');
+}
+</script>
+</body>
+</html>

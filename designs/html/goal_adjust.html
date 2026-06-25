@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Dời lại Goal</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.cancel-link{font-family:var(--fb);font-size:12px;font-weight:600;color:rgba(255,246,237,.45);cursor:pointer;background:none;border:none}
+.goal-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,246,237,.1);border:1px solid rgba(255,246,237,.18);border-radius:20px;padding:5px 12px;margin-bottom:10px}
+.goal-pill-text{font-family:var(--fh);font-size:12px;font-weight:600;color:rgba(255,246,237,.8)}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);line-height:1.3;margin-bottom:4px}
+.hd-sub{font-size:12px;color:rgba(255,246,237,.5)}
+/* BODY */
+.body{background:var(--rw);padding:32px 20px 40px;display:flex;flex-direction:column;gap:12px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+/* Recovery path cards */
+.path-card{border-radius:16px;border:1.5px solid rgba(186,84,28,.14);background:var(--rw);overflow:hidden;box-shadow:0 1px 4px rgba(43,15,4,.07);transition:border-color .15s,box-shadow .15s}
+.path-card.active{border-color:var(--ch);box-shadow:0 0 0 1px var(--ch),0 3px 12px rgba(186,84,28,.15)}
+.path-header{display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer}
+.path-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.path-text{flex:1}
+.path-name{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--wb)}
+.path-card.active .path-name{color:var(--ch)}
+.path-desc{font-size:11px;color:var(--mu);margin-top:2px;line-height:1.5;font-weight:500}
+.path-arrow{font-size:18px;color:var(--mu);transition:transform .2s}
+.path-card.active .path-arrow{transform:rotate(90deg);color:var(--ch)}
+/* Expandable detail */
+.path-detail{display:none;padding:0 16px 16px;border-top:1px solid rgba(186,84,28,.08)}
+.path-card.active .path-detail{display:block}
+/* Time picker for "Later Today" */
+.time-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.t-chip{padding:8px 13px;border-radius:20px;border:1.5px solid rgba(186,84,28,.15);background:var(--rw);font-family:var(--fh);font-size:13px;font-weight:600;color:var(--sp);cursor:pointer;transition:all .15s}
+.t-chip.sel,.t-chip:hover{background:var(--ch);border-color:var(--ch);color:#fff}
+/* Calendar mini for "Pick Date" */
+.mini-cal{margin-top:12px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-month{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb)}
+.cal-nav-btn{width:28px;height:28px;border-radius:50%;background:var(--cr);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cal-nav-btn svg{width:12px;height:12px;fill:none;stroke:var(--sp);stroke-width:2.2;stroke-linecap:round}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dname{font-size:9px;font-weight:700;text-align:center;color:var(--mu);text-transform:uppercase;padding-bottom:5px}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:12px;font-weight:600;color:var(--wb);cursor:pointer;transition:all .12s}
+.cal-day:hover{background:rgba(186,84,28,.08)}
+.cal-day.past{color:rgba(196,168,130,.4);pointer-events:none}
+.cal-day.today{background:rgba(186,84,28,.1);color:var(--ch)}
+.cal-day.sel{background:var(--ch);color:#fff}
+/* No guilt note */
+.ng-note{background:rgba(186,84,28,.06);border-radius:12px;padding:12px 14px;border-left:3px solid rgba(186,84,28,.3);margin-top:4px}
+.ng-title{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--ch);margin-bottom:3px}
+.ng-body{font-size:11px;color:var(--sp);line-height:1.55;font-weight:500}
+/* CTA */
+.btn-confirm{width:100%;padding:15px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3);margin-top:8px}
+.btn-cancel{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="cancel-link" onclick="history.back()">Để sau</button>
+  </div>
+  <div class="goal-pill"><span class="goal-pill-text">Chạy bộ 20 phút</span></div>
+  <div class="hd-title">Dời lại goal này<br>về khi nào?</div>
+  <div class="hd-sub">Không phải bỏ cuộc — chỉ là điều chỉnh nhịp độ.</div>
+</div>
+
+<div class="body">
+
+  <!-- PATH 1: Later Today -->
+  <div class="path-card active" id="p-later">
+    <div class="path-header" onclick="selectPath('later')">
+      <div class="path-icon" style="background:#FFF3E0">⏰</div>
+      <div class="path-text">
+        <div class="path-name">Làm sau hôm nay</div>
+        <div class="path-desc">Vẫn trong ngày hôm nay, chỉ dời sang giờ muộn hơn.</div>
+      </div>
+      <div class="path-arrow">›</div>
+    </div>
+    <div class="path-detail">
+      <div style="font-size:11px;font-weight:600;color:var(--mu);margin-bottom:8px">Chọn giờ mới:</div>
+      <div class="time-row">
+        <div class="t-chip" onclick="selTime(this)">10:00</div>
+        <div class="t-chip" onclick="selTime(this)">12:00</div>
+        <div class="t-chip sel" onclick="selTime(this)">14:00</div>
+        <div class="t-chip" onclick="selTime(this)">17:00</div>
+        <div class="t-chip" onclick="selTime(this)">19:00</div>
+        <div class="t-chip" onclick="selTime(this)">21:00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATH 2: Tomorrow -->
+  <div class="path-card" id="p-tomorrow">
+    <div class="path-header" onclick="selectPath('tomorrow')">
+      <div class="path-icon" style="background:#E1F5EE">🌅</div>
+      <div class="path-text">
+        <div class="path-name">Dời sang ngày mai</div>
+        <div class="path-desc">Ngày mai là trang mới — không phải nợ, không phải thất bại.</div>
+      </div>
+      <div class="path-arrow">›</div>
+    </div>
+    <div class="path-detail">
+      <div style="background:rgba(74,124,89,.08);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--gd);font-weight:600;margin-top:4px">
+        ✓ Goal sẽ xuất hiện trên Home vào sáng ngày mai — đúng 6:30 sáng.
+      </div>
+    </div>
+  </div>
+
+  <!-- PATH 3: Pick Date -->
+  <div class="path-card" id="p-pick">
+    <div class="path-header" onclick="selectPath('pick')">
+      <div class="path-icon" style="background:#E8E7FC">📅</div>
+      <div class="path-text">
+        <div class="path-name">Chọn ngày khác</div>
+        <div class="path-desc">Lịch quá bận — chủ động sắp xếp lại cho phù hợp.</div>
+      </div>
+      <div class="path-arrow">›</div>
+    </div>
+    <div class="path-detail">
+      <div class="mini-cal">
+        <div class="cal-nav">
+          <button class="cal-nav-btn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="cal-month">Tháng 6, 2026</div>
+          <button class="cal-nav-btn"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-dname">T2</div><div class="cal-dname">T3</div><div class="cal-dname">T4</div><div class="cal-dname">T5</div><div class="cal-dname">T6</div><div class="cal-dname">T7</div><div class="cal-dname">CN</div>
+          <div class="cal-day past">1</div><div class="cal-day past">2</div><div class="cal-day past">3</div><div class="cal-day past">4</div><div class="cal-day past">5</div><div class="cal-day past">6</div><div class="cal-day past">7</div>
+          <div class="cal-day past">8</div><div class="cal-day past">9</div><div class="cal-day past">10</div><div class="cal-day past">11</div><div class="cal-day past">12</div><div class="cal-day past">13</div><div class="cal-day past">14</div>
+          <div class="cal-day past">15</div><div class="cal-day past">16</div><div class="cal-day past">17</div><div class="cal-day past">18</div><div class="cal-day past">19</div><div class="cal-day past">20</div><div class="cal-day past">21</div>
+          <div class="cal-day today">22</div><div class="cal-day" onclick="selDay(this)">23</div><div class="cal-day sel" onclick="selDay(this)">24</div><div class="cal-day" onclick="selDay(this)">25</div><div class="cal-day" onclick="selDay(this)">26</div><div class="cal-day" onclick="selDay(this)">27</div><div class="cal-day" onclick="selDay(this)">28</div>
+          <div class="cal-day" onclick="selDay(this)">29</div><div class="cal-day" onclick="selDay(this)">30</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ng-note">
+    <div class="ng-title">✦ Resilience over Rigidity</div>
+    <div class="ng-body">Dời lại không phải là thua cuộc. Một buổi Thứ Tư bận không nên trở thành lý do bỏ cả tuần.</div>
+  </div>
+
+  <button class="btn-confirm" onclick="confirmAdjust()">Xác nhận dời lại ✓</button>
+  <button class="btn-cancel" onclick="history.back()">Huỷ — giữ nguyên</button>
+
+</div>
+</div>
+<script>
+var curPath='later';
+function selectPath(p){
+  curPath=p;
+  ['later','tomorrow','pick'].forEach(function(k){
+    document.getElementById('p-'+k).classList.toggle('active',k===p);
+  });
+}
+function selTime(el){document.querySelectorAll('.t-chip').forEach(function(c){c.classList.remove('sel')});el.classList.add('sel')}
+function selDay(el){document.querySelectorAll('.cal-day:not(.past):not(.today)').forEach(function(d){d.classList.remove('sel')});el.classList.add('sel')}
+function confirmAdjust(){
+  var msg={later:'Goal đã được dời — bạn sẽ được nhắc lại lúc 14:00 hôm nay.',tomorrow:'Goal đã dời sang ngày mai — hẹn gặp lại sáng mai!',pick:'Goal đã được lên lịch ngày 24/06.'};
+  alert(msg[curPath]);
+  history.back();
+}
+</script>
+</body>
+</html>

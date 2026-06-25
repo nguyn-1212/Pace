@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Thêm Goal · Bước 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.step-dots{display:flex;gap:6px}
+.sdot{width:6px;height:6px;border-radius:50%;background:rgba(255,246,237,.2)}
+.sdot.active{background:var(--rw);width:18px;border-radius:3px}
+.sdot.done{background:rgba(74,124,89,.7)}
+.skip-btn{font-family:var(--fb);font-size:12px;font-weight:600;color:rgba(255,246,237,.45);cursor:pointer;background:none;border:none}
+.goal-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,246,237,.1);border:1px solid rgba(255,246,237,.18);border-radius:20px;padding:5px 12px;margin-bottom:10px}
+.goal-pill-text{font-family:var(--fh);font-size:12px;font-weight:600;color:rgba(255,246,237,.8)}
+.step-indicator{font-size:11px;font-weight:700;color:rgba(255,246,237,.45);letter-spacing:.05em;margin-bottom:4px;font-family:var(--fb)}
+.hd-question{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);line-height:1.3;margin-bottom:4px}
+.hd-sub{font-size:12px;color:rgba(255,246,237,.5)}
+/* BODY */
+.body{background:var(--rw);padding:32px 20px 110px;display:flex;flex-direction:column;gap:20px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:12px}
+/* Area grid */
+.area-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.area-opt{padding:16px 14px;border-radius:14px;border:1.5px solid rgba(186,84,28,.14);background:var(--rw);cursor:pointer;transition:all .15s;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(43,15,4,.06)}
+.area-opt::before{content:'';position:absolute;top:-12px;right:-12px;width:40px;height:40px;border-radius:50%;opacity:.08}
+.area-opt:hover{border-color:rgba(186,84,28,.3);transform:translateY(-1px)}
+.area-opt.sel{border-width:2px;box-shadow:0 0 0 1px var(--area-c),0 3px 10px rgba(43,15,4,.12)}
+.area-icon{font-size:22px;margin-bottom:8px;display:block}
+.area-name{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--wb)}
+.area-opt.sel .area-name{color:var(--area-c)}
+/* Dream link */
+.dream-section{background:var(--cr);border-radius:14px;padding:14px 16px}
+.dream-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:10px}
+.dream-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--rw);border-radius:10px;cursor:pointer;border:1.5px solid rgba(186,84,28,.12);transition:all .15s}
+.dream-item.sel{border-color:var(--ch);background:rgba(186,84,28,.04)}
+.dream-emoji{font-size:18px}
+.dream-name{font-family:var(--fh);font-size:13px;font-weight:600;color:var(--wb);flex:1}
+.dream-check{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(186,84,28,.25);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.dream-item.sel .dream-check{background:var(--ch);border-color:var(--ch)}
+.dream-item.sel .dream-check::after{content:'✓';font-size:9px;color:#fff;font-weight:700}
+/* Summary card */
+.summary-card{background:var(--wb);border-radius:14px;padding:16px 18px;box-shadow:0 3px 12px rgba(43,15,4,.2)}
+.sc-title{font-family:var(--fh);font-size:11px;font-weight:600;color:rgba(255,246,237,.4);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px}
+.sc-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.sc-row:last-child{margin-bottom:0}
+.sc-icon{width:28px;height:28px;border-radius:8px;background:rgba(255,246,237,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.sc-key{font-size:10px;font-weight:600;color:rgba(255,246,237,.4);text-transform:uppercase;letter-spacing:.05em}
+.sc-val{font-family:var(--fh);font-size:13px;font-weight:600;color:var(--rw);margin-top:1px}
+/* CTA */
+.btn-save{width:100%;padding:15px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3)}
+.btn-skip{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="location.href='goal_add_2.html'"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="step-dots">
+      <div class="sdot done"></div>
+      <div class="sdot done"></div>
+      <div class="sdot active"></div>
+    </div>
+    <button class="skip-btn" onclick="location.href='goal_add_success.html'">Bỏ qua</button>
+  </div>
+  <div class="goal-pill">
+    <span class="goal-pill-text" id="goal-preview">Đọc 10 trang sách</span>
+    <span style="font-size:10px;color:rgba(255,246,237,.4);cursor:pointer" onclick="location.href='goal_add_1.html'">✎</span>
+  </div>
+  <div class="step-indicator">Bước 3 / 3 — Tuỳ chọn</div>
+  <div class="hd-question">Thuộc lĩnh vực<br>nào? <span style="font-weight:400;font-style:italic;opacity:.6;font-size:18px">Không bắt buộc</span></div>
+  <div class="hd-sub">Gắn goal vào Area và Ước mơ để Pace hiểu bạn hơn.</div>
+</div>
+
+<div class="body">
+  <!-- Area selection -->
+  <div>
+    <div class="sec-label">Chọn Area</div>
+    <div class="area-grid">
+      <div class="area-opt sel" onclick="pickArea(this,'#534AB7')" style="--area-c:#534AB7">
+        <div class="area-opt::before" style="background:#534AB7"></div>
+        <span class="area-icon">📚</span>
+        <div class="area-name">Study</div>
+      </div>
+      <div class="area-opt" onclick="pickArea(this,'#4A7C59')" style="--area-c:#4A7C59">
+        <span class="area-icon">💪</span>
+        <div class="area-name">Health</div>
+      </div>
+      <div class="area-opt" onclick="pickArea(this,'#185FA5')" style="--area-c:#185FA5">
+        <span class="area-icon">🏋️</span>
+        <div class="area-name">Gym</div>
+      </div>
+      <div class="area-opt" onclick="pickArea(this,'#BA541C')" style="--area-c:#BA541C">
+        <span class="area-icon">💰</span>
+        <div class="area-name">Tài chính</div>
+      </div>
+      <div class="area-opt" onclick="pickArea(this,'#7A1010')" style="--area-c:#7A1010">
+        <span class="area-icon">🌱</span>
+        <div class="area-name">Personal</div>
+      </div>
+      <div class="area-opt" onclick="pickArea(this,'#5C3317')" style="--area-c:#5C3317">
+        <span class="area-icon">💼</span>
+        <div class="area-name">Công việc</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dream link -->
+  <div class="dream-section">
+    <div class="dream-label">Gắn với Ước mơ</div>
+    <div class="dream-item sel" onclick="this.classList.toggle('sel')">
+      <div class="dream-emoji">✨</div>
+      <div class="dream-name">Trở thành UI designer chuyên nghiệp</div>
+      <div class="dream-check"></div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-card">
+    <div class="sc-title">Tóm tắt goal</div>
+    <div class="sc-row">
+      <div class="sc-icon">🎯</div>
+      <div><div class="sc-key">Goal</div><div class="sc-val" id="sc-goal">Đọc 10 trang sách</div></div>
+    </div>
+    <div class="sc-row">
+      <div class="sc-icon">📅</div>
+      <div><div class="sc-key">Lặp lại</div><div class="sc-val">Hàng ngày · 8:00 sáng</div></div>
+    </div>
+    <div class="sc-row">
+      <div class="sc-icon">📚</div>
+      <div><div class="sc-key">Area</div><div class="sc-val" id="sc-area">Study</div></div>
+    </div>
+  </div>
+
+  <button class="btn-save" onclick="location.href='goal_add_success.html'">Lưu goal ✓</button>
+  <button class="btn-skip" onclick="location.href='goal_add_success.html'">Bỏ qua — lưu không có Area</button>
+</div>
+</div>
+<script>
+var saved=sessionStorage.getItem('pace_new_goal');
+if(saved){document.getElementById('goal-preview').textContent=saved;document.getElementById('sc-goal').textContent=saved;}
+function pickArea(el,c){
+  document.querySelectorAll('.area-opt').forEach(function(e){e.classList.remove('sel');e.style.borderColor='rgba(186,84,28,.14)';});
+  el.classList.add('sel');
+  el.style.borderColor=c;
+  var name=el.querySelector('.area-name').textContent;
+  document.getElementById('sc-area').textContent=name;
+  var icon=el.querySelector('.area-icon').textContent;
+  document.querySelector('#summary-card .sc-row:nth-child(3) .sc-icon').textContent=icon;
+}
+</script>
+</body>
+</html>

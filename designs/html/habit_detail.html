@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Chi tiết Thói quen</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+/* Header */
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.more-btn{background:rgba(255,255,255,.1);border:none;color:rgba(255,246,237,.6);font-size:16px;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.habit-type-badge{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;letter-spacing:.04em;margin-bottom:10px}
+.badge-bad{background:rgba(232,89,60,.2);color:#FF9F8F}
+.badge-good{background:rgba(74,124,89,.2);color:#8FD9A8}
+.hd-name{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--rw);line-height:1.3;margin-bottom:6px}
+/* Before after display */
+.ba-display{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ba-pill{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.ba-before{background:rgba(232,89,60,.2);color:#FF9F8F}
+.ba-after{background:rgba(74,124,89,.2);color:#8FD9A8}
+.ba-arr{color:rgba(255,246,237,.35);font-size:14px}
+/* meta */
+.meta-row{display:flex;gap:12px;flex-wrap:wrap}
+.meta-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:rgba(255,246,237,.45)}
+/* SCREEN */
+.screen{background:var(--rw);padding:32px 20px 110px;display:flex;flex-direction:column;gap:20px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+/* Today check */
+.today-card{background:var(--cr);border-radius:14px;padding:14px 16px;box-shadow:0 1px 4px rgba(43,15,4,.06)}
+.tc-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:12px}
+.checkin-row{display:flex;gap:10px}
+.btn-ok{flex:1;padding:14px;border-radius:14px;background:var(--gd);color:#fff;border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(74,124,89,.3);transition:opacity .15s}
+.btn-fail{flex:1;padding:14px;border-radius:14px;background:var(--rs);color:#fff;border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(232,89,60,.25)}
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sc{background:var(--cr);border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(43,15,4,.06)}
+.sv{font-family:var(--fh);font-size:20px;font-weight:700}
+.sl2{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);margin-top:3px}
+/* Calendar 4 weeks */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.slabel{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)}
+.sa{font-size:11px;font-weight:600;color:var(--ch);cursor:pointer}
+.cal-wrap{background:var(--rw);border:1px solid rgba(186,84,28,.1);border-radius:14px;padding:14px;box-shadow:0 1px 4px rgba(43,15,4,.06)}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px}
+.cdn{font-size:8px;font-weight:700;color:var(--mu);text-align:center;text-transform:uppercase}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cd{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.cd.ok{background:#EAF3DE;color:var(--gd)}
+.cd.no{background:#FCE8E8;color:var(--rs)}
+.cd.na{background:rgba(186,84,28,.06);color:rgba(196,168,130,.5)}
+.cd.today{background:var(--ch);color:#fff}
+/* Weekly chart */
+.week-chart{background:var(--cr);border-radius:14px;padding:14px 16px;box-shadow:0 1px 4px rgba(43,15,4,.06)}
+.wc-head{display:flex;justify-content:space-between;margin-bottom:12px}
+.wc-title{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb)}
+.wc-rate{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--gd)}
+.bar-wrap{display:flex;gap:5px;align-items:flex-end;height:52px}
+.bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.btrack{flex:1;width:100%;background:rgba(186,84,28,.1);border-radius:4px;overflow:hidden;position:relative}
+.bfill{position:absolute;bottom:0;left:0;right:0;border-radius:4px;transition:height .5s ease}
+.blabel{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase}
+/* Legend */
+.legend{display:flex;gap:12px;margin-top:8px}
+.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--mu);font-weight:600}
+.ldot{width:8px;height:8px;border-radius:2px}
+/* Edit/delete */
+.action-row{display:flex;gap:8px}
+.btn-edit{flex:1;padding:12px;border-radius:12px;background:rgba(186,84,28,.07);color:var(--ch);border:1px solid rgba(186,84,28,.2);font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer}
+.btn-del{flex:1;padding:12px;border-radius:12px;background:rgba(232,89,60,.07);color:var(--rs);border:1px solid rgba(232,89,60,.2);font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer}
+/* Tab bar */
+.tab-bar{position:sticky;bottom:0;background:var(--rw);border-top:1px solid rgba(186,84,28,.1);display:flex;justify-content:space-around;align-items:center;padding:12px 8px 22px;box-shadow:0 -4px 12px rgba(43,15,4,.06)}
+.ti{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:2.0;stroke-linecap:round;stroke-linejoin:round}
+.ti.a .tic svg{stroke:var(--ch)}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(186,84,28,.38)}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="more-btn">⋯</button>
+  </div>
+  <div class="habit-type-badge badge-bad">🚫 Cần bỏ</div>
+  <div class="hd-name">Ngủ muộn sau 12h đêm</div>
+  <div class="ba-display">
+    <div class="ba-pill ba-before">Sau 1h sáng</div>
+    <div class="ba-arr">→</div>
+    <div class="ba-pill ba-after">Trước 12h đêm</div>
+  </div>
+  <div class="meta-row">
+    <div class="meta-item"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,246,237,.4)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Hàng ngày · nhắc 22:00</div>
+    <div class="meta-item">📅 Bắt đầu 01/06</div>
+  </div>
+</div>
+
+<div class="screen">
+  <!-- Today -->
+  <div class="today-card">
+    <div class="tc-label">Hôm nay · 22/06 — Chưa check-in</div>
+    <div class="checkin-row">
+      <button class="btn-ok" onclick="checkIn('ok')">✓ Không phạm</button>
+      <button class="btn-fail" onclick="checkIn('fail')">✗ Đã phạm</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="sc"><div class="sv" style="color:var(--gd)">18</div><div class="sl2">Ngày tốt</div></div>
+    <div class="sc"><div class="sv" style="color:var(--rs)">3</div><div class="sl2">Lần phạm</div></div>
+    <div class="sc"><div class="sv">86%</div><div class="sl2">Tỉ lệ</div></div>
+  </div>
+
+  <!-- Calendar 4 weeks -->
+  <div>
+    <div class="sh"><span class="slabel">Lịch sử 4 tuần</span><span class="sa">Xem tất cả</span></div>
+    <div class="cal-wrap">
+      <div class="cal-head">
+        <div class="cdn">T2</div><div class="cdn">T3</div><div class="cdn">T4</div>
+        <div class="cdn">T5</div><div class="cdn">T6</div><div class="cdn">T7</div><div class="cdn">CN</div>
+      </div>
+      <div class="cal-grid">
+        <!-- Week 1 -->
+        <div class="cd ok">1</div><div class="cd ok">2</div><div class="cd ok">3</div>
+        <div class="cd ok">4</div><div class="cd no">5</div><div class="cd ok">6</div><div class="cd ok">7</div>
+        <!-- Week 2 -->
+        <div class="cd ok">8</div><div class="cd ok">9</div><div class="cd ok">10</div>
+        <div class="cd ok">11</div><div class="cd ok">12</div><div class="cd ok">13</div><div class="cd ok">14</div>
+        <!-- Week 3 -->
+        <div class="cd no">15</div><div class="cd ok">16</div><div class="cd ok">17</div>
+        <div class="cd ok">18</div><div class="cd ok">19</div><div class="cd ok">20</div><div class="cd ok">21</div>
+        <!-- Week 4 (current) -->
+        <div class="cd today">22</div><div class="cd na">23</div><div class="cd na">24</div>
+        <div class="cd na">25</div><div class="cd na">26</div><div class="cd na">27</div><div class="cd na">28</div>
+      </div>
+      <div class="legend">
+        <div class="leg"><div class="ldot" style="background:#EAF3DE;border:1px solid var(--gd)"></div>Tốt</div>
+        <div class="leg"><div class="ldot" style="background:#FCE8E8;border:1px solid var(--rs)"></div>Phạm</div>
+        <div class="leg"><div class="ldot" style="background:rgba(186,84,28,.06)"></div>Chưa đến</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly bar chart -->
+  <div class="week-chart">
+    <div class="wc-head">
+      <div class="wc-title">Tỉ lệ 8 tuần qua</div>
+      <div class="wc-rate">86%</div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bc"><div class="btrack"><div class="bfill" style="height:71%;background:var(--gd)"></div></div><div class="blabel">T5</div></div>
+      <div class="bc"><div class="btrack"><div class="bfill" style="height:100%;background:var(--gd)"></div></div><div class="blabel">T6</div></div>
+      <div class="bc"><div class="btrack"><div class="bfill" style="height:86%;background:var(--gd)"></div></div><div class="blabel">T7</div></div>
+      <div class="bc"><div class="btrack"><div class="bfill" style="height:86%;background:var(--gd)"></div></div><div class="blabel">T8</div></div>
+      <div class="bc"><div class="btrack"><div class="bfill" style="height:100%;background:var(--gd)"></div></div><div class="blabel">T9</div></div>
+      <div class="bc"><div class="btrack"><div class="bfill" style="height:86%;background:var(--gd)"></div></div><div class="blabel">T10</div></div>
+      <div class="bc"><div class="btrack"><div class="bfill" style="height:71%;background:rgba(74,124,89,.4)"></div></div><div class="blabel" style="color:var(--ch)">T11</div></div>
+    </div>
+  </div>
+
+  <!-- Edit / Delete -->
+  <div class="action-row">
+    <button class="btn-edit">✎ Chỉnh sửa</button>
+    <button class="btn-del">🗑 Xoá</button>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+  <div class="ti" onclick="location.href='more.html'"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
+</div>
+</div>
+<script>
+function checkIn(type){
+  var row=document.querySelector('.checkin-row');
+  if(type==='ok'){
+    row.innerHTML='<div style="text-align:center;width:100%;padding:10px;font-family:var(--fh);font-size:14px;font-weight:700;color:var(--gd)">✓ Tốt lắm! Ngày hôm nay xanh rồi 🎉</div>';
+    document.querySelector('.cd.today').style.background=getComputedStyle(document.documentElement).getPropertyValue('--gd');
+  } else {
+    row.innerHTML='<div style="text-align:center;width:100%;padding:10px;font-family:var(--fh);font-size:14px;font-weight:600;color:var(--rs)">Ghi nhận rồi. Ngày mai lại thử nha 💪</div>';
+  }
+  document.querySelector('.tc-label').textContent='Hôm nay · 22/06 — Đã check-in';
+}
+</script>
+</body>
+</html>

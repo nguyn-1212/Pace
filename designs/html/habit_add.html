@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Thêm Thói quen</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-size:12px;color:rgba(255,246,237,.5)}
+/* type toggle */
+.type-toggle{display:flex;gap:0;background:rgba(255,246,237,.08);border-radius:12px;padding:3px;margin-top:14px;position:relative;z-index:1}
+.type-btn{flex:1;padding:10px 0;border-radius:9px;font-family:var(--fh);font-size:13px;font-weight:700;border:none;background:transparent;cursor:pointer;transition:all .2s;text-align:center}
+.type-btn.bad.sel{background:#FCE8E8;color:#7A1010}
+.type-btn.good.sel{background:#EAF3DE;color:#205C12}
+.type-btn:not(.sel){color:rgba(255,246,237,.4)}
+/* BODY */
+.body{background:var(--rw);padding:32px 20px 110px;display:flex;flex-direction:column;gap:18px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+.fl{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.inp{width:100%;border:1.5px solid rgba(186,84,28,.18);border-radius:12px;padding:12px 14px;font-family:var(--fh);font-size:15px;font-weight:600;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--ch)}
+.inp::placeholder{color:var(--mu);font-weight:400;font-size:13px}
+/* Suggestions */
+.chip-row{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:7px 13px;border-radius:20px;border:1px solid rgba(186,84,28,.18);background:var(--rw);font-family:var(--fb);font-size:12px;font-weight:600;color:var(--sp);cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(43,15,4,.05)}
+.chip:hover,.chip.sel{background:var(--ch);border-color:var(--ch);color:#fff}
+/* Before → After for "quit" type */
+.before-after{background:var(--cr);border-radius:12px;padding:14px;display:none}
+.before-after.show{display:block}
+.ba-label{font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.ba-row{display:flex;align-items:center;gap:10px}
+.ba-inp{flex:1;border:1.5px solid rgba(186,84,28,.15);border-radius:10px;padding:10px 12px;font-family:var(--fb);font-size:13px;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s}
+.ba-inp:focus{border-color:var(--ch)}
+.ba-inp::placeholder{color:var(--mu);font-size:11px}
+.ba-arrow{font-size:18px;color:var(--mu)}
+/* Frequency */
+.freq-list{display:flex;flex-direction:column;gap:8px}
+.freq-item{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-radius:12px;border:1.5px solid rgba(186,84,28,.12);background:var(--rw);cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(43,15,4,.05)}
+.freq-item.sel{border-color:var(--ch);background:rgba(186,84,28,.04)}
+.fi-name{font-family:var(--fh);font-size:14px;font-weight:600;color:var(--wb)}
+.freq-item.sel .fi-name{color:var(--ch)}
+.fi-sub{font-size:11px;color:var(--mu);margin-top:2px}
+.radio{width:20px;height:20px;border-radius:50%;border:2px solid rgba(186,84,28,.25);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.radio.on{background:var(--ch);border-color:var(--ch)}
+.radio.on::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+/* Reminder time */
+.time-chips{display:flex;flex-wrap:wrap;gap:7px}
+.tc{padding:8px 14px;border-radius:20px;border:1.5px solid rgba(186,84,28,.15);background:var(--rw);font-family:var(--fh);font-size:13px;font-weight:600;color:var(--sp);cursor:pointer;transition:all .15s}
+.tc.sel,.tc:hover{background:var(--ch);border-color:var(--ch);color:#fff}
+.btn-save{width:100%;padding:15px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3)}
+.btn-cancel{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span style="font-family:var(--fb);font-size:12px;font-weight:600;color:rgba(255,246,237,.4)">Thói quen mới</span>
+  </div>
+  <div class="hd-title">Thêm thói quen</div>
+  <div class="hd-sub">Theo dõi thói quen cần bỏ hoặc cần xây dựng.</div>
+  <div class="type-toggle">
+    <button class="type-btn bad sel" id="btn-bad" onclick="setType('bad')">🚫 Cần bỏ</button>
+    <button class="type-btn good" id="btn-good" onclick="setType('good')">✅ Cần làm</button>
+  </div>
+</div>
+
+<div class="body">
+  <!-- Name -->
+  <div>
+    <div class="fl">Tên thói quen</div>
+    <input class="inp" id="habit-name" type="text" placeholder="VD: Không dùng điện thoại sau 10pm..." oninput="document.getElementById('btn-save').disabled=this.value.trim().length===0;document.getElementById('btn-save').style.opacity=this.value.trim().length>0?'1':'.35'">
+    <div class="chip-row" style="margin-top:10px" id="chips-bad">
+      <div class="chip" onclick="setName(this,'Ngủ muộn sau 12h')">Ngủ muộn</div>
+      <div class="chip" onclick="setName(this,'MXH hơn 2h/ngày')">MXH nhiều</div>
+      <div class="chip" onclick="setName(this,'Ăn vặt sau 10pm')">Ăn vặt đêm</div>
+      <div class="chip" onclick="setName(this,'Uống nước có gas')">Nước có gas</div>
+      <div class="chip" onclick="setName(this,'Trì hoãn công việc')">Trì hoãn</div>
+    </div>
+    <div class="chip-row" style="margin-top:10px;display:none" id="chips-good">
+      <div class="chip" onclick="setName(this,'Uống đủ 2L nước/ngày')">Uống đủ nước</div>
+      <div class="chip" onclick="setName(this,'Đọc sách 20 phút')">Đọc sách</div>
+      <div class="chip" onclick="setName(this,'Thiền buổi sáng')">Thiền sáng</div>
+      <div class="chip" onclick="setName(this,'Tập thể dục 30 phút')">Tập thể dục</div>
+      <div class="chip" onclick="setName(this,'Viết nhật ký')">Nhật ký</div>
+    </div>
+  </div>
+
+  <!-- Before → After (only for "bad") -->
+  <div class="before-after show" id="before-after-section">
+    <div class="ba-label">Mục tiêu cải thiện (Trước → Sau)</div>
+    <div class="ba-row">
+      <input class="ba-inp" type="text" placeholder="Hiện tại (VD: Ngủ sau 1h sáng)">
+      <span class="ba-arrow">→</span>
+      <input class="ba-inp" type="text" placeholder="Mục tiêu (VD: Ngủ trước 12h)">
+    </div>
+  </div>
+
+  <!-- Frequency -->
+  <div>
+    <div class="fl">Theo dõi tần suất</div>
+    <div class="freq-list">
+      <div class="freq-item sel" onclick="selFreq(this)">
+        <div><div class="fi-name">Hàng ngày</div><div class="fi-sub">Check-in mỗi ngày</div></div>
+        <div class="radio on"></div>
+      </div>
+      <div class="freq-item" onclick="selFreq(this)">
+        <div><div class="fi-name">Chọn thứ cụ thể</div><div class="fi-sub">T2, T4, T6 hoặc bất kỳ</div></div>
+        <div class="radio"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remind time -->
+  <div>
+    <div class="fl">Nhắc check-in lúc</div>
+    <div class="time-chips">
+      <div class="tc" onclick="selTC(this)">21:00</div>
+      <div class="tc sel" onclick="selTC(this)">22:00</div>
+      <div class="tc" onclick="selTC(this)">23:00</div>
+      <div class="tc" onclick="selTC(this)">Sáng 7:00</div>
+      <div class="tc" onclick="selTC(this)">Không nhắc</div>
+    </div>
+  </div>
+
+  <button class="btn-save" id="btn-save" disabled onclick="location.href='habits.html'" style="opacity:.35">Thêm thói quen ✓</button>
+  <button class="btn-cancel" onclick="history.back()">Huỷ</button>
+</div>
+</div>
+<script>
+function setType(t){
+  var bad=t==='bad';
+  document.getElementById('btn-bad').classList.toggle('sel',bad);
+  document.getElementById('btn-good').classList.toggle('sel',!bad);
+  document.getElementById('chips-bad').style.display=bad?'flex':'none';
+  document.getElementById('chips-good').style.display=bad?'none':'flex';
+  document.getElementById('before-after-section').classList.toggle('show',bad);
+  document.getElementById('habit-name').placeholder=bad?'VD: Không dùng điện thoại sau 10pm...':'VD: Uống đủ 2L nước mỗi ngày...';
+}
+function setName(el,name){
+  document.getElementById('habit-name').value=name;
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel')});
+  el.classList.add('sel');
+  document.getElementById('btn-save').disabled=false;
+  document.getElementById('btn-save').style.opacity='1';
+}
+function selFreq(el){
+  document.querySelectorAll('.freq-item').forEach(function(f){
+    f.classList.remove('sel');
+    f.querySelector('.radio').classList.remove('on');
+    f.querySelector('.radio').innerHTML='';
+  });
+  el.classList.add('sel');
+  el.querySelector('.radio').classList.add('on');
+}
+function selTC(el){
+  document.querySelectorAll('.tc').forEach(function(t){t.classList.remove('sel')});
+  el.classList.add('sel');
+}
+</script>
+</body>
+</html>

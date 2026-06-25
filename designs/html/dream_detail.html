@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Chi tiết Ước mơ</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--dream-c:#534AB7;--dream-dark:#3C3489;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22)}
+
+/* ── STATUS BAR ── */
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:rgba(255,255,255,.7);background:var(--dream-dark)}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(135deg,var(--dream-dark) 0%,var(--dream-c) 100%);padding:14px 22px 40px}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+.edit-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.edit-btn svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+
+/* Area badge */
+.area-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 10px;margin-bottom:10px}
+.area-badge-text{font-family:var(--fb);font-size:10px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:.04em;text-transform:uppercase}
+
+/* Dream name + desc */
+.hd-name{font-family:var(--fh);font-size:20px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:5px}
+.hd-desc{font-family:var(--fb);font-size:12px;color:rgba(255,255,255,.55);margin-bottom:16px}
+
+/* Big progress */
+.big-prog{margin-bottom:16px}
+.bp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.bp-pct{font-family:var(--fh);font-size:28px;font-weight:800;color:#fff}
+.bp-timeline{font-family:var(--fb);font-size:11px;font-weight:600;color:rgba(255,255,255,.5)}
+.bp-bar{height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-bottom:5px}
+.bp-fill{height:6px;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.9));border-radius:3px}
+.bp-sub{font-family:var(--fb);font-size:10px;color:rgba(255,255,255,.4)}
+
+/* ── SUMMARY CARD — div riêng, đồng nhất ── */
+.summary-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:12px 16px;display:flex;gap:0}
+.sum-item{flex:1;text-align:center}
+.sum-item+.sum-item{border-left:1px solid rgba(255,255,255,.1)}
+.sum-val{font-family:var(--fh);font-size:18px;font-weight:700;color:#fff}
+.sum-label{font-family:var(--fb);font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:3px}
+
+/* ── SCREEN ── */
+.screen{background:var(--rw);border-radius:24px 24px 0 0;padding:22px 20px 110px;display:flex;flex-direction:column;gap:20px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sl{font-family:var(--fb);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)}
+.sa{font-family:var(--fb);font-size:12px;font-weight:600;color:var(--ch);cursor:pointer}
+
+/* ── LINKED GOALS ── */
+.goal-list{display:flex;flex-direction:column;gap:8px}
+.goal-row{background:var(--rw);border:1px solid rgba(186,84,28,.12);border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 4px rgba(43,15,4,.06)}
+.gr-bar{width:3px;height:36px;border-radius:2px;background:var(--dream-c);flex-shrink:0}
+.gr-name{font-family:var(--fh);font-size:13px;font-weight:600;color:var(--wb);flex:1}
+.gr-status{font-family:var(--fb);font-size:10px;color:var(--mu);margin-top:2px}
+.gr-check{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700}
+.btn-link{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border-radius:12px;border:1.5px dashed rgba(186,84,28,.22);background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;transition:border-color .15s,color .15s}
+.btn-link:hover{border-color:var(--ch);color:var(--ch)}
+.btn-link svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+
+/* ── MOTIVATION CARD ── */
+.motiv-card{background:linear-gradient(135deg,var(--dream-dark),var(--dream-c));border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+.motiv-card::before{content:'"';position:absolute;top:-8px;right:14px;font-size:72px;font-weight:600;color:rgba(255,255,255,.08);line-height:1;pointer-events:none}
+.motiv-label{font-family:var(--fb);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px}
+.motiv-text{font-family:var(--fh);font-size:14px;font-weight:600;color:#fff;line-height:1.6;position:relative}
+.motiv-inp{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 12px;font-family:var(--fb);font-size:13px;color:#fff;outline:none;margin-top:10px;transition:border-color .2s}
+.motiv-inp:focus{border-color:rgba(255,255,255,.5)}
+.motiv-inp::placeholder{color:rgba(255,255,255,.3)}
+
+/* ── ACTIONS ── */
+.danger-row{display:flex;gap:8px}
+.btn-edit{flex:1;padding:12px;border-radius:12px;background:rgba(186,84,28,.07);color:var(--ch);border:1px solid rgba(186,84,28,.2);font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer}
+.btn-del{flex:1;padding:12px;border-radius:12px;background:rgba(232,89,60,.07);color:var(--rs);border:1px solid rgba(232,89,60,.2);font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer}
+
+/* ── TAB BAR ── */
+.tab-bar{position:sticky;bottom:0;background:var(--rw);border-top:1px solid rgba(186,84,28,.1);display:flex;justify-content:space-around;align-items:center;padding:12px 8px 22px;box-shadow:0 -4px 12px rgba(43,15,4,.06)}
+.ti{display:flex;flex-direction:column;align-items:center;cursor:pointer;flex:1}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ti.a .tic svg{stroke:var(--ch)}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(186,84,28,.38)}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<div class="sb"><span>9:41</span><span>100%</span></div>
+
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="edit-btn"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+  </div>
+
+  <div class="area-badge"><span>📚</span><span class="area-badge-text">Study</span></div>
+  <div class="hd-name">Trở thành UI designer chuyên nghiệp và làm việc remote</div>
+  <div class="hd-desc">Không bị ràng buộc địa lý — tự do thiết kế từ bất kỳ đâu.</div>
+
+  <div class="big-prog">
+    <div class="bp-row">
+      <div class="bp-pct">38%</div>
+      <div class="bp-timeline">Timeline: 1 năm · còn 8 tháng</div>
+    </div>
+    <div class="bp-bar"><div class="bp-fill" style="width:38%"></div></div>
+    <div class="bp-sub">5 goals liên kết · 3 đang hoạt động · Tạo ngày 01/06/2026</div>
+  </div>
+
+  <div class="summary-card">
+    <div class="sum-item"><div class="sum-val">5</div><div class="sum-label">Goals</div></div>
+    <div class="sum-item"><div class="sum-val">82%</div><div class="sum-label">Tuần này</div></div>
+    <div class="sum-item"><div class="sum-val">21</div><div class="sum-label">Streak</div></div>
+  </div>
+</div>
+
+<div class="screen">
+
+  <!-- Linked goals -->
+  <div>
+    <div class="sh"><span class="sl">Goals liên kết</span><span class="sa">Thêm goal →</span></div>
+    <div class="goal-list">
+      <div class="goal-row">
+        <div class="gr-bar"></div>
+        <div style="flex:1"><div class="gr-name">Đọc 10 trang sách mỗi ngày</div><div class="gr-status">Hàng ngày · 95% tháng này 🔥</div></div>
+        <div class="gr-check" style="background:#EAF3DE;color:var(--gd)">✓</div>
+      </div>
+      <div class="goal-row">
+        <div class="gr-bar"></div>
+        <div style="flex:1"><div class="gr-name">Học từ vựng tiếng Anh 15 phút</div><div class="gr-status">Hàng ngày · 64% tháng này</div></div>
+        <div class="gr-check" style="background:var(--cr);color:var(--mu)">○</div>
+      </div>
+      <div class="goal-row">
+        <div class="gr-bar"></div>
+        <div style="flex:1"><div class="gr-name">Luyện code 30 phút</div><div class="gr-status">T2, T4, T6 · 100% tuần này 🔥</div></div>
+        <div class="gr-check" style="background:#EAF3DE;color:var(--gd)">✓</div>
+      </div>
+      <div class="goal-row">
+        <div class="gr-bar" style="background:var(--mu)"></div>
+        <div style="flex:1"><div class="gr-name">Xem khoá học Design Systems</div><div class="gr-status" style="color:var(--ch)">Đã dời — cuối tuần</div></div>
+        <div class="gr-check" style="background:#FFF3E0;color:var(--ch)">→</div>
+      </div>
+    </div>
+    <button class="btn-link">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Thêm goal vào ước mơ này
+    </button>
+  </div>
+
+  <!-- Motivation note -->
+  <div>
+    <div class="sh"><span class="sl">Lời nhắc bản thân</span></div>
+    <div class="motiv-card">
+      <div class="motiv-label">✦ Tại sao điều này quan trọng</div>
+      <div class="motiv-text">Tôi muốn làm việc ở bất kỳ đâu trên thế giới, không bị ràng buộc bởi một văn phòng hay thành phố.</div>
+      <input class="motiv-inp" type="text" placeholder="Thêm lời nhắc cá nhân...">
+    </div>
+  </div>
+
+  <!-- Edit / Delete -->
+  <div class="danger-row">
+    <button class="btn-edit">✎ Chỉnh sửa</button>
+    <button class="btn-del">🗑 Xoá</button>
+  </div>
+
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+  <div class="ti" onclick="location.href='more.html'"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
+</div>
+
+</div>
+</body>
+</html>

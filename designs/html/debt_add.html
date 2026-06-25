@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Thêm khoản nợ</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-size:12px;color:rgba(255,246,237,.5)}
+/* Direction toggle */
+.direction-wrap{display:flex;gap:0;background:rgba(255,246,237,.08);border-radius:12px;padding:3px;margin-top:14px;position:relative;z-index:1}
+.dir-btn{flex:1;padding:9px 0;border-radius:9px;font-family:var(--fh);font-size:13px;font-weight:700;border:none;background:transparent;cursor:pointer;transition:all .2s;text-align:center}
+.dir-btn.sel.recv{background:#EAF3DE;color:var(--gd)}
+.dir-btn.sel.owe{background:#FCE8E8;color:var(--rs)}
+.dir-btn:not(.sel){color:rgba(255,246,237,.45)}
+/* BODY */
+.body{background:var(--rw);padding:32px 20px 110px;display:flex;flex-direction:column;gap:16px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+/* Preview card */
+.preview-card{border-radius:14px;padding:16px 18px;transition:background .3s;box-shadow:0 2px 10px rgba(43,15,4,.15)}
+.pc-dir-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+.pc-main{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.pc-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:16px;font-weight:700;flex-shrink:0}
+.pc-name{font-family:var(--fh);font-size:16px;font-weight:700;min-height:20px}
+.pc-amount{font-family:var(--fh);font-size:28px;font-weight:800;margin-bottom:4px}
+.pc-due{font-size:11px;font-weight:600;opacity:.6}
+/* Fields */
+.field-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.inp{width:100%;border:1.5px solid rgba(186,84,28,.18);border-radius:12px;padding:12px 14px;font-family:var(--fh);font-size:15px;font-weight:600;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--ch)}
+.inp::placeholder{color:var(--mu);font-weight:400;font-size:13px}
+.inp-note{font-family:var(--fb);font-size:14px;font-weight:400}
+/* Amount */
+.amt-wrap{position:relative}
+.amt-currency{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:var(--fh);font-size:16px;font-weight:700;color:var(--mu)}
+.amt-inp{padding-left:30px;font-size:22px;font-weight:800}
+/* Quick amounts */
+.quick-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.qb{padding:6px 12px;border-radius:20px;border:1px solid rgba(186,84,28,.18);background:var(--rw);font-family:var(--fb);font-size:12px;font-weight:700;color:var(--sp);cursor:pointer;transition:all .15s}
+.qb:hover,.qb.sel{background:var(--ch);border-color:var(--ch);color:#fff}
+/* Remind toggle */
+.remind-row{display:flex;align-items:center;justify-content:space-between;background:var(--cr);border-radius:12px;padding:13px 15px}
+.rr-left{flex:1}
+.rr-title{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb);margin-bottom:2px}
+.rr-sub{font-size:11px;color:var(--mu)}
+.tg{width:42px;height:23px;border-radius:12px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s}
+.tg.on{background:var(--gd)}
+.tg::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.tg.on::after{left:22px}
+/* Remind days chips */
+.remind-days{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.rd{padding:6px 12px;border-radius:20px;border:1px solid rgba(186,84,28,.15);background:var(--rw);font-family:var(--fb);font-size:12px;font-weight:600;color:var(--sp);cursor:pointer;transition:all .15s}
+.rd.sel,.rd:hover{background:var(--ch);border-color:var(--ch);color:#fff}
+/* CTA */
+.btn-save{width:100%;padding:15px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3)}
+.btn-cancel{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span style="font-family:var(--fb);font-size:12px;font-weight:600;color:rgba(255,246,237,.4)">Khoản nợ mới</span>
+  </div>
+  <div class="hd-title">Theo dõi khoản nợ</div>
+  <div class="hd-sub">Ghi lại ai nợ ai để không bao giờ quên.</div>
+  <!-- Direction toggle -->
+  <div class="direction-wrap">
+    <button class="dir-btn sel recv" id="btn-recv" onclick="setDir('recv')">👆 Người ta nợ tôi</button>
+    <button class="dir-btn owe" id="btn-owe" onclick="setDir('owe')">👇 Tôi nợ người ta</button>
+  </div>
+</div>
+
+<div class="body">
+  <!-- Preview card -->
+  <div class="preview-card" id="preview" style="background:#EAF3DE">
+    <div class="pc-dir-label" id="pc-dir-label" style="color:var(--gd)">NGƯỜI TA NỢ TÔI</div>
+    <div class="pc-main">
+      <div class="pc-avatar" id="pc-avatar" style="background:#D1F0E0;color:var(--gd)">M</div>
+      <div class="pc-name" id="pc-person">Minh</div>
+    </div>
+    <div class="pc-amount" id="pc-amount" style="color:var(--gd)">+0 ₫</div>
+    <div class="pc-due" id="pc-due" style="color:var(--gd)">Hạn: —</div>
+  </div>
+
+  <!-- Tên người -->
+  <div>
+    <div class="field-label" id="person-label">Tên người nợ bạn</div>
+    <input class="inp" id="person-inp" type="text" placeholder="VD: Minh, chị Lan, anh Hùng..." oninput="updatePreview()">
+  </div>
+
+  <!-- Số tiền -->
+  <div>
+    <div class="field-label">Số tiền</div>
+    <div class="amt-wrap">
+      <span class="amt-currency">₫</span>
+      <input class="inp amt-inp" id="amt-inp" type="number" placeholder="0" oninput="updatePreview()">
+    </div>
+    <div class="quick-row">
+      <div class="qb" onclick="setAmt(this,50000)">50k</div>
+      <div class="qb" onclick="setAmt(this,100000)">100k</div>
+      <div class="qb" onclick="setAmt(this,200000)">200k</div>
+      <div class="qb" onclick="setAmt(this,500000)">500k</div>
+      <div class="qb" onclick="setAmt(this,1000000)">1tr</div>
+    </div>
+  </div>
+
+  <!-- Hạn -->
+  <div>
+    <div class="field-label">Hạn trả (tuỳ chọn)</div>
+    <input class="inp" id="due-inp" type="date" oninput="updatePreview()">
+  </div>
+
+  <!-- Ghi chú -->
+  <div>
+    <div class="field-label">Ghi chú</div>
+    <input class="inp inp-note" type="text" placeholder="VD: Tiền bia hôm qua, chia tiền đi chơi...">
+  </div>
+
+  <!-- Nhắc nhở -->
+  <div class="remind-row">
+    <div class="rr-left">
+      <div class="rr-title">Nhắc nhở tự động</div>
+      <div class="rr-sub">Pace nhắc trước hạn để không quên</div>
+    </div>
+    <button class="tg on" id="remind-tg" onclick="toggleRemind()"></button>
+  </div>
+  <div id="remind-days-wrap">
+    <div class="field-label">Nhắc trước</div>
+    <div class="remind-days">
+      <div class="rd" onclick="selRD(this)">1 ngày</div>
+      <div class="rd sel" onclick="selRD(this)">3 ngày</div>
+      <div class="rd" onclick="selRD(this)">1 tuần</div>
+      <div class="rd" onclick="selRD(this)">2 tuần</div>
+    </div>
+  </div>
+
+  <button class="btn-save" onclick="location.href='finance.html'">Lưu khoản nợ ✓</button>
+  <button class="btn-cancel" onclick="history.back()">Huỷ</button>
+</div>
+</div>
+<script>
+var isRecv=true;
+function setDir(d){
+  isRecv=d==='recv';
+  document.getElementById('btn-recv').classList.toggle('sel',isRecv);
+  document.getElementById('btn-recv').classList.toggle('recv',isRecv);
+  document.getElementById('btn-owe').classList.toggle('sel',!isRecv);
+  document.getElementById('btn-owe').classList.toggle('owe',!isRecv);
+  var c=isRecv?'var(--gd)':'var(--rs)';
+  var bg=isRecv?'#EAF3DE':'#FCE8E8';
+  var avBg=isRecv?'#D1F0E0':'#FCE8E8';
+  document.getElementById('preview').style.background=bg;
+  document.getElementById('pc-dir-label').textContent=isRecv?'NGƯỜI TA NỢ TÔI':'TÔI NỢ NGƯỜI TA';
+  document.getElementById('pc-dir-label').style.color=c;
+  document.getElementById('pc-amount').style.color=c;
+  document.getElementById('pc-due').style.color=c;
+  document.getElementById('pc-avatar').style.background=avBg;
+  document.getElementById('pc-avatar').style.color=c;
+  document.getElementById('person-label').textContent=isRecv?'Tên người nợ bạn':'Tên người bạn nợ';
+  document.getElementById('person-inp').placeholder=isRecv?'VD: Minh, chị Lan...':'VD: Ba, anh Hùng...';
+  updatePreview();
+}
+function updatePreview(){
+  var p=document.getElementById('person-inp').value.trim()||'—';
+  var a=parseInt(document.getElementById('amt-inp').value)||0;
+  var d=document.getElementById('due-inp').value;
+  document.getElementById('pc-person').textContent=p;
+  document.getElementById('pc-avatar').textContent=p.charAt(0).toUpperCase()||'?';
+  var sign=isRecv?'+':'-';
+  document.getElementById('pc-amount').textContent=sign+a.toLocaleString('vi-VN')+' ₫';
+  document.getElementById('pc-due').textContent='Hạn: '+(d?new Date(d).toLocaleDateString('vi-VN'):'—');
+}
+function setAmt(el,v){
+  document.querySelectorAll('.qb').forEach(function(b){b.classList.remove('sel')});
+  el.classList.add('sel');
+  document.getElementById('amt-inp').value=v;
+  updatePreview();
+}
+function selRD(el){
+  document.querySelectorAll('.rd').forEach(function(r){r.classList.remove('sel')});
+  el.classList.add('sel');
+}
+function toggleRemind(){
+  var tg=document.getElementById('remind-tg');
+  tg.classList.toggle('on');
+  var show=tg.classList.contains('on');
+  document.getElementById('remind-days-wrap').style.display=show?'block':'none';
+}
+</script>
+</body>
+</html>

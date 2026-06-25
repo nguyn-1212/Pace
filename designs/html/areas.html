@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Areas</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22)}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--mu)}
+
+/* ── HEADER ── */
+.hd{background:var(--wb);padding:14px 22px 40px}
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-family:var(--fb);font-size:12px;color:var(--mu)}
+.hd-add{width:36px;height:36px;border-radius:50%;background:var(--ch);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(186,84,28,.35)}
+.hd-add svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round}
+
+/* ── SUMMARY CARD — nằm trong hd, là 1 div riêng ── */
+.summary-card{background:rgba(255,246,237,.08);border:1px solid rgba(255,246,237,.12);border-radius:14px;padding:12px 16px;display:flex;gap:0;margin-top:14px}
+.sum-item{flex:1;text-align:center}
+.sum-item+.sum-item{border-left:1px solid rgba(255,246,237,.1)}
+.sum-val{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--rw)}
+.sum-label{font-family:var(--fb);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);margin-top:3px}
+
+/* ── SCREEN ── */
+.screen{background:var(--rw);border-radius:24px 24px 0 0;padding:22px 20px 110px;display:flex;flex-direction:column;gap:10px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.sec-label{font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)}
+.sec-hint{font-family:var(--fb);font-size:11px;color:var(--mu)}
+
+/* ── AREA CARDS ── */
+.area-card{border-radius:16px;padding:18px 18px 16px;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(43,15,4,.12)}
+.area-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(43,15,4,.18)}
+.area-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08)}
+.area-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.area-emoji{font-size:28px;line-height:1}
+.area-more{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:14px;border:none;cursor:pointer}
+.area-name{font-family:var(--fh);font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
+.area-desc{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:12px}
+.area-goals{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;min-height:22px}
+.area-goal-chip{background:rgba(255,255,255,.14);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:600;color:rgba(255,255,255,.8)}
+.area-footer{display:flex;align-items:center;gap:10px}
+.area-prog-wrap{flex:1}
+.area-prog-bar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.area-prog-fill{height:4px;background:rgba(255,255,255,.75);border-radius:2px}
+.area-prog-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.7);margin-top:4px}
+.area-count{font-size:12px;font-weight:700;color:rgba(255,255,255,.85);white-space:nowrap}
+
+/* ── ADD CARD ── */
+.area-add-card{border-radius:16px;padding:18px;border:1.5px dashed rgba(186,84,28,.25);background:transparent;cursor:pointer;display:flex;align-items:center;gap:14px;transition:border-color .15s,background .15s}
+.area-add-card:hover{border-color:var(--ch);background:rgba(186,84,28,.04)}
+.area-add-icon{width:44px;height:44px;border-radius:12px;background:rgba(186,84,28,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.area-add-icon svg{width:20px;height:20px;fill:none;stroke:var(--ch);stroke-width:2;stroke-linecap:round}
+.area-add-title{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--sp)}
+.area-add-sub{font-size:11px;color:var(--mu);margin-top:2px}
+
+/* ── TAB BAR ── */
+.tab-bar{position:sticky;bottom:0;background:var(--rw);border-top:1px solid rgba(186,84,28,.1);display:flex;justify-content:space-around;align-items:center;padding:12px 8px 22px;box-shadow:0 -4px 12px rgba(43,15,4,.06)}
+.ti{display:flex;flex-direction:column;align-items:center;cursor:pointer;flex:1}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ti.a .tic svg{stroke:var(--ch)}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(186,84,28,.38)}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+
+/* ── ADD SHEET ── */
+.sheet-bd{display:none;position:absolute;inset:0;background:rgba(43,15,4,.5);z-index:30;border-radius:44px;align-items:flex-end}
+.sheet-bd.open{display:flex}
+.sheet{background:var(--rw);border-radius:28px 28px 0 0;width:100%;padding:0 20px 40px;box-shadow:0 -4px 24px rgba(43,15,4,.18)}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(186,84,28,.2);margin:14px auto 20px}
+.sheet-title{font-family:var(--fh);font-size:17px;font-weight:700;color:var(--wb);margin-bottom:4px}
+.sheet-sub{font-size:12px;color:var(--mu);margin-bottom:20px;font-family:var(--fb)}
+.fl{font-family:var(--fb);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.eq{width:44px;height:44px;border-radius:12px;background:var(--cr);border:1.5px solid rgba(186,84,28,.12);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:all .15s}
+.eq.sel{border-color:var(--ch);background:rgba(186,84,28,.08)}
+.name-inp{width:100%;border:1px solid rgba(186,84,28,.2);border-radius:12px;padding:12px 14px;font-family:var(--fh);font-size:15px;color:var(--wb);background:var(--rw);outline:none;margin-bottom:18px}
+.color-row{display:flex;gap:10px;margin-bottom:24px}
+.csw{width:32px;height:32px;border-radius:50%;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.csw.sel{transform:scale(1.2)}
+.btn-create{width:100%;padding:14px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(186,84,28,.28)}
+.btn-create:disabled{opacity:.35;cursor:default}
+.btn-cancel-sh{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>100%</span></div>
+
+<div class="hd">
+  <div class="hd-nav">
+    <div>
+      <div class="hd-title">Areas</div>
+      <div class="hd-sub">Phân loại goals & thói quen</div>
+    </div>
+    <button class="hd-add" id="btn-open-sheet">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <!-- Summary card trong hd, là div riêng -->
+  <div class="summary-card">
+    <div class="sum-item"><div class="sum-val">6</div><div class="sum-label">Areas</div></div>
+    <div class="sum-item"><div class="sum-val">12</div><div class="sum-label">Goals</div></div>
+    <div class="sum-item"><div class="sum-val">74%</div><div class="sum-label">Hoàn thành</div></div>
+  </div>
+</div>
+
+<div class="screen">
+  <div class="sec-head">
+    <span class="sec-label">Đang hoạt động</span>
+    <span class="sec-hint">Bấm để xem chi tiết</span>
+  </div>
+
+  <div class="area-card" style="background:linear-gradient(135deg,#3C3489,#534AB7)" onclick="location.href='area_detail.html'">
+    <div class="area-top"><div class="area-emoji">📚</div><button class="area-more" onclick="event.stopPropagation()">⋯</button></div>
+    <div class="area-name">Study</div>
+    <div class="area-desc">Học tập & phát triển kỹ năng</div>
+    <div class="area-goals"><span class="area-goal-chip">Đọc 10 trang/ngày</span><span class="area-goal-chip">Học từ vựng</span><span class="area-goal-chip">+1 goal</span></div>
+    <div class="area-footer"><div class="area-prog-wrap"><div class="area-prog-bar"><div class="area-prog-fill" style="width:82%"></div></div><div class="area-prog-label">82% tuần này</div></div><div class="area-count">3 goals</div></div>
+  </div>
+
+  <div class="area-card" style="background:linear-gradient(135deg,#085041,#4A7C59)" onclick="location.href='area_detail.html'">
+    <div class="area-top"><div class="area-emoji">💪</div><button class="area-more" onclick="event.stopPropagation()">⋯</button></div>
+    <div class="area-name">Health</div>
+    <div class="area-desc">Sức khoẻ & lối sống</div>
+    <div class="area-goals"><span class="area-goal-chip">Chạy bộ 20 phút</span><span class="area-goal-chip">Uống 2L nước</span></div>
+    <div class="area-footer"><div class="area-prog-wrap"><div class="area-prog-bar"><div class="area-prog-fill" style="width:65%"></div></div><div class="area-prog-label">65% tuần này</div></div><div class="area-count">2 goals</div></div>
+  </div>
+
+  <div class="area-card" style="background:linear-gradient(135deg,#7A4000,#BA541C)" onclick="location.href='area_detail.html'">
+    <div class="area-top"><div class="area-emoji">💰</div><button class="area-more" onclick="event.stopPropagation()">⋯</button></div>
+    <div class="area-name">Tài chính</div>
+    <div class="area-desc">Tiền bạc & đầu tư</div>
+    <div class="area-goals"><span class="area-goal-chip">Tiết kiệm 500k/tuần</span><span class="area-goal-chip">Tracking chi tiêu</span></div>
+    <div class="area-footer"><div class="area-prog-wrap"><div class="area-prog-bar"><div class="area-prog-fill" style="width:60%"></div></div><div class="area-prog-label">60% tuần này</div></div><div class="area-count">2 goals</div></div>
+  </div>
+
+  <div class="area-card" style="background:linear-gradient(135deg,#0D3F70,#185FA5)" onclick="location.href='area_detail.html'">
+    <div class="area-top"><div class="area-emoji">🏋️</div><button class="area-more" onclick="event.stopPropagation()">⋯</button></div>
+    <div class="area-name">Gym</div>
+    <div class="area-desc">Tập luyện thể thao</div>
+    <div class="area-goals"><span class="area-goal-chip">Tập gym 3 buổi/tuần</span></div>
+    <div class="area-footer"><div class="area-prog-wrap"><div class="area-prog-bar"><div class="area-prog-fill" style="width:100%"></div></div><div class="area-prog-label">100% tuần này 🔥</div></div><div class="area-count">1 goal</div></div>
+  </div>
+
+  <div class="area-card" style="background:linear-gradient(135deg,#5A0A0A,#7A1010)" onclick="location.href='area_detail.html'">
+    <div class="area-top"><div class="area-emoji">🌱</div><button class="area-more" onclick="event.stopPropagation()">⋯</button></div>
+    <div class="area-name">Personal</div>
+    <div class="area-desc">Phát triển bản thân</div>
+    <div class="area-goals"><span class="area-goal-chip">Thiền 10 phút</span><span class="area-goal-chip">Viết nhật ký</span></div>
+    <div class="area-footer"><div class="area-prog-wrap"><div class="area-prog-bar"><div class="area-prog-fill" style="width:45%"></div></div><div class="area-prog-label">45% tuần này</div></div><div class="area-count">2 goals</div></div>
+  </div>
+
+  <div class="area-card" style="background:linear-gradient(135deg,#3A1E0A,#5C3317)" onclick="location.href='area_detail.html'">
+    <div class="area-top"><div class="area-emoji">💼</div><button class="area-more" onclick="event.stopPropagation()">⋯</button></div>
+    <div class="area-name">Công việc</div>
+    <div class="area-desc">Career & nghề nghiệp</div>
+    <div class="area-goals"><span class="area-goal-chip">Hoàn thành portfolio</span><span class="area-goal-chip">+1 goal</span></div>
+    <div class="area-footer"><div class="area-prog-wrap"><div class="area-prog-bar"><div class="area-prog-fill" style="width:55%"></div></div><div class="area-prog-label">55% tuần này</div></div><div class="area-count">2 goals</div></div>
+  </div>
+
+  <div class="area-add-card" id="btn-open-sheet2">
+    <div class="area-add-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    <div><div class="area-add-title">Tạo Area mới</div><div class="area-add-sub">Đặt tên · Chọn emoji · Chọn màu</div></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div></div>
+  <div class="ti a"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></div></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+  <div class="ti" onclick="location.href='more.html'"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
+</div>
+
+<!-- ADD AREA SHEET -->
+<div class="sheet-bd" id="add-sheet">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Tạo Area mới</div>
+    <div class="sheet-sub">Phân loại goals theo lĩnh vực của bạn.</div>
+    <div class="fl">Biểu tượng</div>
+    <div class="emoji-grid">
+      <div class="eq sel" onclick="selEq(this)">📚</div><div class="eq" onclick="selEq(this)">💪</div>
+      <div class="eq" onclick="selEq(this)">🏋️</div><div class="eq" onclick="selEq(this)">💰</div>
+      <div class="eq" onclick="selEq(this)">🌱</div><div class="eq" onclick="selEq(this)">💼</div>
+      <div class="eq" onclick="selEq(this)">🎯</div><div class="eq" onclick="selEq(this)">✈️</div>
+    </div>
+    <div class="fl">Tên Area</div>
+    <input class="name-inp" type="text" placeholder="VD: Sáng tạo, Du lịch..." id="sheet-name-inp" oninput="document.getElementById('btn-create').disabled=this.value.trim().length===0;document.getElementById('btn-create').style.opacity=this.value.trim().length?'1':'.35'">
+    <div class="fl">Màu sắc</div>
+    <div class="color-row">
+      <div class="csw sel" onclick="selC(this,'#534AB7')" style="background:#534AB7;box-shadow:0 0 0 2px #fff,0 0 0 4px #534AB7"></div>
+      <div class="csw" onclick="selC(this,'#4A7C59')" style="background:#4A7C59"></div>
+      <div class="csw" onclick="selC(this,'#BA541C')" style="background:#BA541C"></div>
+      <div class="csw" onclick="selC(this,'#185FA5')" style="background:#185FA5"></div>
+      <div class="csw" onclick="selC(this,'#7A1010')" style="background:#7A1010"></div>
+      <div class="csw" onclick="selC(this,'#5C3317')" style="background:#5C3317"></div>
+    </div>
+    <button class="btn-create" id="btn-create" disabled style="opacity:.35" onclick="closeSheet()">Tạo Area ✓</button>
+    <button class="btn-cancel-sh" onclick="closeSheet()">Huỷ</button>
+  </div>
+</div>
+
+</div>
+<script>
+var sheet=document.getElementById('add-sheet');
+document.getElementById('btn-open-sheet').onclick=function(){sheet.classList.add('open')};
+document.getElementById('btn-open-sheet2').onclick=function(){sheet.classList.add('open')};
+sheet.onclick=function(e){if(e.target===this)closeSheet()};
+function closeSheet(){sheet.classList.remove('open')}
+function selEq(el){document.querySelectorAll('.eq').forEach(function(e){e.classList.remove('sel')});el.classList.add('sel')}
+function selC(el,c){
+  document.querySelectorAll('.csw').forEach(function(s){s.classList.remove('sel');s.style.boxShadow='none'});
+  el.classList.add('sel');el.style.boxShadow='0 0 0 2px #fff,0 0 0 4px '+c;
+}
+</script>
+</body>
+</html>

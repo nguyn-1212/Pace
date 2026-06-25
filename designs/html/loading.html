@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace to Base</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;
+  --fd:'Dancing Script',cursive;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:var(--fb);background:var(--wb);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;position:relative;
+}
+
+/* ── Desert gradient bg ── */
+.bg{
+  position:absolute;inset:0;
+  background:linear-gradient(168deg,#C8884A 0%,#A0551A 22%,#7A3C0A 48%,#2B0F04 100%);
+  z-index:0;
+}
+.bg-grid{
+  position:absolute;inset:0;z-index:1;
+  background-image:linear-gradient(rgba(255,246,237,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,246,237,.022) 1px,transparent 1px);
+  background-size:36px 36px;
+}
+/* Blobs */
+.blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:1}
+/* Dunes */
+.dune1{position:absolute;bottom:0;left:-5%;right:-5%;height:38%;
+  background:radial-gradient(ellipse 120% 60% at 50% 100%,rgba(43,15,4,.7) 0%,transparent 70%);
+  border-radius:55% 55% 0 0 / 22% 22% 0 0;z-index:1}
+.dune2{position:absolute;bottom:0;left:-15%;right:-10%;height:26%;
+  background:rgba(20,8,2,.4);border-radius:65% 50% 0 0 / 28% 28% 0 0;z-index:1}
+/* Shimmer */
+.shimmer{position:absolute;inset:0;z-index:2;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,220,160,.06) 50%,transparent 65%);
+  animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* ── Content ── */
+.content{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;text-align:center}
+
+/* App name */
+.app-name{
+  font-family:var(--fd);font-size:72px;font-weight:700;letter-spacing:-1px;line-height:1;
+  background:linear-gradient(135deg,#F5C4A0 0%,#FFF6ED 30%,#F5A86A 52%,#FFF6ED 72%,#C4804A 100%);
+  background-size:200% 200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:textShine 3s ease-in-out infinite;
+  filter:drop-shadow(0 2px 24px rgba(245,168,106,.3));
+}
+@keyframes textShine{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+.tagline{
+  font-family:var(--fh);font-size:11px;font-weight:500;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(255,246,237,.4);margin-top:10px;
+}
+
+/* ── Progress bar ── */
+.progress-wrap{margin-top:56px;width:160px}
+.progress-track{
+  height:3px;background:rgba(255,246,237,.12);border-radius:2px;overflow:hidden;
+}
+.progress-fill{
+  height:3px;background:linear-gradient(90deg,var(--ch),#F5A86A);
+  border-radius:2px;width:0%;
+  animation:loadBar 2.4s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes loadBar{
+  0%{width:0%}
+  30%{width:35%}
+  60%{width:65%}
+  85%{width:88%}
+  100%{width:100%}
+}
+.loading-label{
+  font-family:var(--fb);font-size:11px;font-weight:600;
+  color:rgba(255,246,237,.35);margin-top:10px;
+  animation:labelCycle 2.4s ease forwards;
+}
+@keyframes labelCycle{
+  0%,20%{opacity:.35}50%{opacity:.6}100%{opacity:.9}
+}
+
+/* ── State: loaded flash ── */
+.check-icon{
+  opacity:0;transform:scale(.6);
+  transition:opacity .35s ease,transform .35s cubic-bezier(.34,1.56,.64,1);
+  margin-top:14px;font-size:22px;
+}
+.check-icon.show{opacity:1;transform:scale(1)}
+
+/* ── Fade out whole screen ── */
+body.fade-out{animation:bodyFade .55s ease forwards}
+@keyframes bodyFade{to{opacity:0;pointer-events:none}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="bg-grid"></div>
+<div class="blob" style="width:300px;height:300px;background:#C8884A;top:-80px;right:-80px;opacity:.25"></div>
+<div class="blob" style="width:200px;height:200px;background:#BA541C;bottom:100px;left:-60px;opacity:.2"></div>
+<div class="dune2"></div>
+<div class="dune1"></div>
+<div class="shimmer"></div>
+
+<div class="content">
+  <div class="app-name">Pace to Base</div>
+  <div class="tagline">Calm · Flexible · Guilt-free</div>
+  <div class="progress-wrap">
+    <div class="progress-track">
+      <div class="progress-fill" id="pfill"></div>
+    </div>
+    <div class="loading-label" id="plabel">Đang chuẩn bị...</div>
+  </div>
+  <div class="check-icon" id="check">✦</div>
+</div>
+
+<script>
+var labels = ['Đang chuẩn bị...','Tải dữ liệu...','Sắp xong rồi...','Chào mừng trở lại!'];
+var idx = 0;
+var lbl = document.getElementById('plabel');
+
+var lt = setInterval(function(){
+  idx++;
+  if(idx < labels.length) lbl.textContent = labels[idx];
+  else clearInterval(lt);
+}, 600);
+
+// After bar finishes → show check → redirect
+setTimeout(function(){
+  lbl.textContent = 'Chào mừng trở lại!';
+  lbl.style.color = 'rgba(255,246,237,.8)';
+  document.getElementById('check').classList.add('show');
+}, 2500);
+
+setTimeout(function(){
+  document.body.classList.add('fade-out');
+  setTimeout(function(){
+    // Check auth: nếu user mới → onboarding, đã có → home
+    var isNew = !localStorage.getItem('pace_user');
+    window.location.href = isNew ? 'onboarding.html' : 'home.html';
+  }, 580);
+}, 3100);
+</script>
+</body>
+</html>

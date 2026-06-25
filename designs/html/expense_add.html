@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Ghi chi tiêu</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+/* HEADER */
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:4px}
+.hd-sub{font-size:12px;color:rgba(255,246,237,.5)}
+/* AMOUNT DISPLAY */
+.amount-display{background:var(--wb);padding:20px 22px 32px;position:relative;text-align:center}
+
+.amount-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,246,237,.35);margin-bottom:8px}
+.amount-row{display:flex;align-items:baseline;justify-content:center;gap:6px}
+.amount-currency{font-family:var(--fh);font-size:22px;font-weight:600;color:rgba(255,246,237,.4)}
+.amount-value{font-family:var(--fh);font-size:52px;font-weight:800;color:var(--rw);line-height:1;min-width:120px}
+.amount-value.has-value{color:var(--rw)}
+.amount-value.empty{color:rgba(255,246,237,.2)}
+/* Quick amounts */
+.quick-amounts{display:flex;gap:6px;justify-content:center;margin-top:12px;position:relative;z-index:1}
+.qa{padding:5px 12px;border-radius:20px;background:rgba(255,246,237,.1);border:1px solid rgba(255,246,237,.15);font-family:var(--fb);font-size:11px;font-weight:700;color:rgba(255,246,237,.65);cursor:pointer;transition:all .15s}
+.qa:hover{background:rgba(255,246,237,.18);color:var(--rw)}
+/* BODY */
+.body{background:var(--rw);padding:32px 20px 20px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+/* CATEGORY */
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:10px}
+.cat-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-item{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;flex-shrink:0}
+.cat-icon-wrap{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid transparent;transition:all .15s;box-shadow:0 1px 4px rgba(43,15,4,.08)}
+.cat-item.sel .cat-icon-wrap{border-color:var(--ch);box-shadow:0 0 0 1px var(--ch),0 3px 10px rgba(186,84,28,.2)}
+.cat-name{font-size:10px;font-weight:700;color:var(--mu);transition:color .15s}
+.cat-item.sel .cat-name{color:var(--ch)}
+/* NOTE */
+.note-wrap{position:relative;margin-bottom:16px}
+.note-inp{width:100%;border:1.5px solid rgba(186,84,28,.18);border-radius:12px;padding:12px 14px;font-family:var(--fb);font-size:14px;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s}
+.note-inp:focus{border-color:var(--ch)}
+.note-inp::placeholder{color:var(--mu)}
+/* DATE ROW */
+.date-row{display:flex;gap:8px;margin-bottom:20px}
+.date-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid rgba(186,84,28,.15);background:var(--rw);font-family:var(--fb);font-size:12px;font-weight:600;color:var(--sp);cursor:pointer;text-align:center;transition:all .15s}
+.date-btn.sel{border-color:var(--ch);background:rgba(186,84,28,.06);color:var(--ch)}
+/* NUMPAD */
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(186,84,28,.1);border-radius:16px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 4px rgba(43,15,4,.08)}
+.np-key{background:var(--rw);padding:18px 0;text-align:center;cursor:pointer;font-family:var(--fh);font-size:20px;font-weight:700;color:var(--wb);transition:background .1s;user-select:none}
+.np-key:active{background:var(--cr)}
+.np-key.fn{font-size:14px;color:var(--sp)}
+.np-key.del{font-size:18px;color:var(--ch)}
+.np-key.zero{grid-column:span 1}
+/* SAVE */
+.btn-save{width:100%;padding:15px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3);transition:opacity .15s}
+.btn-save:disabled{opacity:.35;cursor:default}
+.btn-cancel{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+/* Budget warning */
+.budget-warn{background:#FFF3E0;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:none;align-items:center;gap:8px}
+.budget-warn.show{display:flex}
+.bw-icon{font-size:16px;flex-shrink:0}
+.bw-text{font-size:11px;font-weight:600;color:#7A4000;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+
+<!-- Amount display (acts as header) -->
+<div class="amount-display">
+  <div class="amount-label">Số tiền chi tiêu</div>
+  <div class="amount-row">
+    <div class="amount-currency">₫</div>
+    <div class="amount-value empty" id="amt-display">0</div>
+  </div>
+  <div class="quick-amounts">
+    <div class="qa" onclick="quickAmt('10000')">10k</div>
+    <div class="qa" onclick="quickAmt('20000')">20k</div>
+    <div class="qa" onclick="quickAmt('50000')">50k</div>
+    <div class="qa" onclick="quickAmt('100000')">100k</div>
+    <div class="qa" onclick="quickAmt('200000')">200k</div>
+    <div class="qa" onclick="quickAmt('500000')">500k</div>
+  </div>
+</div>
+
+<div class="body">
+  <!-- Category -->
+  <div class="sec-label">Danh mục</div>
+  <div class="cat-scroll">
+    <div class="cat-item sel" onclick="selCat(this,'#FFF3E0')">
+      <div class="cat-icon-wrap" style="background:#FFF3E0">🍜</div>
+      <div class="cat-name">Ăn uống</div>
+    </div>
+    <div class="cat-item" onclick="selCat(this,'#E6F1FB')">
+      <div class="cat-icon-wrap" style="background:#E6F1FB">🚗</div>
+      <div class="cat-name">Đi lại</div>
+    </div>
+    <div class="cat-item" onclick="selCat(this,'#E8E7FC')">
+      <div class="cat-icon-wrap" style="background:#E8E7FC">📚</div>
+      <div class="cat-name">Học tập</div>
+    </div>
+    <div class="cat-item" onclick="selCat(this,'#E1F5EE')">
+      <div class="cat-icon-wrap" style="background:#E1F5EE">🎮</div>
+      <div class="cat-name">Giải trí</div>
+    </div>
+    <div class="cat-item" onclick="selCat(this,'#FCE8E8')">
+      <div class="cat-icon-wrap" style="background:#FCE8E8">💊</div>
+      <div class="cat-name">Sức khoẻ</div>
+    </div>
+    <div class="cat-item" onclick="selCat(this,'#F5EDE0')">
+      <div class="cat-icon-wrap" style="background:#F5EDE0">🏠</div>
+      <div class="cat-name">Nhà ở</div>
+    </div>
+    <div class="cat-item" onclick="selCat(this,'#FBEAF0')">
+      <div class="cat-icon-wrap" style="background:#FBEAF0">👗</div>
+      <div class="cat-name">Mua sắm</div>
+    </div>
+    <div class="cat-item" onclick="selCat(this,'var(--cr)')">
+      <div class="cat-icon-wrap" style="background:var(--cr)">📦</div>
+      <div class="cat-name">Khác</div>
+    </div>
+  </div>
+
+  <!-- Note -->
+  <div class="sec-label">Ghi chú</div>
+  <div class="note-wrap" style="margin-bottom:14px">
+    <input class="note-inp" type="text" placeholder="VD: Cơm trưa cùng Minh, Grab đi làm...">
+  </div>
+
+  <!-- Date -->
+  <div class="sec-label">Ngày</div>
+  <div class="date-row">
+    <div class="date-btn sel" onclick="selDate(this)">Hôm nay</div>
+    <div class="date-btn" onclick="selDate(this)">Hôm qua</div>
+    <div class="date-btn" onclick="selDate(this)">Chọn ngày...</div>
+  </div>
+
+  <!-- Budget warning -->
+  <div class="budget-warn" id="budget-warn">
+    <div class="bw-icon">⚠️</div>
+    <div class="bw-text">Ngân sách Ăn uống còn <strong>300k</strong> — khoản này chiếm phần lớn.</div>
+  </div>
+
+  <!-- Numpad -->
+  <div class="numpad">
+    <div class="np-key" onclick="numInput('7')">7</div>
+    <div class="np-key" onclick="numInput('8')">8</div>
+    <div class="np-key" onclick="numInput('9')">9</div>
+    <div class="np-key" onclick="numInput('4')">4</div>
+    <div class="np-key" onclick="numInput('5')">5</div>
+    <div class="np-key" onclick="numInput('6')">6</div>
+    <div class="np-key" onclick="numInput('1')">1</div>
+    <div class="np-key" onclick="numInput('2')">2</div>
+    <div class="np-key" onclick="numInput('3')">3</div>
+    <div class="np-key fn" onclick="numInput('000')">000</div>
+    <div class="np-key" onclick="numInput('0')">0</div>
+    <div class="np-key del" onclick="numDel()">⌫</div>
+  </div>
+
+  <button class="btn-save" id="btn-save" disabled onclick="saveExpense()">Lưu chi tiêu ✓</button>
+  <button class="btn-cancel" onclick="history.back()">Huỷ</button>
+</div>
+</div>
+<script>
+var amount='';
+function updateDisplay(){
+  var d=document.getElementById('amt-display');
+  var n=parseInt(amount||'0');
+  d.textContent=n.toLocaleString('vi-VN');
+  d.className='amount-value'+(n>0?' has-value':' empty');
+  document.getElementById('btn-save').disabled=n===0;
+  document.getElementById('btn-save').style.opacity=n>0?'1':'.35';
+  // Budget warning if > 100k
+  document.getElementById('budget-warn').classList.toggle('show',n>=100000);
+}
+function numInput(d){
+  if(amount.length>=10)return;
+  amount+=d;
+  // Remove leading zeros
+  amount=String(parseInt(amount)||0);
+  updateDisplay();
+}
+function numDel(){
+  amount=amount.slice(0,-1);
+  updateDisplay();
+}
+function quickAmt(v){
+  amount=v;
+  updateDisplay();
+}
+function selCat(el,bg){
+  document.querySelectorAll('.cat-item').forEach(function(c){c.classList.remove('sel')});
+  el.classList.add('sel');
+}
+function selDate(el){
+  document.querySelectorAll('.date-btn').forEach(function(b){b.classList.remove('sel')});
+  el.classList.add('sel');
+}
+function saveExpense(){
+  var n=parseInt(amount);
+  if(!n)return;
+  location.href='finance.html';
+}
+</script>
+</body>
+</html>

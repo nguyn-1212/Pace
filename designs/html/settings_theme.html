@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Giao diện</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22)}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--mu)}
+.hd{background:var(--wb);padding:14px 22px 36px}
+.hd-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-family:var(--fb);font-size:12px;color:var(--mu)}
+.screen{background:var(--rw);border-radius:24px 24px 0 0;padding:24px 20px 60px;display:flex;flex-direction:column;gap:20px}
+.sl{font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:12px}
+/* Theme picker */
+.theme-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tc{border-radius:14px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .15s;box-shadow:0 1px 4px rgba(43,15,4,.08)}
+.tc.sel{border-color:var(--ch);box-shadow:0 0 0 1px var(--ch),0 3px 10px rgba(186,84,28,.2)}
+.tc-preview{height:64px;position:relative}
+.tc-preview-hd{height:32px}
+.tc-preview-sc{height:32px;border-radius:8px 8px 0 0;margin-top:-8px}
+.tc-label{font-family:var(--fh);font-size:12px;font-weight:700;text-align:center;padding:8px 6px;background:var(--rw);color:var(--wb)}
+.tc.sel .tc-label{color:var(--ch)}
+/* Light theme preview */
+.prev-light .tc-preview-hd{background:#2B0F04}
+.prev-light .tc-preview-sc{background:#FFF6ED}
+/* Dark theme preview */
+.prev-dark .tc-preview-hd{background:#0D0D0D}
+.prev-dark .tc-preview-sc{background:#1A1A1A}
+.prev-dark .tc-label{background:#1A1A1A;color:#F5EDE0}
+/* System preview */
+.prev-system .tc-preview-hd{background:linear-gradient(to right,#2B0F04 50%,#0D0D0D 50%)}
+.prev-system .tc-preview-sc{background:linear-gradient(to right,#FFF6ED 50%,#1A1A1A 50%)}
+.prev-system .tc-label{background:linear-gradient(to right,var(--rw) 50%,#1A1A1A 50%);color:var(--wb)}
+/* Accent color */
+.accent-row{display:flex;gap:10px;align-items:center}
+.accent-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;transition:transform .15s,box-shadow .15s;border:2px solid transparent}
+.accent-swatch.sel{transform:scale(1.18);box-shadow:0 0 0 2px #fff,0 0 0 4px currentColor}
+/* Font size */
+.font-size-row{display:flex;align-items:center;gap:12px}
+.fs-label{font-family:var(--fb);font-size:13px;color:var(--sp);flex:1}
+.fs-slider{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:rgba(186,84,28,.15);border-radius:2px;outline:none;cursor:pointer}
+.fs-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--ch);cursor:pointer;box-shadow:0 2px 6px rgba(186,84,28,.3)}
+.fs-sample{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--wb)}
+/* Toggle rows */
+.setting-list{background:var(--cr);border-radius:14px;overflow:hidden}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(186,84,28,.07)}
+.setting-row:last-child{border-bottom:none}
+.sr-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-right:12px;flex-shrink:0}
+.sr-body{flex:1}
+.sr-name{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--wb)}
+.sr-sub{font-family:var(--fb);font-size:11px;color:var(--mu);margin-top:2px}
+.tg{width:42px;height:23px;border-radius:12px;background:#D6C4B0;position:relative;cursor:pointer;border:none;padding:0;transition:background .2s}
+.tg.on{background:var(--gd)}
+.tg::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.tg.on::after{left:22px}
+/* Live preview mini phone */
+.preview-phone{background:var(--wb);border-radius:16px;overflow:hidden;border:1.5px solid rgba(186,84,28,.2);box-shadow:0 4px 16px rgba(43,15,4,.2)}
+.pp-hd{background:var(--wb);padding:10px 14px 18px}
+.pp-greeting{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--rw);margin-bottom:2px}
+.pp-sub{font-family:var(--fb);font-size:9px;color:var(--mu)}
+.pp-sc{background:var(--rw);border-radius:12px 12px 0 0;padding:12px;margin-top:-8px}
+.pp-card{background:var(--cr);border-radius:8px;padding:10px;margin-bottom:6px}
+.pp-card-title{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--wb)}
+.pp-card-sub{font-family:var(--fb);font-size:9px;color:var(--mu);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div><div class="hd-title">Giao diện</div></div>
+  </div>
+  <div class="hd-sub">Tuỳ chỉnh giao diện theo sở thích của bạn.</div>
+</div>
+
+<div class="screen">
+  <!-- Live preview -->
+  <div>
+    <div class="sl">Xem trước</div>
+    <div class="preview-phone">
+      <div class="pp-hd">
+        <div class="pp-greeting">Chào buổi sáng</div>
+        <div class="pp-sub">Bạn đã bắt đầu hôm nay</div>
+      </div>
+      <div class="pp-sc">
+        <div class="pp-card"><div class="pp-card-title">Đọc 10 trang sách</div><div class="pp-card-sub">Study · 7:00 sáng</div></div>
+        <div class="pp-card"><div class="pp-card-title">Chạy bộ 20 phút</div><div class="pp-card-sub">Health · 6:30 sáng</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chế độ màu -->
+  <div>
+    <div class="sl">Chế độ màu</div>
+    <div class="theme-cards">
+      <div class="tc prev-light sel" id="theme-light" onclick="setTheme('light')">
+        <div class="tc-preview"><div class="tc-preview-hd"></div><div class="tc-preview-sc"></div></div>
+        <div class="tc-label">Sáng</div>
+      </div>
+      <div class="tc prev-dark" id="theme-dark" onclick="setTheme('dark')">
+        <div class="tc-preview"><div class="tc-preview-hd"></div><div class="tc-preview-sc"></div></div>
+        <div class="tc-label" style="background:#1A1A1A;color:#F5EDE0">Tối</div>
+      </div>
+      <div class="tc prev-system" id="theme-system" onclick="setTheme('system')">
+        <div class="tc-preview"><div class="tc-preview-hd"></div><div class="tc-preview-sc"></div></div>
+        <div class="tc-label">Hệ thống</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Màu nhấn -->
+  <div>
+    <div class="sl">Màu nhấn</div>
+    <div class="accent-row">
+      <div class="accent-swatch sel" onclick="setAccent(this,'#BA541C')" style="background:#BA541C;color:#BA541C"></div>
+      <div class="accent-swatch" onclick="setAccent(this,'#534AB7')" style="background:#534AB7;color:#534AB7"></div>
+      <div class="accent-swatch" onclick="setAccent(this,'#4A7C59')" style="background:#4A7C59;color:#4A7C59"></div>
+      <div class="accent-swatch" onclick="setAccent(this,'#185FA5')" style="background:#185FA5;color:#185FA5"></div>
+      <div class="accent-swatch" onclick="setAccent(this,'#7A1010')" style="background:#7A1010;color:#7A1010"></div>
+    </div>
+  </div>
+
+  <!-- Cỡ chữ -->
+  <div>
+    <div class="sl">Cỡ chữ</div>
+    <div class="font-size-row">
+      <span style="font-size:11px;color:var(--mu);font-weight:700">A</span>
+      <input class="fs-slider" type="range" min="12" max="18" value="15" oninput="document.getElementById('fs-sample').style.fontSize=this.value+'px'">
+      <span style="font-size:18px;color:var(--mu);font-weight:700">A</span>
+    </div>
+    <div class="fs-sample" id="fs-sample" style="margin-top:10px;font-size:15px">Chào buổi sáng</div>
+  </div>
+
+  <!-- Các tuỳ chọn khác -->
+  <div>
+    <div class="sl">Tuỳ chọn khác</div>
+    <div class="setting-list">
+      <div class="setting-row">
+        <div style="display:flex;align-items:center">
+          <div class="sr-icon" style="background:#E8E7FC">✨</div>
+          <div class="sr-body"><div class="sr-name">Animation mượt mà</div><div class="sr-sub">Bật hiệu ứng chuyển màn</div></div>
+        </div>
+        <button class="tg on" onclick="this.classList.toggle('on')"></button>
+      </div>
+      <div class="setting-row">
+        <div style="display:flex;align-items:center">
+          <div class="sr-icon" style="background:#FFF3E0">📳</div>
+          <div class="sr-body"><div class="sr-name">Rung khi hoàn thành</div><div class="sr-sub">Haptic feedback</div></div>
+        </div>
+        <button class="tg on" onclick="this.classList.toggle('on')"></button>
+      </div>
+      <div class="setting-row">
+        <div style="display:flex;align-items:center">
+          <div class="sr-icon" style="background:#E1F5EE">🔢</div>
+          <div class="sr-body"><div class="sr-name">Hiện số trên icon app</div><div class="sr-sub">Badge count trên icon</div></div>
+        </div>
+        <button class="tg" onclick="this.classList.toggle('on')"></button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+function setTheme(t){
+  ['light','dark','system'].forEach(function(k){document.getElementById('theme-'+k).classList.toggle('sel',k===t)});
+}
+function setAccent(el,c){
+  document.querySelectorAll('.accent-swatch').forEach(function(s){s.classList.remove('sel')});
+  el.classList.add('sel');
+  document.documentElement.style.setProperty('--ch',c);
+}
+</script>
+</body>
+</html>

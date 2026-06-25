@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Loading</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative;min-height:700px;display:flex;flex-direction:column}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+
+/* ── TAB SELECTOR (để demo các kiểu loading) ── */
+.demo-tabs{display:flex;gap:0;background:var(--cr);padding:3px;margin:0 16px 0}
+.dt{flex:1;padding:7px 0;border-radius:8px;font-family:var(--fh);font-size:11px;font-weight:700;color:var(--mu);border:none;background:transparent;cursor:pointer;transition:all .15s;text-align:center}
+.dt.on{background:var(--rw);color:var(--wb);box-shadow:0 1px 4px rgba(43,15,4,.1)}
+
+/* ── SCREENS ── */
+.screen{background:var(--rw);flex:1;position:relative;overflow:hidden}
+.loading-view{position:absolute;inset:0;display:none;flex-direction:column}
+.loading-view.active{display:flex}
+
+/* ══════════════════════
+   1. SKELETON SCREEN
+══════════════════════ */
+.skeleton-screen{padding:20px;display:flex;flex-direction:column;gap:16px;overflow:auto}
+/* Shimmer animation */
+@keyframes shimmer{
+  0%{background-position:-600px 0}
+  100%{background-position:600px 0}
+}
+.sk{
+  background:linear-gradient(90deg,var(--cr) 25%,rgba(186,84,28,.08) 50%,var(--cr) 75%);
+  background-size:600px 100%;
+  animation:shimmer 1.4s ease infinite;
+  border-radius:8px;
+}
+/* Skeleton hero */
+.sk-hero{background:linear-gradient(90deg,rgba(43,15,4,.12) 25%,rgba(43,15,4,.06) 50%,rgba(43,15,4,.12) 75%);background-size:600px 100%;animation:shimmer 1.4s ease infinite;border-radius:0;padding:20px 22px 28px}
+.sk-hero-date{height:12px;width:120px;border-radius:6px;background:rgba(255,246,237,.12);background-size:600px 100%;animation:shimmer 1.4s ease infinite;margin-bottom:12px}
+.sk-hero-title{height:28px;width:200px;border-radius:8px;background:rgba(255,246,237,.18);background-size:600px 100%;animation:shimmer 1.4s ease infinite;margin-bottom:6px}
+.sk-hero-sub{height:14px;width:160px;border-radius:6px;background:rgba(255,246,237,.1);background-size:600px 100%;animation:shimmer 1.4s ease infinite;margin-bottom:16px}
+.sk-week{display:flex;gap:5px}
+.sk-day{flex:1;height:44px;border-radius:10px;background:rgba(255,246,237,.1);background-size:600px 100%;animation:shimmer 1.4s ease infinite}
+.sk-day.today{background:rgba(186,84,28,.3);background-size:600px 100%;animation:shimmer 1.4s ease infinite}
+/* Skeleton section */
+.sk-section-head{height:12px;width:90px;border-radius:6px;margin-bottom:12px}
+.sk-card{border-radius:14px;padding:14px;background:var(--rw);border:1px solid rgba(186,84,28,.1);box-shadow:0 1px 4px rgba(43,15,4,.06);display:flex;flex-direction:column;gap:8px}
+.sk-card+.sk-card{margin-top:8px}
+.sk-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sk-title{height:16px;border-radius:6px}
+.sk-tag{height:20px;width:52px;border-radius:20px}
+.sk-meta{height:12px;width:100px;border-radius:5px}
+.sk-actions{display:flex;gap:8px;margin-top:4px}
+.sk-btn{flex:1;height:34px;border-radius:20px}
+
+/* ══════════════════════
+   2. OVERLAY SPINNER (action loading)
+══════════════════════ */
+.overlay-screen{position:relative;flex:1}
+.page-bg{padding:20px;display:flex;flex-direction:column;gap:12px}
+.dummy-card{background:var(--cr);border-radius:14px;padding:14px 16px}
+.dummy-title{font-family:var(--fh);font-size:14px;font-weight:600;color:var(--wb);margin-bottom:4px}
+.dummy-sub{font-size:11px;color:var(--mu)}
+.overlay-backdrop{position:absolute;inset:0;background:rgba(43,15,4,.4);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:10}
+.overlay-card{background:var(--rw);border-radius:20px;padding:28px 32px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 8px 32px rgba(43,15,4,.25);min-width:180px}
+/* Spinner */
+.spinner{width:40px;height:40px;border:3px solid rgba(186,84,28,.2);border-top-color:var(--ch);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.overlay-label{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb)}
+.overlay-sub{font-size:11px;color:var(--mu);text-align:center}
+
+/* ══════════════════════
+   3. INLINE SKELETON (list items)
+══════════════════════ */
+.inline-screen{padding:20px;display:flex;flex-direction:column;gap:0;overflow:auto}
+.inline-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.inline-header .sk{height:20px;width:120px;border-radius:8px}
+.inline-header .sk2{height:16px;width:60px;border-radius:6px}
+.list-wrap2{background:var(--rw);border:1px solid rgba(186,84,28,.1);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(43,15,4,.06)}
+.sk-list-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid rgba(186,84,28,.07)}
+.sk-list-row:last-child{border-bottom:none}
+.sk-avatar{width:36px;height:36px;border-radius:10px;flex-shrink:0}
+.sk-list-body{flex:1;display:flex;flex-direction:column;gap:6px}
+.sk-line-a{height:14px;border-radius:5px}
+.sk-line-b{height:11px;width:70%;border-radius:4px}
+.sk-pct{width:36px;height:20px;border-radius:10px}
+/* Finance cards skeleton */
+.sk-fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.sk-fin-card{background:var(--cr);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.sk-fin-label{height:11px;width:70%;border-radius:4px}
+.sk-fin-amount{height:28px;width:80px;border-radius:8px}
+.sk-fin-bar{height:4px;border-radius:2px}
+
+/* ══════════════════════
+   4. PULL TO REFRESH (top indicator)
+══════════════════════ */
+.ptr-screen{display:flex;flex-direction:column;overflow:auto}
+.ptr-indicator{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;background:var(--rw);border-bottom:1px solid rgba(186,84,28,.1);animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.ptr-spinner{width:18px;height:18px;border:2.5px solid rgba(186,84,28,.2);border-top-color:var(--ch);border-radius:50%;animation:spin .7s linear infinite}
+.ptr-label{font-family:var(--fh);font-size:12px;font-weight:600;color:var(--mu)}
+.ptr-content{padding:16px;display:flex;flex-direction:column;gap:10px}
+/* Real cards with slight opacity for "refreshing" state */
+.refreshing-card{background:var(--cr);border-radius:14px;padding:14px;opacity:.5;transition:opacity .5s}
+.refreshing-title{font-family:var(--fh);font-size:14px;font-weight:600;color:var(--wb);margin-bottom:4px}
+.refreshing-sub{font-size:11px;color:var(--mu)}
+
+/* ══════════════════════
+   5. ERROR STATE
+══════════════════════ */
+.error-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
+.error-icon{width:72px;height:72px;border-radius:50%;background:rgba(232,89,60,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
+.error-title{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--wb);margin-bottom:8px}
+.error-sub{font-size:13px;color:var(--mu);line-height:1.65;margin-bottom:28px}
+.error-code{font-family:var(--fh);font-size:11px;color:rgba(196,168,130,.6);background:var(--cr);border-radius:8px;padding:6px 12px;margin-bottom:24px;letter-spacing:.04em}
+.btn-retry{padding:13px 28px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3);margin-bottom:10px;width:100%;max-width:240px}
+.btn-offline{padding:11px 28px;border-radius:14px;background:transparent;color:var(--sp);border:1px solid rgba(186,84,28,.2);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;width:100%;max-width:240px}
+/* Connection dot */
+.conn-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu);font-weight:600;margin-top:16px}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--rs);animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+
+<!-- Demo selector -->
+<div class="demo-tabs" style="padding:10px 16px 10px">
+  <button class="dt on" onclick="showView('skeleton',this)">Skeleton</button>
+  <button class="dt" onclick="showView('overlay',this)">Overlay</button>
+  <button class="dt" onclick="showView('inline',this)">Inline</button>
+  <button class="dt" onclick="showView('ptr',this)">Refresh</button>
+  <button class="dt" onclick="showView('error',this)">Lỗi</button>
+</div>
+
+<div class="screen">
+
+  <!-- ══ 1. SKELETON ══ -->
+  <div class="loading-view active" id="view-skeleton">
+    <!-- Skeleton header -->
+    <div class="sk-hero">
+      <div class="sk-hero-date"></div>
+      <div class="sk-hero-title"></div>
+      <div class="sk-hero-sub"></div>
+      <div class="sk-week">
+        <div class="sk-day"></div><div class="sk-day"></div><div class="sk-day"></div>
+        <div class="sk-day"></div><div class="sk-day"></div><div class="sk-day"></div>
+        <div class="sk-day today"></div>
+      </div>
+    </div>
+    <div class="skeleton-screen">
+      <!-- Goals section -->
+      <div>
+        <div class="sk sk-section-head" style="width:90px;height:12px;margin-bottom:12px"></div>
+        <div class="sk-card">
+          <div class="sk-card-top">
+            <div class="sk sk-title" style="width:65%;height:16px"></div>
+            <div class="sk sk-tag"></div>
+          </div>
+          <div class="sk sk-meta" style="width:100px;height:12px"></div>
+          <div class="sk-actions">
+            <div class="sk sk-btn"></div>
+            <div class="sk sk-btn"></div>
+          </div>
+        </div>
+        <div class="sk-card" style="margin-top:8px">
+          <div class="sk-card-top">
+            <div class="sk sk-title" style="width:55%;height:16px"></div>
+            <div class="sk sk-tag"></div>
+          </div>
+          <div class="sk sk-meta" style="width:80px;height:12px"></div>
+          <div class="sk-actions">
+            <div class="sk sk-btn"></div>
+            <div class="sk sk-btn"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Habits section -->
+      <div>
+        <div class="sk sk-section-head" style="width:110px;height:12px;margin-bottom:12px"></div>
+        <div style="background:var(--rw);border:1px solid rgba(186,84,28,.1);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(43,15,4,.06)">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(186,84,28,.07)">
+            <div class="sk" style="width:34px;height:34px;border-radius:10px;flex-shrink:0"></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div class="sk" style="height:14px;width:60%"></div><div class="sk" style="height:11px;width:40%"></div></div>
+            <div class="sk" style="width:38px;height:21px;border-radius:11px"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px">
+            <div class="sk" style="width:34px;height:34px;border-radius:10px;flex-shrink:0"></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div class="sk" style="height:14px;width:70%"></div><div class="sk" style="height:11px;width:45%"></div></div>
+            <div class="sk" style="width:38px;height:21px;border-radius:11px"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Finance section -->
+      <div>
+        <div class="sk sk-section-head" style="width:70px;height:12px;margin-bottom:12px"></div>
+        <div class="sk-fin-grid">
+          <div class="sk-fin-card"><div class="sk sk-fin-label"></div><div class="sk sk-fin-amount"></div><div class="sk sk-fin-bar" style="height:4px"></div></div>
+          <div class="sk-fin-card"><div class="sk sk-fin-label"></div><div class="sk sk-fin-amount"></div><div class="sk sk-fin-bar" style="height:4px"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 2. OVERLAY ══ -->
+  <div class="loading-view" id="view-overlay">
+    <div class="overlay-screen">
+      <div class="page-bg">
+        <div class="dummy-card"><div class="dummy-title">Chạy bộ 20 phút</div><div class="dummy-sub">Health · 6:30 sáng</div></div>
+        <div class="dummy-card"><div class="dummy-title">Đọc 10 trang sách</div><div class="dummy-sub">Study · 7:00 sáng · Đã xong ✓</div></div>
+        <div class="dummy-card"><div class="dummy-title">Học từ vựng 15 phút</div><div class="dummy-sub">Study · 8:00 tối</div></div>
+      </div>
+      <!-- Backdrop overlay -->
+      <div class="overlay-backdrop">
+        <div class="overlay-card">
+          <div class="spinner"></div>
+          <div class="overlay-label" id="overlay-label">Đang lưu...</div>
+          <div class="overlay-sub" id="overlay-sub">Vui lòng không tắt app</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 3. INLINE LIST SKELETON ══ -->
+  <div class="loading-view" id="view-inline">
+    <div class="inline-screen">
+      <div class="inline-header">
+        <div class="sk" style="height:20px;width:120px;border-radius:8px"></div>
+        <div class="sk" style="height:16px;width:60px;border-radius:6px"></div>
+      </div>
+      <div class="list-wrap2">
+        <div class="sk-list-row">
+          <div class="sk sk-avatar"></div>
+          <div class="sk-list-body"><div class="sk sk-line-a" style="width:75%"></div><div class="sk sk-line-b"></div></div>
+          <div class="sk sk-pct"></div>
+        </div>
+        <div class="sk-list-row">
+          <div class="sk sk-avatar"></div>
+          <div class="sk-list-body"><div class="sk sk-line-a" style="width:60%"></div><div class="sk sk-line-b" style="width:50%"></div></div>
+          <div class="sk sk-pct"></div>
+        </div>
+        <div class="sk-list-row">
+          <div class="sk sk-avatar"></div>
+          <div class="sk-list-body"><div class="sk sk-line-a" style="width:80%"></div><div class="sk sk-line-b" style="width:55%"></div></div>
+          <div class="sk sk-pct"></div>
+        </div>
+        <div class="sk-list-row">
+          <div class="sk sk-avatar"></div>
+          <div class="sk-list-body"><div class="sk sk-line-a" style="width:65%"></div><div class="sk sk-line-b" style="width:40%"></div></div>
+          <div class="sk sk-pct"></div>
+        </div>
+        <div class="sk-list-row">
+          <div class="sk sk-avatar"></div>
+          <div class="sk-list-body"><div class="sk sk-line-a" style="width:70%"></div><div class="sk sk-line-b" style="width:48%"></div></div>
+          <div class="sk sk-pct"></div>
+        </div>
+      </div>
+      <!-- Second section -->
+      <div style="margin-top:20px">
+        <div class="sk" style="height:12px;width:80px;border-radius:5px;margin-bottom:12px"></div>
+        <div class="sk-fin-grid">
+          <div class="sk-fin-card"><div class="sk sk-fin-label"></div><div class="sk sk-fin-amount"></div><div class="sk sk-fin-bar" style="height:4px"></div></div>
+          <div class="sk-fin-card"><div class="sk sk-fin-label"></div><div class="sk sk-fin-amount" style="width:60px"></div><div class="sk sk-fin-bar" style="height:4px"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 4. PULL TO REFRESH ══ -->
+  <div class="loading-view" id="view-ptr">
+    <div class="ptr-screen">
+      <!-- Top refresh indicator -->
+      <div class="ptr-indicator">
+        <div class="ptr-spinner"></div>
+        <div class="ptr-label">Đang cập nhật dữ liệu...</div>
+      </div>
+      <!-- Page content blurred/faded -->
+      <div class="ptr-content">
+        <div class="refreshing-card"><div class="refreshing-title">Chạy bộ 20 phút</div><div class="refreshing-sub">Health · 6:30 sáng</div></div>
+        <div class="refreshing-card"><div class="refreshing-title">Đọc 10 trang sách</div><div class="refreshing-sub">Study · Đã xong ✓</div></div>
+        <div class="refreshing-card"><div class="refreshing-title">Học từ vựng 15 phút</div><div class="refreshing-sub">Study · 8:00 tối</div></div>
+        <div class="refreshing-card"><div class="refreshing-title">Tiết kiệm 500k tuần này</div><div class="refreshing-sub">Finance · Hàng tuần</div></div>
+        <div style="display:flex;justify-content:center;margin-top:8px">
+          <div style="display:flex;gap:6px">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--ch);animation:dotBounce .8s .0s ease infinite alternate"></div>
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--ch);animation:dotBounce .8s .15s ease infinite alternate"></div>
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--ch);animation:dotBounce .8s .3s ease infinite alternate"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 5. ERROR ══ -->
+  <div class="loading-view" id="view-error">
+    <div class="error-screen">
+      <div class="error-icon">📡</div>
+      <div class="error-title">Không thể tải dữ liệu</div>
+      <div class="error-sub">Pace không thể kết nối đến máy chủ.<br>Kiểm tra kết nối mạng và thử lại.</div>
+      <div class="error-code">ERR_NETWORK_TIMEOUT · 408</div>
+      <button class="btn-retry" onclick="simulateRetry()">↺ Thử lại</button>
+      <button class="btn-offline" onclick="showView('skeleton',null)">Dùng dữ liệu offline</button>
+      <div class="conn-status">
+        <div class="conn-dot"></div>
+        Không có kết nối
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<style>
+@keyframes dotBounce{from{transform:translateY(0)}to{transform:translateY(-6px);opacity:.5}}
+</style>
+<script>
+function showView(id, btn){
+  document.querySelectorAll('.loading-view').forEach(function(v){v.classList.remove('active')});
+  document.getElementById('view-'+id).classList.add('active');
+  if(btn){
+    document.querySelectorAll('.dt').forEach(function(t){t.classList.remove('on')});
+    btn.classList.add('on');
+  }
+}
+
+// Cycle overlay messages
+var overlayMsgs=[
+  {label:'Đang lưu...',sub:'Vui lòng không tắt app'},
+  {label:'Đang đồng bộ...',sub:'Cập nhật dữ liệu goals'},
+  {label:'Đang tải...',sub:'Lấy dữ liệu mới nhất'},
+  {label:'Gần xong rồi...',sub:'Còn vài giây nữa thôi'},
+];
+var msgIdx=0;
+setInterval(function(){
+  msgIdx=(msgIdx+1)%overlayMsgs.length;
+  var m=overlayMsgs[msgIdx];
+  document.getElementById('overlay-label').textContent=m.label;
+  document.getElementById('overlay-sub').textContent=m.sub;
+},2000);
+
+function simulateRetry(){
+  var btn=document.querySelector('.btn-retry');
+  btn.textContent='↺ Đang thử lại...';
+  btn.disabled=true;
+  btn.style.opacity='.6';
+  setTimeout(function(){
+    showView('skeleton',document.querySelectorAll('.dt')[0]);
+    btn.textContent='↺ Thử lại';
+    btn.disabled=false;
+    btn.style.opacity='1';
+  },1800);
+}
+</script>
+</body>
+</html>

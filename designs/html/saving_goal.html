@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Goal tiết kiệm</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-size:12px;color:rgba(255,246,237,.5)}
+/* Live preview card */
+.preview-card{margin:0 22px;background:var(--wb);border-radius:16px;padding:18px;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(43,15,4,.25)}
+.pc-shine{position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:rgba(255,246,237,.05)}
+.pc-emoji{font-size:28px;margin-bottom:8px}
+.pc-name{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--rw);margin-bottom:3px;min-height:24px}
+.pc-target{font-size:12px;color:rgba(255,246,237,.5);margin-bottom:14px;min-height:16px}
+.pc-bar-wrap{height:6px;background:rgba(255,246,237,.1);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.pc-bar-fill{height:6px;background:linear-gradient(90deg,#6FCF97,#A3D9B1);border-radius:3px;width:0%;transition:width .5s ease}
+.pc-footer{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,246,237,.45);font-weight:600}
+/* BODY */
+.body{background:var(--rw);padding:32px 20px 110px;display:flex;flex-direction:column;gap:18px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+.field-group{display:flex;flex-direction:column;gap:0}
+.field-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.inp{width:100%;border:1.5px solid rgba(186,84,28,.18);border-radius:12px;padding:12px 14px;font-family:var(--fh);font-size:15px;font-weight:600;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--ch)}
+.inp::placeholder{color:var(--mu);font-weight:400;font-size:13px}
+/* Amount input with currency */
+.amt-wrap{position:relative}
+.amt-currency{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:var(--fh);font-size:16px;font-weight:700;color:var(--mu)}
+.amt-inp{padding-left:30px;font-size:22px;font-weight:800;color:var(--wb)}
+/* Quick amounts */
+.quick-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.quick-btn{padding:6px 12px;border-radius:20px;border:1px solid rgba(186,84,28,.18);background:var(--rw);font-family:var(--fb);font-size:12px;font-weight:700;color:var(--sp);cursor:pointer;transition:all .15s}
+.quick-btn:hover,.quick-btn.sel{background:var(--ch);border-color:var(--ch);color:#fff}
+/* Period picker */
+.period-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.period-opt{padding:12px 8px;border-radius:12px;border:1.5px solid rgba(186,84,28,.14);background:var(--rw);text-align:center;cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(43,15,4,.05)}
+.period-opt.sel{border-color:var(--ch);background:rgba(186,84,28,.05);box-shadow:0 0 0 1px var(--ch)}
+.period-icon{font-size:18px;margin-bottom:4px}
+.period-name{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--wb)}
+.period-opt.sel .period-name{color:var(--ch)}
+.period-sub{font-size:10px;color:var(--mu);margin-top:2px}
+/* Contribution auto-calc */
+.contribution-box{background:var(--cr);border-radius:12px;padding:14px 16px}
+.cb-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.cb-label{font-size:12px;font-weight:600;color:var(--sp)}
+.cb-val{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--wb)}
+.cb-sub{font-size:11px;color:var(--mu)}
+/* Emoji picker */
+.emoji-row{display:flex;gap:8px;flex-wrap:wrap}
+.em{width:42px;height:42px;border-radius:10px;background:var(--cr);border:1.5px solid rgba(186,84,28,.12);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all .15s}
+.em.sel{border-color:var(--ch);background:rgba(186,84,28,.08);box-shadow:0 0 0 1px var(--ch)}
+/* CTA */
+.btn-save{width:100%;padding:15px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3)}
+.btn-cancel{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span style="font-family:var(--fb);font-size:12px;font-weight:600;color:rgba(255,246,237,.4)">Goal tiết kiệm mới</span>
+  </div>
+  <div class="hd-title">Thiết lập tiết kiệm</div>
+  <div class="hd-sub">Đặt mục tiêu và Pace sẽ tính giúp bạn cần góp bao nhiêu mỗi kỳ.</div>
+</div>
+
+<!-- Live preview -->
+<div class="preview-card" style="margin-top:0;border-radius:0 0 0 0;border-radius:0">
+  <div class="pc-shine"></div>
+  <div class="pc-emoji" id="prev-emoji">💰</div>
+  <div class="pc-name" id="prev-name">Tên mục tiêu...</div>
+  <div class="pc-target" id="prev-target">Mục tiêu: — · Đến: —</div>
+  <div class="pc-bar-wrap"><div class="pc-bar-fill" id="prev-fill"></div></div>
+  <div class="pc-footer"><span>0 ₫ đã tiết kiệm</span><span id="prev-target-r">Mục tiêu: —</span></div>
+</div>
+
+<div class="body">
+  <!-- Emoji -->
+  <div class="field-group">
+    <div class="field-label">Biểu tượng</div>
+    <div class="emoji-row">
+      <div class="em sel" onclick="pickEm(this,'💰')">💰</div>
+      <div class="em" onclick="pickEm(this,'🏠')">🏠</div>
+      <div class="em" onclick="pickEm(this,'✈️')">✈️</div>
+      <div class="em" onclick="pickEm(this,'🚗')">🚗</div>
+      <div class="em" onclick="pickEm(this,'💻')">💻</div>
+      <div class="em" onclick="pickEm(this,'💍')">💍</div>
+      <div class="em" onclick="pickEm(this,'🎓')">🎓</div>
+      <div class="em" onclick="pickEm(this,'⭐')">⭐</div>
+    </div>
+  </div>
+
+  <!-- Tên -->
+  <div class="field-group">
+    <div class="field-label">Tên mục tiêu</div>
+    <input class="inp" id="sv-name" type="text" placeholder="VD: Mua laptop mới, Đặt cọc nhà, Du lịch..." oninput="updatePreview()">
+  </div>
+
+  <!-- Số tiền -->
+  <div class="field-group">
+    <div class="field-label">Mục tiêu tiết kiệm</div>
+    <div class="amt-wrap">
+      <span class="amt-currency">₫</span>
+      <input class="inp amt-inp" id="sv-target" type="number" placeholder="0" oninput="updatePreview();calcContrib()">
+    </div>
+    <div class="quick-row">
+      <div class="quick-btn" onclick="setTarget(this,5000000)">5tr</div>
+      <div class="quick-btn" onclick="setTarget(this,10000000)">10tr</div>
+      <div class="quick-btn" onclick="setTarget(this,20000000)">20tr</div>
+      <div class="quick-btn" onclick="setTarget(this,50000000)">50tr</div>
+      <div class="quick-btn" onclick="setTarget(this,100000000)">100tr</div>
+    </div>
+  </div>
+
+  <!-- Deadline -->
+  <div class="field-group">
+    <div class="field-label">Deadline</div>
+    <input class="inp" id="sv-date" type="month" value="2026-12" oninput="updatePreview();calcContrib()">
+  </div>
+
+  <!-- Period -->
+  <div class="field-group">
+    <div class="field-label">Góp định kỳ</div>
+    <div class="period-grid">
+      <div class="period-opt sel" id="po-weekly" onclick="setPeriod('weekly')">
+        <div class="period-icon">📅</div>
+        <div class="period-name">Hàng tuần</div>
+        <div class="period-sub">Mỗi thứ Hai</div>
+      </div>
+      <div class="period-opt" id="po-monthly" onclick="setPeriod('monthly')">
+        <div class="period-icon">📆</div>
+        <div class="period-name">Hàng tháng</div>
+        <div class="period-sub">Đầu tháng</div>
+      </div>
+      <div class="period-opt" id="po-manual" onclick="setPeriod('manual')">
+        <div class="period-icon">🤲</div>
+        <div class="period-name">Thủ công</div>
+        <div class="period-sub">Góp khi có</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auto calculation -->
+  <div class="contribution-box" id="contrib-box">
+    <div class="cb-row">
+      <div class="cb-label">Cần góp mỗi tuần</div>
+      <div class="cb-val" id="contrib-val">—</div>
+    </div>
+    <div class="cb-sub" id="contrib-sub">Nhập mục tiêu và deadline để Pace tính tự động</div>
+  </div>
+
+  <button class="btn-save" onclick="location.href='finance.html'">Tạo goal tiết kiệm ✓</button>
+  <button class="btn-cancel" onclick="history.back()">Huỷ</button>
+</div>
+</div>
+<script>
+var curPeriod='weekly';
+function pickEm(el,em){
+  document.querySelectorAll('.em').forEach(function(e){e.classList.remove('sel')});
+  el.classList.add('sel');
+  document.getElementById('prev-emoji').textContent=em;
+}
+function updatePreview(){
+  var n=document.getElementById('sv-name').value.trim();
+  var t=parseInt(document.getElementById('sv-target').value)||0;
+  var d=document.getElementById('sv-date').value;
+  document.getElementById('prev-name').textContent=n||'Tên mục tiêu...';
+  document.getElementById('prev-target-r').textContent=t?'Mục tiêu: '+t.toLocaleString('vi-VN')+'₫':'Mục tiêu: —';
+  document.getElementById('prev-target').textContent='Mục tiêu: '+(t?t.toLocaleString('vi-VN')+'₫':'—')+' · Đến: '+(d||'—');
+}
+function setTarget(el,val){
+  document.querySelectorAll('.quick-btn').forEach(function(b){b.classList.remove('sel')});
+  el.classList.add('sel');
+  document.getElementById('sv-target').value=val;
+  updatePreview();calcContrib();
+}
+function setPeriod(p){
+  curPeriod=p;
+  ['weekly','monthly','manual'].forEach(function(k){document.getElementById('po-'+k).classList.toggle('sel',k===p)});
+  calcContrib();
+}
+function calcContrib(){
+  var t=parseInt(document.getElementById('sv-target').value)||0;
+  var d=document.getElementById('sv-date').value;
+  var box=document.getElementById('contrib-box');
+  var val=document.getElementById('contrib-val');
+  var sub=document.getElementById('contrib-sub');
+  if(!t||!d){val.textContent='—';sub.textContent='Nhập mục tiêu và deadline để Pace tính tự động';return;}
+  var now=new Date();var end=new Date(d+'-01');
+  var months=(end.getFullYear()-now.getFullYear())*12+(end.getMonth()-now.getMonth());
+  if(months<=0){val.textContent='Đã quá hạn';return;}
+  if(curPeriod==='weekly'){
+    var weeks=months*4.3;
+    var perWeek=Math.ceil(t/weeks);
+    val.textContent=perWeek.toLocaleString('vi-VN')+'₫';
+    sub.textContent='Góp '+perWeek.toLocaleString('vi-VN')+'₫ mỗi tuần trong '+months+' tháng tới';
+  } else if(curPeriod==='monthly'){
+    var perMonth=Math.ceil(t/months);
+    val.textContent=perMonth.toLocaleString('vi-VN')+'₫';
+    sub.textContent='Góp '+perMonth.toLocaleString('vi-VN')+'₫ mỗi tháng trong '+months+' tháng tới';
+  } else {
+    val.textContent='Tuỳ bạn';
+    sub.textContent='Bạn tự quyết định mỗi lần góp bao nhiêu';
+  }
+}
+</script>
+</body>
+</html>

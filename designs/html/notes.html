@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Ghi chú</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:18px 22px 40px;position:relative}
+
+.hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw)}
+.hd-add{width:36px;height:36px;border-radius:50%;background:var(--ch);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(186,84,28,.35)}
+.hd-add svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round}
+/* Search */
+.search-wrap{position:relative;margin-bottom:0;z-index:1}
+.search-inp{width:100%;background:rgba(255,246,237,.1);border:1px solid rgba(255,246,237,.18);border-radius:12px;padding:10px 14px 10px 38px;font-family:var(--fb);font-size:13px;color:var(--rw);outline:none;transition:border-color .2s}
+.search-inp:focus{border-color:rgba(255,246,237,.45)}
+.search-inp::placeholder{color:rgba(255,246,237,.3)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%)}
+.search-icon svg{width:14px;height:14px;fill:none;stroke:rgba(255,246,237,.4);stroke-width:2;stroke-linecap:round}
+/* Filter tabs */
+.filter-wrap{display:flex;gap:6px;overflow-x:auto;padding:36px 20px 0;padding-bottom:0}
+.filter-wrap::-webkit-scrollbar{display:none}
+.ftab{padding:6px 14px;border-radius:20px;border:1px solid rgba(186,84,28,.18);background:var(--rw);font-family:var(--fb);font-size:12px;font-weight:600;color:var(--sp);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.ftab.sel{background:var(--ch);border-color:var(--ch);color:#fff}
+/* NOTES GRID */
+.notes-grid{padding:12px 20px 110px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.note-card{border-radius:14px;padding:14px;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(43,15,4,.07)}
+.note-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(43,15,4,.14)}
+.nc-tag{display:inline-flex;align-items:center;gap:4px;border-radius:10px;padding:2px 7px;font-size:9px;font-weight:700;margin-bottom:8px}
+.nc-title{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb);line-height:1.35;margin-bottom:5px}
+.nc-preview{font-size:11px;color:var(--sp);line-height:1.55;opacity:.75;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.nc-date{font-size:9px;font-weight:600;color:var(--mu);margin-top:8px}
+/* Card color variants */
+.nc-yellow{background:#FFFBEB}
+.nc-green{background:#F0FAF4}
+.nc-purple{background:#F3F0FF}
+.nc-blue{background:#EFF6FF}
+.nc-pink{background:#FFF0F5}
+.nc-default{background:var(--cr)}
+/* Full-width note */
+.note-card.full{grid-column:span 2}
+/* Empty state */
+.empty-state{grid-column:span 2;text-align:center;padding:40px 20px}
+.es-icon{font-size:40px;margin-bottom:12px;opacity:.4}
+.es-title{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--mu);margin-bottom:6px}
+.es-sub{font-size:12px;color:var(--mu);opacity:.7}
+/* Tab bar */
+.tab-bar{position:sticky;bottom:0;background:var(--rw);border-top:1px solid rgba(186,84,28,.1);display:flex;justify-content:space-around;align-items:center;padding:12px 8px 22px;box-shadow:0 -4px 12px rgba(43,15,4,.06)}
+.ti{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:2.0;stroke-linecap:round;stroke-linejoin:round}
+.ti.a .tic svg{stroke:var(--ch)}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(186,84,28,.38)}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-row">
+    <div><div class="hd-title">Ghi chú</div></div>
+    <button class="hd-add" onclick="location.href='note_edit.html'">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div class="search-wrap">
+    <div class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+    <input class="search-inp" type="text" placeholder="Tìm kiếm ghi chú...">
+  </div>
+</div>
+
+<!-- Filter tabs -->
+<div class="filter-wrap">
+  <div class="ftab sel" onclick="filterNotes(this,'all')">Tất cả</div>
+  <div class="ftab" onclick="filterNotes(this,'goal')">🎯 Goal</div>
+  <div class="ftab" onclick="filterNotes(this,'habit')">🔄 Thói quen</div>
+  <div class="ftab" onclick="filterNotes(this,'finance')">💰 Tài chính</div>
+  <div class="ftab" onclick="filterNotes(this,'personal')">🌱 Cá nhân</div>
+</div>
+
+<!-- Notes grid -->
+<div class="notes-grid">
+  <div class="note-card nc-yellow" onclick="location.href='note_edit.html'">
+    <div class="nc-tag" style="background:#FEF9C3;color:#854D0E">🎯 Goal</div>
+    <div class="nc-title">Kế hoạch học tiếng Anh tháng 6</div>
+    <div class="nc-preview">Tuần 1-2: tập trung từ vựng IELTS. Tuần 3-4: luyện nghe podcast mỗi sáng 15 phút.</div>
+    <div class="nc-date">20/06/2026</div>
+  </div>
+
+  <div class="note-card nc-green" onclick="location.href='note_edit.html'">
+    <div class="nc-tag" style="background:#DCFCE7;color:#166534">🔄 Thói quen</div>
+    <div class="nc-title">Lý do muốn ngủ sớm hơn</div>
+    <div class="nc-preview">Buổi sáng có thêm giờ chạy bộ trước khi đi làm.</div>
+    <div class="nc-date">18/06/2026</div>
+  </div>
+
+  <div class="note-card nc-default full" onclick="location.href='note_edit.html'">
+    <div class="nc-tag" style="background:#FFF3E0;color:#7A4000">💰 Tài chính</div>
+    <div class="nc-title">Ghi nhớ cuối tháng — thanh toán hóa đơn</div>
+    <div class="nc-preview">Điện: 350k · Nước: 120k · Internet: 200k · Thuê nhà: 4.5tr — chuyển trước ngày 28 hàng tháng.</div>
+    <div class="nc-date">15/06/2026</div>
+  </div>
+
+  <div class="note-card nc-purple" onclick="location.href='note_edit.html'">
+    <div class="nc-tag" style="background:#F3E8FF;color:#6B21A8">🌱 Cá nhân</div>
+    <div class="nc-title">Cuốn sách muốn đọc tiếp</div>
+    <div class="nc-preview">Atomic Habits · Deep Work · The Design of Everyday Things</div>
+    <div class="nc-date">12/06/2026</div>
+  </div>
+
+  <div class="note-card nc-blue" onclick="location.href='note_edit.html'">
+    <div class="nc-tag" style="background:#DBEAFE;color:#1E40AF">🎯 Goal</div>
+    <div class="nc-title">Resources học UI/UX</div>
+    <div class="nc-preview">Figma community, Awwwards, Refactoring UI...</div>
+    <div class="nc-date">08/06/2026</div>
+  </div>
+
+  <div class="note-card nc-pink" onclick="location.href='note_edit.html'">
+    <div class="nc-tag" style="background:#FCE7F3;color:#9D174D">🌱 Cá nhân</div>
+    <div class="nc-title">Nhắc nhở: gọi điện cho ba</div>
+    <div class="nc-preview">Cuối tuần này, trước 8 giờ tối.</div>
+    <div class="nc-date">05/06/2026</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+  <div class="ti a" onclick="location.href='more.html'"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
+</div>
+</div>
+<script>
+function filterNotes(el,tag){
+  document.querySelectorAll('.ftab').forEach(function(f){f.classList.remove('sel')});
+  el.classList.add('sel');
+}
+</script>
+</body>
+</html>

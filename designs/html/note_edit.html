@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Viết ghi chú</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative;display:flex;flex-direction:column}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp);flex-shrink:0}
+/* TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid rgba(186,84,28,.1);flex-shrink:0}
+.back-btn{width:34px;height:34px;border-radius:50%;background:var(--cr);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:var(--sp);stroke-width:2.2;stroke-linecap:round}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.auto-save{font-size:10px;font-weight:600;color:var(--mu);padding:4px 8px}
+.btn-del-note{width:32px;height:32px;border-radius:50%;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);font-size:14px}
+.btn-save-note{padding:7px 16px;border-radius:20px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(186,84,28,.3)}
+/* TAG ROW */
+.tag-row{display:flex;gap:7px;padding:10px 20px;border-bottom:1px solid rgba(186,84,28,.08);overflow-x:auto;flex-shrink:0}
+.tag-row::-webkit-scrollbar{display:none}
+.tag-chip{padding:5px 12px;border-radius:20px;border:1px solid rgba(186,84,28,.18);background:var(--rw);font-family:var(--fb);font-size:11px;font-weight:600;color:var(--sp);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tag-chip.sel{background:var(--ch);border-color:var(--ch);color:#fff}
+/* COLOR BAR */
+.color-bar{display:flex;gap:8px;align-items:center;padding:10px 20px;border-bottom:1px solid rgba(186,84,28,.08);flex-shrink:0}
+.color-bar-label{font-size:10px;font-weight:600;color:var(--mu);margin-right:4px}
+.color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;transition:transform .15s;border:2px solid transparent}
+.color-dot.sel{transform:scale(1.25);border-color:var(--ch)}
+/* EDITOR */
+.editor-wrap{flex:1;display:flex;flex-direction:column;padding:16px 20px 20px;min-height:400px}
+.note-title-inp{width:100%;border:none;background:transparent;font-family:var(--fh);font-size:20px;font-weight:700;color:var(--wb);outline:none;margin-bottom:10px;line-height:1.3}
+.note-title-inp::placeholder{color:rgba(196,168,130,.5)}
+.note-date{font-size:10px;font-weight:600;color:var(--mu);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.note-date svg{width:11px;height:11px;fill:none;stroke:var(--mu);stroke-width:1.5}
+.note-body{flex:1;width:100%;border:none;background:transparent;font-family:var(--fb);font-size:14px;color:var(--sp);outline:none;resize:none;line-height:1.75;min-height:300px}
+.note-body::placeholder{color:rgba(196,168,130,.45);font-size:13px}
+/* Link to Goal/Habit/Dream */
+.link-section{border-top:1px solid rgba(186,84,28,.08);padding:12px 0 0;margin-top:8px;flex-shrink:0}
+.link-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.linked-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--cr);border-radius:10px;margin-bottom:6px}
+.li-icon{font-size:14px}
+.li-name{font-size:12px;font-weight:600;color:var(--sp);flex:1}
+.li-remove{font-size:12px;color:var(--mu);cursor:pointer;background:none;border:none;padding:2px}
+.add-link-btn{display:flex;align-items:center;gap:6px;font-family:var(--fb);font-size:12px;font-weight:600;color:var(--ch);background:none;border:none;cursor:pointer;padding:4px 0}
+.add-link-btn svg{width:13px;height:13px;fill:none;stroke:var(--ch);stroke-width:2;stroke-linecap:round}
+/* Char count */
+.char-count{font-size:10px;font-weight:600;color:var(--mu);text-align:right;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+
+<!-- Top bar -->
+<div class="topbar">
+  <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+  <div class="topbar-actions">
+    <div class="auto-save" id="save-status">✓ Đã lưu tự động</div>
+    <button class="btn-del-note" title="Xoá ghi chú">🗑</button>
+    <button class="btn-save-note" onclick="saveNote()">Lưu</button>
+  </div>
+</div>
+
+<!-- Tag selection -->
+<div class="tag-row">
+  <div class="tag-chip" onclick="selTag(this)">📌 Không gắn</div>
+  <div class="tag-chip sel" onclick="selTag(this)">🎯 Goal</div>
+  <div class="tag-chip" onclick="selTag(this)">🔄 Thói quen</div>
+  <div class="tag-chip" onclick="selTag(this)">💰 Tài chính</div>
+  <div class="tag-chip" onclick="selTag(this)">🌱 Cá nhân</div>
+</div>
+
+<!-- Color picker -->
+<div class="color-bar">
+  <div class="color-bar-label">Màu:</div>
+  <div class="color-dot sel" onclick="setColor(this,'#FFFBEB')" style="background:#FEF9C3" title="Vàng"></div>
+  <div class="color-dot" onclick="setColor(this,'#F0FAF4')" style="background:#DCFCE7" title="Xanh lá"></div>
+  <div class="color-dot" onclick="setColor(this,'#F3F0FF')" style="background:#EDE9FE" title="Tím"></div>
+  <div class="color-dot" onclick="setColor(this,'#EFF6FF')" style="background:#DBEAFE" title="Xanh dương"></div>
+  <div class="color-dot" onclick="setColor(this,'#FFF0F5')" style="background:#FCE7F3" title="Hồng"></div>
+  <div class="color-dot" onclick="setColor(this,null)" style="background:var(--cr)" title="Mặc định"></div>
+</div>
+
+<!-- Editor -->
+<div class="editor-wrap" id="editor-wrap">
+  <input class="note-title-inp" type="text" placeholder="Tiêu đề..." value="Kế hoạch học tiếng Anh tháng 6">
+  <div class="note-date">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    20/06/2026 · 21:30
+  </div>
+  <textarea class="note-body" id="note-body" placeholder="Bắt đầu viết..." oninput="autoSave(this)">Tuần 1-2: tập trung từ vựng IELTS Academic.
+Tuần 3-4: luyện nghe podcast tiếng Anh mỗi sáng 15 phút trước khi đi làm.
+
+Apps dùng:
+- Anki cho flashcard từ vựng
+- BBC Learning English podcast
+- Elsa Speak cho phát âm
+
+Mục tiêu: đạt B2 trước tháng 12/2026.</textarea>
+  <div class="char-count" id="char-count">217 ký tự</div>
+
+  <!-- Linked items -->
+  <div class="link-section">
+    <div class="link-label">Gắn với</div>
+    <div class="linked-item">
+      <div class="li-icon">🎯</div>
+      <div class="li-name">Học từ vựng tiếng Anh 15 phút</div>
+      <button class="li-remove">✕</button>
+    </div>
+    <button class="add-link-btn">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Gắn thêm Goal / Habit / Ước mơ
+    </button>
+  </div>
+</div>
+</div>
+<script>
+var saveTimer=null;
+function autoSave(el){
+  document.getElementById('char-count').textContent=el.value.length+' ký tự';
+  document.getElementById('save-status').textContent='Đang lưu...';
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(function(){
+    document.getElementById('save-status').textContent='✓ Đã lưu tự động';
+  },1000);
+}
+function selTag(el){
+  document.querySelectorAll('.tag-chip').forEach(function(t){t.classList.remove('sel')});
+  el.classList.add('sel');
+}
+function setColor(el,color){
+  document.querySelectorAll('.color-dot').forEach(function(d){d.classList.remove('sel')});
+  el.classList.add('sel');
+  document.getElementById('editor-wrap').style.background=color||'';
+}
+function saveNote(){
+  document.getElementById('save-status').textContent='✓ Đã lưu';
+  setTimeout(function(){history.back()},300);
+}
+</script>
+</body>
+</html>

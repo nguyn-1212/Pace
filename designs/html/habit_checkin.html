@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Check-in Thói quen</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.hd-date{font-size:11px;font-weight:700;color:rgba(255,246,237,.4);letter-spacing:.05em}
+.hd-title{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-size:12px;color:rgba(255,246,237,.5)}
+/* Progress dots */
+.prog-row{display:flex;align-items:center;gap:5px;margin-top:12px;position:relative;z-index:1}
+.prog-dot{width:8px;height:8px;border-radius:50%}
+.prog-dot.ok{background:#6FCF97}
+.prog-dot.no{background:var(--rs);opacity:.7}
+.prog-dot.todo{background:rgba(255,246,237,.2)}
+.prog-label{font-size:11px;font-weight:600;color:rgba(255,246,237,.4);margin-left:6px}
+/* BODY */
+.body{background:var(--rw);padding:32px 20px 40px;display:flex;flex-direction:column;gap:14px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+/* Habit check card */
+.habit-check{background:var(--rw);border:1px solid rgba(186,84,28,.12);border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(43,15,4,.08);transition:border-color .2s}
+.habit-check.checked-ok{border-color:var(--gd);background:#F7FBF4}
+.habit-check.checked-fail{border-color:var(--rs);background:#FFF5F5}
+.hc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.hc-left{display:flex;align-items:center;gap:10px}
+.hc-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hc-name{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--wb);line-height:1.3}
+.hc-type{font-size:10px;font-weight:700;color:var(--mu);margin-top:2px}
+.hc-streak{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--mu)}
+.hc-streak.fire{color:var(--ch)}
+/* Check buttons */
+.hc-btns{display:flex;gap:8px}
+.hc-btn-ok{flex:1;padding:12px 0;border-radius:12px;background:var(--gd);color:#fff;border:none;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 2px 8px rgba(74,124,89,.25)}
+.hc-btn-fail{flex:1;padding:12px 0;border-radius:12px;background:transparent;color:var(--rs);border:1.5px solid rgba(232,89,60,.3);font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.hc-btn-ok:hover{opacity:.88}
+.hc-btn-fail:hover{background:rgba(232,89,60,.06)}
+/* Status shown after check */
+.hc-result{display:none;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;font-family:var(--fh);font-size:13px;font-weight:700}
+.hc-result.ok{display:flex;background:#EAF3DE;color:var(--gd)}
+.hc-result.fail{display:flex;background:#FCE8E8;color:var(--rs)}
+/* Note field */
+.hc-note{width:100%;border:none;border-top:1px solid rgba(186,84,28,.08);padding:10px 0 0;font-family:var(--fb);font-size:12px;color:var(--sp);background:transparent;outline:none;margin-top:10px;resize:none}
+.hc-note::placeholder{color:var(--mu)}
+/* Divider -->
+.divider{height:0.5px;background:rgba(186,84,28,.1);margin:4px 0}
+/* Summary at bottom */
+.summary-card{background:var(--wb);border-radius:14px;padding:16px 18px;box-shadow:0 3px 12px rgba(43,15,4,.2)}
+.sc-title{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,246,237,.4);margin-bottom:12px}
+.sc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sc-row:last-child{margin-bottom:0}
+.sc-label{font-size:12px;font-weight:600;color:rgba(255,246,237,.55)}
+.sc-val{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--rw)}
+.btn-done-all{width:100%;padding:14px;border-radius:14px;background:var(--rw);color:var(--wb);border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;box-shadow:0 3px 12px rgba(43,15,4,.25)}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="hd-date">22/06/2026 · Cuối ngày</div>
+  </div>
+  <div class="hd-title">Check-in thói quen</div>
+  <div class="hd-sub">Hôm nay bạn làm thế nào? Chỉ cần trả lời thật.</div>
+  <div class="prog-row">
+    <div class="prog-dot ok"></div>
+    <div class="prog-dot todo"></div>
+    <div class="prog-dot todo"></div>
+    <div class="prog-dot todo"></div>
+    <div class="prog-label" id="prog-label">0 / 4 đã check-in</div>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- Habit 1: checked ok -->
+  <div class="habit-check checked-ok" id="h1">
+    <div class="hc-top">
+      <div class="hc-left">
+        <div class="hc-icon" style="background:#FFF3E0">🌙</div>
+        <div><div class="hc-name">Ngủ trước 12h đêm</div><div class="hc-type">Cần bỏ · Hàng ngày</div></div>
+      </div>
+      <div class="hc-streak fire">🔥 17</div>
+    </div>
+    <div class="hc-result ok">✓ Tốt lắm! Ngày xanh rồi.</div>
+  </div>
+
+  <!-- Habit 2 -->
+  <div class="habit-check" id="h2">
+    <div class="hc-top">
+      <div class="hc-left">
+        <div class="hc-icon" style="background:#FCE8E8">📱</div>
+        <div><div class="hc-name">MXH dưới 2h/ngày</div><div class="hc-type">Cần bỏ · Hàng ngày</div></div>
+      </div>
+      <div class="hc-streak">12 ngày</div>
+    </div>
+    <div class="hc-btns">
+      <button class="hc-btn-ok" onclick="doCheck('h2','ok','✓ Giỏi! Hôm nay kiểm soát tốt.')">✓ Dưới 2h</button>
+      <button class="hc-btn-fail" onclick="doCheck('h2','fail','Ghi nhận rồi. Mai lại thử nha 💪')">✗ Vượt quá</button>
+    </div>
+    <textarea class="hc-note" rows="1" placeholder="Ghi chú (tuỳ chọn)..."></textarea>
+  </div>
+
+  <!-- Habit 3 -->
+  <div class="habit-check" id="h3">
+    <div class="hc-top">
+      <div class="hc-left">
+        <div class="hc-icon" style="background:#E6F1FB">💧</div>
+        <div><div class="hc-name">Uống đủ 2L nước</div><div class="hc-type">Cần làm · Hàng ngày</div></div>
+      </div>
+      <div class="hc-streak fire">🔥 6</div>
+    </div>
+    <div class="hc-btns">
+      <button class="hc-btn-ok" onclick="doCheck('h3','ok','✓ Xong! Cơ thể cảm ơn bạn 💧')">✓ Đủ rồi</button>
+      <button class="hc-btn-fail" onclick="doCheck('h3','fail','Không sao! Nhớ uống nhiều hơn ngày mai.')">✗ Chưa đủ</button>
+    </div>
+    <textarea class="hc-note" rows="1" placeholder="Ghi chú (tuỳ chọn)..."></textarea>
+  </div>
+
+  <!-- Habit 4 -->
+  <div class="habit-check" id="h4">
+    <div class="hc-top">
+      <div class="hc-left">
+        <div class="hc-icon" style="background:#E8E7FC">📖</div>
+        <div><div class="hc-name">Đọc trước khi ngủ</div><div class="hc-type">Cần làm · Hàng ngày</div></div>
+      </div>
+      <div class="hc-streak">3 ngày</div>
+    </div>
+    <div class="hc-btns">
+      <button class="hc-btn-ok" onclick="doCheck('h4','ok','✓ Tuyệt! Một trang sách một ngày 📚')">✓ Đọc rồi</button>
+      <button class="hc-btn-fail" onclick="doCheck('h4','fail','Hôm nay bỏ cũng được. Nghỉ ngơi quan trọng.')">✗ Chưa đọc</button>
+    </div>
+    <textarea class="hc-note" rows="1" placeholder="Ghi chú (tuỳ chọn)..."></textarea>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-card" id="summary-card" style="display:none">
+    <div class="sc-title">✦ Tổng kết hôm nay</div>
+    <div class="sc-row"><span class="sc-label">Hoàn thành</span><span class="sc-val" id="sc-ok">0 / 4</span></div>
+    <div class="sc-row"><span class="sc-label">Streak tốt nhất</span><span class="sc-val">🔥 17 ngày</span></div>
+    <div class="sc-row"><span class="sc-label">Tháng này</span><span class="sc-val">86%</span></div>
+    <button class="btn-done-all" onclick="location.href='habits.html'">Xong — về Thói quen →</button>
+  </div>
+
+</div>
+</div>
+<script>
+var checked=1; // h1 pre-checked
+var okCount=1;
+var total=4;
+function updateProg(){
+  var dots=document.querySelectorAll('.prog-dot');
+  dots.forEach(function(d,i){
+    d.className='prog-dot '+(i<checked?'ok':'todo');
+  });
+  document.getElementById('prog-label').textContent=checked+' / '+total+' đã check-in';
+  document.getElementById('sc-ok').textContent=okCount+' / '+total;
+  if(checked===total){
+    document.getElementById('summary-card').style.display='block';
+    document.getElementById('summary-card').scrollIntoView({behavior:'smooth',block:'end'});
+  }
+}
+function doCheck(id,type,msg){
+  var card=document.getElementById(id);
+  card.classList.add(type==='ok'?'checked-ok':'checked-fail');
+  card.querySelector('.hc-btns').style.display='none';
+  var res=card.querySelector('.hc-result');
+  res.textContent=msg;
+  res.className='hc-result '+type;
+  checked++;
+  if(type==='ok') okCount++;
+  updateProg();
+}
+</script>
+</body>
+</html>

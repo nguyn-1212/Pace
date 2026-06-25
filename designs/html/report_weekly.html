@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Tổng kết tuần</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22)}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--mu)}
+.hd{background:var(--wb);padding:18px 22px 36px}
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.week-nav{display:flex;align-items:center;gap:10px}
+.wn-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.wn-btn svg{width:12px;height:12px;fill:none;stroke:rgba(255,246,237,.6);stroke-width:2;stroke-linecap:round}
+.wn-label{font-family:var(--fb);font-size:12px;font-weight:700;color:rgba(255,246,237,.6)}
+.hd-title{font-family:var(--fh);font-size:24px;font-weight:700;color:var(--rw);margin-bottom:5px}
+.hd-sub{font-family:var(--fb);font-size:12px;color:var(--mu)}
+/* Score ring */
+.score-wrap{display:flex;align-items:center;gap:16px;margin-top:14px}
+.score-ring{position:relative;width:72px;height:72px;flex-shrink:0}
+.score-ring svg{width:72px;height:72px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,246,237,.1);stroke-width:5}
+.ring-fill{fill:none;stroke:#6FCF97;stroke-width:5;stroke-linecap:round;stroke-dasharray:188;stroke-dashoffset:47;transition:stroke-dashoffset .8s ease}
+.score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-val{font-family:var(--fh);font-size:20px;font-weight:800;color:var(--rw);line-height:1}
+.score-pct{font-family:var(--fb);font-size:9px;font-weight:700;color:var(--mu)}
+.score-info{flex:1}
+.score-title{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--rw);margin-bottom:4px}
+.score-desc{font-family:var(--fb);font-size:12px;color:var(--mu);line-height:1.5}
+/* SCREEN */
+.screen{background:var(--rw);border-radius:24px 24px 0 0;padding:24px 20px 110px;display:flex;flex-direction:column;gap:20px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sl{font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)}
+.sa{font-family:var(--fb);font-size:12px;color:var(--ch);font-weight:700;cursor:pointer}
+/* Bar chart */
+.bar-chart{background:var(--cr);border-radius:14px;padding:14px 16px}
+.bc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.bc-title{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb)}
+.bc-legend{display:flex;gap:10px}
+.bcl{display:flex;align-items:center;gap:4px;font-family:var(--fb);font-size:10px;font-weight:600;color:var(--mu)}
+.bcl-dot{width:8px;height:8px;border-radius:2px}
+.bars{display:flex;gap:8px;align-items:flex-end;height:80px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bar-track{width:100%;flex:1;position:relative;display:flex;align-items:flex-end;gap:2px}
+.bar-fill{border-radius:4px 4px 0 0;transition:height .6s ease;min-height:3px}
+.bar-label{font-family:var(--fb);font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase}
+/* Highlights / Điểm sáng */
+.highlights{display:flex;flex-direction:column;gap:8px}
+.hl-card{background:var(--cr);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.hl-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.hl-body{flex:1}
+.hl-name{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb);margin-bottom:2px}
+.hl-sub{font-family:var(--fb);font-size:11px;color:var(--mu)}
+.hl-val{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--ch)}
+/* Goals completed list */
+.goal-completed-list{display:flex;flex-direction:column;gap:7px}
+.gc-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--cr);border-radius:12px}
+.gc-check{width:22px;height:22px;border-radius:50%;background:#EAF3DE;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:var(--gd)}
+.gc-name{font-family:var(--fh);font-size:13px;font-weight:600;color:var(--wb);flex:1}
+.gc-rate{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--mu)}
+/* Compare prev week */
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cmp-card{background:var(--cr);border-radius:12px;padding:12px 14px}
+.cmp-label{font-family:var(--fb);font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.cmp-val{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--wb);margin-bottom:2px}
+.cmp-diff{font-family:var(--fb);font-size:11px;font-weight:700}
+.diff-up{color:var(--gd)}.diff-dn{color:var(--rs)}.diff-eq{color:var(--mu)}
+/* Tab bar */
+.tab-bar{position:sticky;bottom:0;background:var(--rw);border-top:1px solid rgba(186,84,28,.1);display:flex;justify-content:space-around;align-items:center;padding:12px 8px 22px;box-shadow:0 -4px 12px rgba(43,15,4,.06)}
+.ti{display:flex;flex-direction:column;align-items:center;cursor:pointer;flex:1}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(186,84,28,.38)}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="week-nav">
+      <button class="wn-btn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <span class="wn-label">16–22 tháng 6</span>
+      <button class="wn-btn"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
+    <a href="report_monthly.html" style="font-family:var(--fb);font-size:11px;font-weight:700;color:var(--mu);text-decoration:none">Tháng →</a>
+  </div>
+  <div class="hd-title">Tổng kết tuần</div>
+  <div class="hd-sub">Tuần 25 · 16 – 22 tháng 6, 2026</div>
+  <div class="score-wrap">
+    <div class="score-ring">
+      <svg viewBox="0 0 72 72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fill" cx="36" cy="36" r="30"/></svg>
+      <div class="score-num"><span class="score-val">75</span><span class="score-pct">/ 100</span></div>
+    </div>
+    <div class="score-info">
+      <div class="score-title">Tuần khá tốt 👍</div>
+      <div class="score-desc">Bạn hoàn thành 75% goals và duy trì 2 thói quen liên tiếp cả tuần.</div>
+    </div>
+  </div>
+</div>
+
+<div class="screen">
+
+  <!-- Bar chart: goals theo ngày -->
+  <div>
+    <div class="sh"><span class="sl">Goals hoàn thành</span></div>
+    <div class="bar-chart">
+      <div class="bc-head">
+        <div class="bc-title">Goals theo ngày</div>
+        <div class="bc-legend">
+          <div class="bcl"><div class="bcl-dot" style="background:var(--ch)"></div>Xong</div>
+          <div class="bcl"><div class="bcl-dot" style="background:rgba(186,84,28,.2)"></div>Bỏ lỡ</div>
+        </div>
+      </div>
+      <div class="bars">
+        <div class="bar-col">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:50%;height:80%;background:var(--ch)"></div>
+            <div class="bar-fill" style="width:50%;height:20%;background:rgba(186,84,28,.2)"></div>
+          </div>
+          <span class="bar-label">T2</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:50%;height:67%;background:var(--ch)"></div>
+            <div class="bar-fill" style="width:50%;height:33%;background:rgba(186,84,28,.2)"></div>
+          </div>
+          <span class="bar-label">T3</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:50%;height:100%;background:var(--ch)"></div>
+            <div class="bar-fill" style="width:50%;height:0%;background:rgba(186,84,28,.2)"></div>
+          </div>
+          <span class="bar-label">T4</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:50%;height:100%;background:var(--ch)"></div>
+            <div class="bar-fill" style="width:50%;height:0%;background:rgba(186,84,28,.2)"></div>
+          </div>
+          <span class="bar-label">T5</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:50%;height:33%;background:var(--ch)"></div>
+            <div class="bar-fill" style="width:50%;height:67%;background:rgba(186,84,28,.2)"></div>
+          </div>
+          <span class="bar-label">T6</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:50%;height:80%;background:var(--ch)"></div>
+            <div class="bar-fill" style="width:50%;height:20%;background:rgba(186,84,28,.2)"></div>
+          </div>
+          <span class="bar-label">T7</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:50%;height:50%;background:var(--ch);opacity:.4"></div>
+          </div>
+          <span class="bar-label" style="color:var(--ch)">CN</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- So sánh tuần trước -->
+  <div>
+    <div class="sh"><span class="sl">So với tuần trước</span></div>
+    <div class="compare-row">
+      <div class="cmp-card"><div class="cmp-label">Goals xong</div><div class="cmp-val">75%</div><div class="cmp-diff diff-up">↑ +8% so với tuần 24</div></div>
+      <div class="cmp-card"><div class="cmp-label">Thói quen</div><div class="cmp-val">86%</div><div class="cmp-diff diff-up">↑ +5%</div></div>
+      <div class="cmp-card"><div class="cmp-label">Chi tiêu</div><div class="cmp-val">1.2tr</div><div class="cmp-diff diff-dn">↑ +200k chi nhiều hơn</div></div>
+      <div class="cmp-card"><div class="cmp-label">Streak dài nhất</div><div class="cmp-val">21 ngày</div><div class="cmp-diff diff-eq">= Không đổi</div></div>
+    </div>
+  </div>
+
+  <!-- Điểm sáng -->
+  <div>
+    <div class="sh"><span class="sl">Điểm sáng tuần này</span></div>
+    <div class="highlights">
+      <div class="hl-card"><div class="hl-icon" style="background:#EAF3DE">🔥</div><div class="hl-body"><div class="hl-name">Streak dài nhất</div><div class="hl-sub">Đọc sách — 21 ngày liên tiếp</div></div><div class="hl-val">21 ngày</div></div>
+      <div class="hl-card"><div class="hl-icon" style="background:#FFF3E0">💪</div><div class="hl-body"><div class="hl-name">Goal xuất sắc nhất</div><div class="hl-sub">Học từ vựng — 7/7 ngày</div></div><div class="hl-val">100%</div></div>
+      <div class="hl-card"><div class="hl-icon" style="background:#E8E7FC">💰</div><div class="hl-body"><div class="hl-name">Tiết kiệm tuần này</div><div class="hl-sub">Đạt mục tiêu hàng tuần</div></div><div class="hl-val">500k ✓</div></div>
+    </div>
+  </div>
+
+  <!-- Goals hoàn thành -->
+  <div>
+    <div class="sh"><span class="sl">Goals đã xong</span><span class="sa">15 / 20</span></div>
+    <div class="goal-completed-list">
+      <div class="gc-row"><div class="gc-check">✓</div><div class="gc-name">Đọc 10 trang sách</div><div class="gc-rate">7/7</div></div>
+      <div class="gc-row"><div class="gc-check">✓</div><div class="gc-name">Học từ vựng tiếng Anh</div><div class="gc-rate">7/7</div></div>
+      <div class="gc-row"><div class="gc-check">✓</div><div class="gc-name">Uống đủ 2L nước</div><div class="gc-rate">6/7</div></div>
+      <div class="gc-row"><div class="gc-check" style="background:#FCE8E8;color:var(--rs)">✗</div><div class="gc-name" style="color:var(--mu)">Chạy bộ 20 phút</div><div class="gc-rate" style="color:var(--rs)">3/7</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+  <div class="ti" onclick="location.href='more.html'"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
+</div>
+</div>
+</body>
+</html>

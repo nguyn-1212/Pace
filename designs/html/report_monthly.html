@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Tổng kết tháng</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--rs:#E8593C;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22)}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--mu)}
+.hd{background:var(--wb);padding:18px 22px 36px}
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.mon-nav{display:flex;align-items:center;gap:10px}
+.mn-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.mn-btn svg{width:12px;height:12px;fill:none;stroke:rgba(255,246,237,.6);stroke-width:2;stroke-linecap:round}
+.mn-label{font-family:var(--fb);font-size:12px;font-weight:700;color:rgba(255,246,237,.6)}
+.hd-title{font-family:var(--fh);font-size:24px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-family:var(--fb);font-size:12px;color:var(--mu);margin-bottom:14px}
+/* Month score */
+.month-score{display:flex;align-items:center;gap:14px}
+.ms-ring{position:relative;width:72px;height:72px;flex-shrink:0}
+.ms-ring svg{width:72px;height:72px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,246,237,.1);stroke-width:5}
+.ring-fill{fill:none;stroke:#6FCF97;stroke-width:5;stroke-linecap:round;stroke-dasharray:188;stroke-dashoffset:56}
+.ms-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ms-val{font-family:var(--fh);font-size:20px;font-weight:800;color:var(--rw);line-height:1}
+.ms-pct{font-family:var(--fb);font-size:9px;font-weight:700;color:var(--mu)}
+.ms-info{flex:1}
+.ms-title{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--rw);margin-bottom:4px}
+.ms-desc{font-family:var(--fb);font-size:12px;color:var(--mu);line-height:1.5}
+/* Screen */
+.screen{background:var(--rw);border-radius:24px 24px 0 0;padding:24px 20px 110px;display:flex;flex-direction:column;gap:20px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sl{font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)}
+.sa{font-family:var(--fb);font-size:12px;color:var(--ch);font-weight:700;cursor:pointer}
+/* Line chart */
+.line-chart-wrap{background:var(--cr);border-radius:14px;padding:14px 16px}
+.lc-head{display:flex;justify-content:space-between;margin-bottom:12px}
+.lc-title{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb)}
+.lc-val{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--gd)}
+.line-chart{height:80px;position:relative;overflow:hidden}
+.line-chart svg{width:100%;height:100%;overflow:visible}
+.lc-week-labels{display:flex;justify-content:space-between;margin-top:6px;padding:0 4px}
+.lc-wl{font-family:var(--fb);font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase}
+/* Stats grid 3x2 */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat-card{background:var(--cr);border-radius:12px;padding:12px;text-align:center}
+.stat-val{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--wb)}
+.stat-val.gd{color:var(--gd)}.stat-val.ch{color:var(--ch)}
+.stat-label{font-family:var(--fb);font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);margin-top:3px}
+/* Month vs Month comparison */
+.mom-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mom-card{background:var(--cr);border-radius:12px;padding:12px 14px}
+.mom-label{font-family:var(--fb);font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.mom-val{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--wb);margin-bottom:3px}
+.mom-diff{font-family:var(--fb);font-size:11px;font-weight:700}
+.diff-up{color:var(--gd)}.diff-dn{color:var(--rs)}.diff-eq{color:var(--mu)}
+/* Best streak */
+.streak-card{background:linear-gradient(135deg,var(--wb) 0%,var(--sp) 100%);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+.streak-card::before{content:'🔥';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:48px;opacity:.15}
+.streak-label{font-family:var(--fb);font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+.streak-val{font-family:var(--fh);font-size:36px;font-weight:800;color:var(--rw);line-height:1;margin-bottom:4px}
+.streak-name{font-family:var(--fh);font-size:14px;font-weight:600;color:rgba(255,246,237,.65)}
+.streak-sub{font-family:var(--fb);font-size:11px;color:var(--mu);margin-top:4px}
+/* Finance month */
+.fin-month{background:var(--cr);border-radius:14px;padding:14px 16px}
+.fm-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.fm-title{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--wb)}
+.fm-total{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--ch)}
+.fm-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.fm-row:last-child{margin-bottom:0}
+.fm-icon{font-size:14px;flex-shrink:0}
+.fm-body{flex:1}
+.fm-name{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--wb);display:flex;justify-content:space-between}
+.fm-name span{color:var(--mu);font-weight:500;font-size:11px;font-family:var(--fb)}
+.fm-bar{height:4px;border-radius:2px;background:rgba(186,84,28,.1);overflow:hidden;margin-top:4px}
+.fm-fill{height:4px;border-radius:2px}
+/* Tab bar */
+.tab-bar{position:sticky;bottom:0;background:var(--rw);border-top:1px solid rgba(186,84,28,.1);display:flex;justify-content:space-around;align-items:center;padding:12px 8px 22px;box-shadow:0 -4px 12px rgba(43,15,4,.06)}
+.ti{display:flex;flex-direction:column;align-items:center;cursor:pointer;flex:1}
+.tic svg{width:22px;height:22px;fill:none;stroke:#C4A882;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.td-btn{width:22px;height:22px;border-radius:50%;background:var(--ch);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(186,84,28,.38)}
+.td-btn svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="mon-nav">
+      <button class="mn-btn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <span class="mn-label">Tháng 6, 2026</span>
+      <button class="mn-btn"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
+    <a href="report_weekly.html" style="font-family:var(--fb);font-size:11px;font-weight:700;color:var(--mu);text-decoration:none">← Tuần</a>
+  </div>
+  <div class="hd-title">Tổng kết tháng</div>
+  <div class="hd-sub">Tháng 6 · 1 – 22 tháng 6, 2026</div>
+  <div class="month-score">
+    <div class="ms-ring">
+      <svg viewBox="0 0 72 72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fill" cx="36" cy="36" r="30"/></svg>
+      <div class="ms-num"><span class="ms-val">70</span><span class="ms-pct">/ 100</span></div>
+    </div>
+    <div class="ms-info">
+      <div class="ms-title">Tháng ổn định 💪</div>
+      <div class="ms-desc">Đã hoàn thành 70% goals, streak tốt nhất 21 ngày. Có thể cải thiện thêm phần tài chính.</div>
+    </div>
+  </div>
+</div>
+
+<div class="screen">
+
+  <!-- Line chart: xu hướng 4 tuần -->
+  <div>
+    <div class="sh"><span class="sl">Xu hướng 4 tuần</span></div>
+    <div class="line-chart-wrap">
+      <div class="lc-head"><span class="lc-title">% Goals hoàn thành / tuần</span><span class="lc-val">↑ Tăng dần</span></div>
+      <div class="line-chart">
+        <svg viewBox="0 0 320 80" preserveAspectRatio="none">
+          <!-- Grid lines -->
+          <line x1="0" y1="20" x2="320" y2="20" stroke="rgba(186,84,28,.08)" stroke-width="1"/>
+          <line x1="0" y1="40" x2="320" y2="40" stroke="rgba(186,84,28,.08)" stroke-width="1"/>
+          <line x1="0" y1="60" x2="320" y2="60" stroke="rgba(186,84,28,.08)" stroke-width="1"/>
+          <!-- Habits line (green) -->
+          <polyline points="20,52 100,40 190,28 280,18" fill="none" stroke="#6FCF97" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Goals line (chestnut) -->
+          <polyline points="20,60 100,52 190,36 280,24" fill="none" stroke="#BA541C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Area under goals -->
+          <polygon points="20,60 100,52 190,36 280,24 280,80 20,80" fill="rgba(186,84,28,.06)"/>
+          <!-- Dots -->
+          <circle cx="20" cy="60" r="4" fill="#BA541C"/><circle cx="100" cy="52" r="4" fill="#BA541C"/>
+          <circle cx="190" cy="36" r="4" fill="#BA541C"/><circle cx="280" cy="24" r="4" fill="#BA541C"/>
+          <circle cx="20" cy="52" r="4" fill="#6FCF97"/><circle cx="100" cy="40" r="4" fill="#6FCF97"/>
+          <circle cx="190" cy="28" r="4" fill="#6FCF97"/><circle cx="280" cy="18" r="4" fill="#6FCF97"/>
+          <!-- Value labels -->
+          <text x="14" y="78" font-size="9" fill="#C4A882" font-family="Nunito">58%</text>
+          <text x="94" y="70" font-size="9" fill="#C4A882" font-family="Nunito">67%</text>
+          <text x="184" y="54" font-size="9" fill="#C4A882" font-family="Nunito">75%</text>
+          <text x="274" y="42" font-size="9" fill="#BA541C" font-family="Nunito" font-weight="700">80%</text>
+        </svg>
+      </div>
+      <div class="lc-week-labels"><span class="lc-wl">T23</span><span class="lc-wl">T24</span><span class="lc-wl">T25</span><span class="lc-wl">T26</span></div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:4px;font-family:var(--fb);font-size:10px;font-weight:700;color:var(--mu)"><div style="width:16px;height:3px;border-radius:2px;background:var(--ch)"></div>Goals</div>
+        <div style="display:flex;align-items:center;gap:4px;font-family:var(--fb);font-size:10px;font-weight:700;color:var(--mu)"><div style="width:16px;height:3px;border-radius:2px;background:#6FCF97"></div>Thói quen</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats 6 ô -->
+  <div>
+    <div class="sh"><span class="sl">Tổng quan tháng</span></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-val gd">70%</div><div class="stat-label">Goals xong</div></div>
+      <div class="stat-card"><div class="stat-val">21</div><div class="stat-label">Streak dài nhất</div></div>
+      <div class="stat-card"><div class="stat-val ch">5.4tr</div><div class="stat-label">Chi tiêu</div></div>
+      <div class="stat-card"><div class="stat-val">82%</div><div class="stat-label">Thói quen</div></div>
+      <div class="stat-card"><div class="stat-val gd">3.2tr</div><div class="stat-label">Tiết kiệm</div></div>
+      <div class="stat-card"><div class="stat-val">12</div><div class="stat-label">Goals tổng</div></div>
+    </div>
+  </div>
+
+  <!-- Best streak -->
+  <div class="streak-card">
+    <div class="streak-label">🔥 Streak tốt nhất tháng</div>
+    <div class="streak-val">21</div>
+    <div class="streak-name">Đọc 10 trang sách</div>
+    <div class="streak-sub">Từ 01/06 → 21/06 · Không bỏ ngày nào</div>
+  </div>
+
+  <!-- So sánh tháng trước -->
+  <div>
+    <div class="sh"><span class="sl">So với tháng 5</span></div>
+    <div class="mom-row">
+      <div class="mom-card"><div class="mom-label">Goals</div><div class="mom-val">70%</div><div class="mom-diff diff-up">↑ +12% tháng này</div></div>
+      <div class="mom-card"><div class="mom-label">Chi tiêu</div><div class="mom-val">5.4tr</div><div class="mom-diff diff-dn">↑ +400k nhiều hơn</div></div>
+      <div class="mom-card"><div class="mom-label">Tiết kiệm</div><div class="mom-val">3.2tr</div><div class="mom-diff diff-up">↑ +500k tốt hơn</div></div>
+      <div class="mom-card"><div class="mom-label">Thói quen</div><div class="mom-val">82%</div><div class="mom-diff diff-up">↑ +7%</div></div>
+    </div>
+  </div>
+
+  <!-- Finance tháng -->
+  <div>
+    <div class="sh"><span class="sl">Chi tiêu theo danh mục</span><span class="sa">5.4tr tổng</span></div>
+    <div class="fin-month">
+      <div class="fm-row"><span class="fm-icon">🍜</span><div class="fm-body"><div class="fm-name">Ăn uống <span>2.1tr / 3tr</span></div><div class="fm-bar"><div class="fm-fill" style="width:70%;background:var(--ch)"></div></div></div></div>
+      <div class="fm-row"><span class="fm-icon">🚗</span><div class="fm-body"><div class="fm-name">Đi lại <span>850k / 1.5tr</span></div><div class="fm-bar"><div class="fm-fill" style="width:57%;background:#7EB8E8"></div></div></div></div>
+      <div class="fm-row"><span class="fm-icon">📚</span><div class="fm-body"><div class="fm-name">Học tập <span>1.2tr / 1.5tr</span></div><div class="fm-bar"><div class="fm-fill" style="width:80%;background:#AFA9EC"></div></div></div></div>
+      <div class="fm-row"><span class="fm-icon">🎮</span><div class="fm-body"><div class="fm-name">Giải trí <span>650k / 1tr</span></div><div class="fm-bar"><div class="fm-fill" style="width:65%;background:#A3D9B1"></div></div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="tab-bar">
+  <div class="ti" onclick="location.href='home.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div></div>
+  <div class="ti" onclick="location.href='goals.html'"><div class="tic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+  <div class="ti"><div class="td-btn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+  <div class="ti" onclick="location.href='habits.html'"><div class="tic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+  <div class="ti" onclick="location.href='more.html'"><div class="tic"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
+</div>
+</div>
+</body>
+</html>

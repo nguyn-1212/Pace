@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Ngôn ngữ</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{width:375px;background:var(--wb);border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22)}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--mu)}
+.hd{background:var(--wb);padding:14px 22px 36px}
+.hd-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.hd-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:3px}
+.hd-sub{font-family:var(--fb);font-size:12px;color:var(--mu)}
+.screen{background:var(--rw);border-radius:24px 24px 0 0;padding:24px 20px 60px;display:flex;flex-direction:column;gap:20px}
+.sl{font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:12px}
+/* Language option */
+.lang-list{background:var(--cr);border-radius:14px;overflow:hidden}
+.lang-row{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid rgba(186,84,28,.07);cursor:pointer;transition:background .15s}
+.lang-row:last-child{border-bottom:none}
+.lang-row:hover{background:#EDE3D4}
+.lang-row.sel{background:rgba(186,84,28,.06)}
+.lang-flag{font-size:24px;flex-shrink:0}
+.lang-info{flex:1}
+.lang-name{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--wb)}
+.lang-native{font-family:var(--fb);font-size:12px;color:var(--mu);margin-top:2px}
+.radio{width:20px;height:20px;border-radius:50%;border:2px solid rgba(186,84,28,.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.radio.on{background:var(--ch);border-color:var(--ch)}
+.radio.on::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+/* Region date format */
+.region-list{background:var(--cr);border-radius:14px;overflow:hidden}
+.region-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(186,84,28,.07);cursor:pointer}
+.region-row:last-child{border-bottom:none}
+.rr-left{flex:1}
+.rr-name{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--wb)}
+.rr-sub{font-family:var(--fb);font-size:11px;color:var(--mu);margin-top:2px}
+.rr-arrow{color:var(--mu);font-size:16px}
+/* Preview box */
+.preview-box{background:var(--cr);border-radius:12px;padding:14px 16px;border-left:3px solid var(--ch)}
+.pb-label{font-family:var(--fb);font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.pb-text{font-family:var(--fh);font-size:14px;font-weight:600;color:var(--wb);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div><div class="hd-title">Ngôn ngữ</div></div>
+  </div>
+  <div class="hd-sub">Chọn ngôn ngữ hiển thị cho toàn bộ app.</div>
+</div>
+<div class="screen">
+
+  <div>
+    <div class="sl">Chọn ngôn ngữ</div>
+    <div class="lang-list">
+      <div class="lang-row sel" onclick="selLang(this,'vi')">
+        <div class="lang-flag">🇻🇳</div>
+        <div class="lang-info"><div class="lang-name">Tiếng Việt</div><div class="lang-native">Vietnamese</div></div>
+        <div class="radio on" id="r-vi"></div>
+      </div>
+      <div class="lang-row" onclick="selLang(this,'en')">
+        <div class="lang-flag">🇺🇸</div>
+        <div class="lang-info"><div class="lang-name">English</div><div class="lang-native">English (US)</div></div>
+        <div class="radio" id="r-en"></div>
+      </div>
+      <div class="lang-row" onclick="selLang(this,'ja')">
+        <div class="lang-flag">🇯🇵</div>
+        <div class="lang-info"><div class="lang-name">Nhật</div><div class="lang-native">日本語</div></div>
+        <div class="radio" id="r-ja"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview in selected language -->
+  <div class="preview-box">
+    <div class="pb-label">Xem trước</div>
+    <div class="pb-text" id="lang-preview">Chào buổi sáng · Bạn đã bắt đầu hôm nay.<br>Ngày mai là một cơ hội mới.</div>
+  </div>
+
+  <!-- Region -->
+  <div>
+    <div class="sl">Vùng & định dạng</div>
+    <div class="region-list">
+      <div class="region-row"><div class="rr-left"><div class="rr-name">Định dạng ngày</div><div class="rr-sub">22/06/2026 (ngày/tháng/năm)</div></div><span class="rr-arrow">›</span></div>
+      <div class="region-row"><div class="rr-left"><div class="rr-name">Đơn vị tiền tệ</div><div class="rr-sub">VND · ₫</div></div><span class="rr-arrow">›</span></div>
+      <div class="region-row"><div class="rr-left"><div class="rr-name">Ngày bắt đầu tuần</div><div class="rr-sub">Thứ Hai</div></div><span class="rr-arrow">›</span></div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+var previews={
+  vi:'Chào buổi sáng · Bạn đã bắt đầu hôm nay.\nNgày mai là một cơ hội mới.',
+  en:'Good morning · You\'ve started today.\nTomorrow is a new opportunity.',
+  ja:'おはようございます · 今日は始めました。\n明日は新しいチャンスです。'
+};
+function selLang(el,code){
+  document.querySelectorAll('.lang-row').forEach(function(r){r.classList.remove('sel')});
+  document.querySelectorAll('.radio').forEach(function(r){r.classList.remove('on');r.innerHTML=''});
+  el.classList.add('sel');
+  var r=document.getElementById('r-'+code);r.classList.add('on');
+  document.getElementById('lang-preview').innerHTML=previews[code].replace('\n','<br>');
+}
+</script>
+</body>
+</html>

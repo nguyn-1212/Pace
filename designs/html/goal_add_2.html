@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Thêm Goal · Bước 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+.step-dots{display:flex;gap:6px}
+.sdot{width:6px;height:6px;border-radius:50%;background:rgba(255,246,237,.2)}
+.sdot.active{background:var(--rw);width:18px;border-radius:3px}
+.sdot.done{background:rgba(74,124,89,.7)}
+.skip-btn{font-family:var(--fb);font-size:12px;font-weight:600;color:rgba(255,246,237,.45);cursor:pointer;background:none;border:none}
+.step-indicator{font-family:var(--fb);font-size:11px;font-weight:700;color:rgba(255,246,237,.45);letter-spacing:.05em;margin-bottom:4px}
+/* Goal preview pill */
+.goal-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,246,237,.1);border:1px solid rgba(255,246,237,.18);border-radius:20px;padding:5px 12px;margin-bottom:10px}
+.goal-pill-text{font-family:var(--fh);font-size:12px;font-weight:600;color:rgba(255,246,237,.8)}
+.goal-pill-edit{font-size:10px;color:rgba(255,246,237,.4);cursor:pointer}
+.hd-question{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);line-height:1.3;margin-bottom:4px}
+.hd-sub{font-size:12px;color:rgba(255,246,237,.5)}
+/* BODY */
+.body{background:var(--rw);padding:32px 20px 110px;display:flex;flex-direction:column;gap:18px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+/* Section */
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:10px}
+/* Frequency options */
+.freq-list{display:flex;flex-direction:column;gap:8px}
+.freq-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:14px;border:1.5px solid rgba(186,84,28,.14);background:var(--rw);cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(43,15,4,.05)}
+.freq-item.sel{border-color:var(--ch);background:rgba(186,84,28,.05);box-shadow:0 0 0 1px var(--ch),0 2px 8px rgba(186,84,28,.12)}
+.freq-left{flex:1}
+.freq-name{font-family:var(--fh);font-size:14px;font-weight:600;color:var(--wb)}
+.freq-item.sel .freq-name{color:var(--ch)}
+.freq-desc{font-size:11px;color:var(--mu);margin-top:2px}
+.radio{width:20px;height:20px;border-radius:50%;border:2px solid rgba(186,84,28,.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.radio.on{background:var(--ch);border-color:var(--ch)}
+.radio.on::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+/* Day picker (for custom) */
+.day-picker{display:none;flex-wrap:wrap;gap:7px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(186,84,28,.1)}
+.day-picker.show{display:flex}
+.day-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(186,84,28,.18);background:var(--rw);font-family:var(--fh);font-size:11px;font-weight:700;color:var(--mu);cursor:pointer;transition:all .15s}
+.day-btn.sel{background:var(--ch);border-color:var(--ch);color:#fff}
+/* Time picker */
+.time-section{display:flex;flex-direction:column;gap:0}
+.time-chips{display:flex;flex-wrap:wrap;gap:7px}
+.time-chip{padding:8px 14px;border-radius:20px;border:1.5px solid rgba(186,84,28,.15);background:var(--rw);font-family:var(--fh);font-size:13px;font-weight:600;color:var(--sp);cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(43,15,4,.05)}
+.time-chip:hover,.time-chip.sel{background:var(--ch);border-color:var(--ch);color:#fff;box-shadow:0 2px 8px rgba(186,84,28,.25)}
+/* Custom time input */
+.custom-time-wrap{display:none;align-items:center;gap:8px;margin-top:10px}
+.custom-time-wrap.show{display:flex}
+.time-inp{width:80px;border:1.5px solid rgba(186,84,28,.2);border-radius:10px;padding:10px 12px;font-family:var(--fh);font-size:16px;font-weight:700;color:var(--wb);text-align:center;outline:none;background:var(--rw)}
+.time-inp:focus{border-color:var(--ch)}
+.time-sep{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--mu)}
+/* CTA */
+.btn-main{width:100%;padding:15px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3)}
+.btn-skip{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="location.href='goal_add_1.html'"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="step-dots">
+      <div class="sdot done"></div>
+      <div class="sdot active"></div>
+      <div class="sdot"></div>
+    </div>
+    <button class="skip-btn" onclick="location.href='goal_add_3.html'">Bỏ qua</button>
+  </div>
+  <div class="goal-pill">
+    <span class="goal-pill-text" id="goal-preview">Đọc 10 trang sách</span>
+    <span class="goal-pill-edit" onclick="location.href='goal_add_1.html'">✎ sửa</span>
+  </div>
+  <div class="step-indicator">Bước 2 / 3</div>
+  <div class="hd-question">Lặp lại &<br>nhắc nhở khi nào?</div>
+  <div class="hd-sub">Gộp tần suất và giờ nhắc vào 1 bước.</div>
+</div>
+
+<div class="body">
+  <!-- FREQUENCY -->
+  <div>
+    <div class="sec-label">Lặp lại</div>
+    <div class="freq-list">
+      <div class="freq-item sel" id="fr-daily" onclick="pickFreq('daily')">
+        <div class="freq-left">
+          <div class="freq-name">Hàng ngày</div>
+          <div class="freq-desc">Lặp mỗi ngày, cùng 1 giờ</div>
+        </div>
+        <div class="radio on" id="rd"></div>
+      </div>
+      <div class="freq-item" id="fr-custom" onclick="pickFreq('custom')">
+        <div class="freq-left">
+          <div class="freq-name">Chọn thứ cụ thể</div>
+          <div class="freq-desc">T2, T4, T6 hoặc bất kỳ ngày nào</div>
+        </div>
+        <div class="radio" id="rc"></div>
+        <!-- Day picker inline -->
+        <div class="day-picker" id="day-picker">
+          <div class="day-btn sel" onclick="toggleDay(this)">T2</div>
+          <div class="day-btn" onclick="toggleDay(this)">T3</div>
+          <div class="day-btn sel" onclick="toggleDay(this)">T4</div>
+          <div class="day-btn" onclick="toggleDay(this)">T5</div>
+          <div class="day-btn sel" onclick="toggleDay(this)">T6</div>
+          <div class="day-btn" onclick="toggleDay(this)">T7</div>
+          <div class="day-btn" onclick="toggleDay(this)">CN</div>
+        </div>
+      </div>
+      <div class="freq-item" id="fr-once" onclick="pickFreq('once')">
+        <div class="freq-left">
+          <div class="freq-name">Một lần duy nhất</div>
+          <div class="freq-desc">Chỉ nhắc 1 lần, không lặp lại</div>
+        </div>
+        <div class="radio" id="ro"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIME -->
+  <div class="time-section">
+    <div class="sec-label">Nhắc lúc mấy giờ?</div>
+    <div class="time-chips">
+      <div class="time-chip" onclick="pickTime(this,'05:30')">5:30</div>
+      <div class="time-chip" onclick="pickTime(this,'06:00')">6:00</div>
+      <div class="time-chip" onclick="pickTime(this,'07:00')">7:00</div>
+      <div class="time-chip sel" onclick="pickTime(this,'08:00')">8:00</div>
+      <div class="time-chip" onclick="pickTime(this,'12:00')">12:00</div>
+      <div class="time-chip" onclick="pickTime(this,'18:00')">18:00</div>
+      <div class="time-chip" onclick="pickTime(this,'20:00')">20:00</div>
+      <div class="time-chip" onclick="pickTime(this,'21:00')">21:00</div>
+      <div class="time-chip" onclick="toggleCustomTime(this)">Tuỳ chỉnh...</div>
+    </div>
+    <div class="custom-time-wrap" id="custom-time">
+      <input class="time-inp" type="number" min="0" max="23" placeholder="HH" id="t-h" maxlength="2">
+      <span class="time-sep">:</span>
+      <input class="time-inp" type="number" min="0" max="59" placeholder="MM" id="t-m" maxlength="2">
+    </div>
+  </div>
+
+  <button class="btn-main" onclick="location.href='goal_add_3.html'">Tiếp theo →</button>
+  <button class="btn-skip" onclick="location.href='goal_add_success.html'">Bỏ qua — thêm goal ngay</button>
+</div>
+</div>
+<script>
+// Load goal name from session
+var saved = sessionStorage.getItem('pace_new_goal');
+if(saved) document.getElementById('goal-preview').textContent = saved;
+
+function pickFreq(f){
+  ['daily','custom','once'].forEach(function(k){
+    document.getElementById('fr-'+k).classList.remove('sel');
+    document.getElementById('r'+k[0]).classList.remove('on');
+    document.getElementById('r'+k[0]).innerHTML='';
+  });
+  document.getElementById('fr-'+f).classList.add('sel');
+  var r=document.getElementById('r'+f[0]);
+  r.classList.add('on');
+  r.innerHTML='';
+  // Show/hide day picker
+  var dp=document.getElementById('day-picker');
+  if(f==='custom'){dp.classList.add('show');document.getElementById('fr-custom').appendChild(dp);}
+  else dp.classList.remove('show');
+}
+function toggleDay(el){el.classList.toggle('sel')}
+function pickTime(el,t){
+  document.querySelectorAll('.time-chip').forEach(function(c){c.classList.remove('sel')});
+  el.classList.add('sel');
+  document.getElementById('custom-time').classList.remove('show');
+}
+function toggleCustomTime(el){
+  document.querySelectorAll('.time-chip').forEach(function(c){c.classList.remove('sel')});
+  el.classList.add('sel');
+  document.getElementById('custom-time').classList.toggle('show');
+}
+</script>
+</body>
+</html>

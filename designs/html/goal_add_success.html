@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Goal đã được thêm</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fd:'Dancing Script',cursive;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:var(--fb);
+  background:linear-gradient(168deg,#C8884A 0%,#8C4A1E 30%,#4A1E06 60%,#2B0F04 100%);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+/* Grid texture */
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,246,237,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,246,237,.022) 1px,transparent 1px);background-size:36px 36px;pointer-events:none}
+/* Blobs */
+.blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+/* Shimmer */
+.shimmer{position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,220,160,.06) 50%,transparent 65%);animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* CONTENT */
+.content{
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:40px 32px;
+  max-width:375px;width:100%;
+  animation:fadeUp .6s ease forwards;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Sparkle icon */
+.sparkle{
+  font-size:48px;margin-bottom:20px;
+  animation:sparkle .6s cubic-bezier(.34,1.56,.64,1) .2s both;
+}
+@keyframes sparkle{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* App name small */
+.app-small{
+  font-family:var(--fd);font-size:20px;font-weight:600;
+  color:rgba(255,246,237,.4);margin-bottom:8px;
+  letter-spacing:.5px;
+}
+
+/* "That's a Great start." */
+.great-title{
+  font-family:var(--fh);font-size:36px;font-weight:800;
+  color:var(--rw);line-height:1.2;margin-bottom:6px;
+  font-style:italic;
+}
+.great-title em{font-style:normal;font-weight:500;opacity:.75;font-size:30px}
+
+/* Goal name */
+.goal-name-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,246,237,.1);border:1px solid rgba(255,246,237,.2);
+  border-radius:12px;padding:10px 16px;margin:16px 0;
+  font-family:var(--fh);font-size:14px;font-weight:600;color:var(--rw);
+}
+
+/* Sub text */
+.sub-text{font-size:14px;font-weight:500;color:rgba(255,246,237,.55);line-height:1.7;margin-bottom:28px}
+
+/* No-guilt note */
+.ng-note{
+  background:rgba(255,246,237,.07);border:1px solid rgba(255,246,237,.12);
+  border-radius:12px;padding:12px 16px;margin-bottom:28px;text-align:left;width:100%;
+}
+.ng-title{font-family:var(--fh);font-size:11px;font-weight:700;color:rgba(255,246,237,.5);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
+.ng-body{font-size:12px;font-weight:500;color:rgba(255,246,237,.5);line-height:1.6}
+
+/* What next */
+.next-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,246,237,.35);margin-bottom:12px}
+.next-options{display:flex;flex-direction:column;gap:8px;width:100%;margin-bottom:10px}
+.next-btn{
+  width:100%;padding:14px;border-radius:14px;
+  font-family:var(--fh);font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;gap:10px;
+}
+.next-btn-primary{background:var(--rw);color:var(--wb);border:none;box-shadow:0 3px 12px rgba(43,15,4,.3)}
+.next-btn-secondary{background:rgba(255,246,237,.1);color:var(--rw);border:1px solid rgba(255,246,237,.2)}
+.next-btn-ghost{background:transparent;color:rgba(255,246,237,.45);border:none;font-size:13px;font-family:var(--fb)}
+.next-btn-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.next-btn-primary .next-btn-icon{background:rgba(43,15,4,.08)}
+.next-btn-secondary .next-btn-icon{background:rgba(255,246,237,.1)}
+.next-btn-text{text-align:left;flex:1}
+.next-btn-sub{font-size:10px;font-weight:500;opacity:.6;margin-top:1px;font-family:var(--fb)}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="blob" style="width:300px;height:300px;background:#C8884A;top:-80px;right:-80px;opacity:.22"></div>
+<div class="blob" style="width:220px;height:220px;background:#BA541C;bottom:100px;left:-60px;opacity:.18"></div>
+<div class="shimmer"></div>
+
+<div class="content">
+  <div class="sparkle">✦</div>
+  <div class="app-small">Pace to Base</div>
+  <div class="great-title">That's a<br><em>Great start.</em></div>
+
+  <div class="goal-name-badge">
+    <span>🎯</span>
+    <span id="goal-name">Đọc 10 trang sách</span>
+  </div>
+
+  <div class="sub-text">Goal đã được thêm vào danh sách.<br>Pace sẽ nhắc bạn đúng giờ — nhẹ nhàng thôi.</div>
+
+  <div class="ng-note">
+    <div class="ng-title">✦ Nhớ nhé</div>
+    <div class="ng-body">Nếu hôm nay bận, bạn luôn có thể bấm "Dời lại" — không mất gì cả. Không có streak nào bị phá vỡ ở đây.</div>
+  </div>
+
+  <div class="next-label">Tiếp theo bạn muốn</div>
+  <div class="next-options">
+    <button class="next-btn next-btn-primary" onclick="location.href='home.html'">
+      <div class="next-btn-icon">🏠</div>
+      <div class="next-btn-text">
+        Về Home
+        <div class="next-btn-sub">Xem goal vừa thêm trên màn chính</div>
+      </div>
+    </button>
+    <button class="next-btn next-btn-secondary" onclick="location.href='goal_add_1.html'">
+      <div class="next-btn-icon">➕</div>
+      <div class="next-btn-text">
+        Thêm goal khác
+        <div class="next-btn-sub">Tiếp tục thêm goal mới</div>
+      </div>
+    </button>
+    <button class="next-btn next-btn-ghost" onclick="location.href='goals.html'">Xem tất cả goals →</button>
+  </div>
+</div>
+
+<script>
+var saved=sessionStorage.getItem('pace_new_goal');
+if(saved) document.getElementById('goal-name').textContent=saved;
+</script>
+</body>
+</html>

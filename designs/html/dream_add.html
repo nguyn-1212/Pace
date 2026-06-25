@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pace — Thêm Ước mơ</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ch:#BA541C;--wb:#2B0F04;--sp:#6A3C16;--rw:#FFF6ED;--cr:#F5EDE0;--mu:#C4A882;--gd:#4A7C59;--fh:'Plus Jakarta Sans',sans-serif;--fb:'Nunito',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--cr);min-height:100vh;display:flex;justify-content:center;padding:32px 16px 48px}
+.phone{background:var(--wb);width:375px;border-radius:44px;overflow:hidden;border:1.5px solid rgba(186,84,28,.15);box-shadow:0 24px 60px rgba(43,15,4,.22);position:relative}
+.sb{display:flex;justify-content:space-between;padding:14px 24px 6px;font-size:11px;font-weight:600;color:var(--sp)}
+.hd{background:var(--wb);padding:14px 22px 40px;position:relative}
+
+.hd-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn svg{width:15px;height:15px;fill:none;stroke:rgba(255,246,237,.7);stroke-width:2.2;stroke-linecap:round}
+/* Live preview */
+.preview{border-radius:16px;padding:18px 18px 16px;margin:0 22px 22px;transition:background .3s;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(43,15,4,.2)}
+.pv-shine{position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.07)}
+.pv-star{position:absolute;bottom:12px;right:16px;font-size:28px;opacity:.1}
+.pv-name{font-family:var(--fh);font-size:17px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:6px;min-height:22px}
+.pv-desc{font-size:12px;color:rgba(255,255,255,.55);min-height:16px;margin-bottom:12px}
+.pv-bar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.pv-fill{height:4px;background:rgba(255,255,255,.6);border-radius:2px;width:0%}
+.body{background:var(--rw);padding:32px 20px 110px;display:flex;flex-direction:column;gap:18px;border-radius:24px 24px 0 0;position:relative;z-index:2;box-shadow:0 -3px 16px rgba(43,15,4,.10);}
+.fl{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+/* Textarea */
+.ta{width:100%;border:1.5px solid rgba(186,84,28,.18);border-radius:12px;padding:12px 14px;font-family:var(--fh);font-size:15px;font-weight:600;color:var(--wb);background:var(--rw);outline:none;resize:none;transition:border-color .2s;line-height:1.5}
+.ta:focus{border-color:var(--ch)}
+.ta::placeholder{color:var(--mu);font-weight:400;font-size:13px}
+.inp{width:100%;border:1.5px solid rgba(186,84,28,.18);border-radius:12px;padding:12px 14px;font-family:var(--fb);font-size:14px;color:var(--wb);background:var(--rw);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--ch)}
+.inp::placeholder{color:var(--mu)}
+/* Suggestions */
+.suggest-wrap{display:flex;flex-direction:column;gap:7px}
+.suggest-item{padding:12px 14px;border-radius:12px;border:1px solid rgba(186,84,28,.14);background:var(--rw);cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(43,15,4,.05)}
+.suggest-item:hover{border-color:var(--ch);background:rgba(186,84,28,.04)}
+.si-text{font-family:var(--fh);font-size:13px;font-weight:600;color:var(--wb)}
+.si-sub{font-size:11px;color:var(--mu);margin-top:2px}
+/* Area grid */
+.area-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.area-opt{padding:12px 8px;border-radius:12px;border:1.5px solid rgba(186,84,28,.12);background:var(--rw);text-align:center;cursor:pointer;transition:all .15s}
+.area-opt.sel{border-color:var(--ch);background:rgba(186,84,28,.05)}
+.ao-icon{font-size:20px;margin-bottom:4px}
+.ao-name{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--wb)}
+.area-opt.sel .ao-name{color:var(--ch)}
+/* Color picker */
+.color-row{display:flex;gap:10px}
+.csw{width:36px;height:36px;border-radius:50%;cursor:pointer;transition:transform .15s,box-shadow .15s;border:2px solid transparent}
+.csw.sel{transform:scale(1.2)}
+/* Timeline */
+.timeline-chips{display:flex;flex-wrap:wrap;gap:7px}
+.tc{padding:8px 14px;border-radius:20px;border:1.5px solid rgba(186,84,28,.15);background:var(--rw);font-family:var(--fb);font-size:12px;font-weight:600;color:var(--sp);cursor:pointer;transition:all .15s}
+.tc.sel,.tc:hover{background:var(--ch);border-color:var(--ch);color:#fff}
+.btn-save{width:100%;padding:15px;border-radius:14px;background:var(--ch);color:#fff;border:none;font-family:var(--fh);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(186,84,28,.3);transition:opacity .15s}
+.btn-save:disabled{opacity:.35;cursor:default}
+.btn-cancel{width:100%;padding:12px;border:none;background:transparent;color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span style="font-weight:500">100%</span></div>
+<div class="hd">
+  <div class="hd-nav">
+    <button class="back-btn" onclick="history.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span style="font-family:var(--fb);font-size:12px;font-weight:600;color:rgba(255,246,237,.4)">Ước mơ mới</span>
+  </div>
+  <div class="hd-title" style="font-family:var(--fh);font-size:22px;font-weight:700;color:var(--rw);margin-bottom:3px">Thêm ước mơ</div>
+  <div style="font-family:var(--fb);font-size:12px;color:rgba(255,246,237,.5)">Lớn hay nhỏ đều được — viết ra trước đã.</div>
+</div>
+
+<!-- Live preview -->
+<div class="preview" id="preview-card" style="background:linear-gradient(135deg,#3C3489,#534AB7)">
+  <div class="pv-shine"></div>
+  <div class="pv-star">✦</div>
+  <div class="pv-name" id="pv-name">Ước mơ của bạn...</div>
+  <div class="pv-desc" id="pv-desc">Mô tả thêm...</div>
+  <div class="pv-bar"><div class="pv-fill"></div></div>
+</div>
+
+<div class="body">
+  <!-- Tên ước mơ -->
+  <div>
+    <div class="fl">Ước mơ của bạn là gì?</div>
+    <textarea class="ta" id="dream-name" rows="2" placeholder="Viết ra ước mơ — lớn hay nhỏ đều được..." maxlength="100" oninput="updatePV()"></textarea>
+  </div>
+
+  <!-- Gợi ý -->
+  <div>
+    <div class="fl">Hoặc chọn gợi ý</div>
+    <div class="suggest-wrap">
+      <div class="suggest-item" onclick="setSuggest('Trở thành chuyên gia trong lĩnh vực của mình','Tự do nghề nghiệp và thu nhập ổn định')">
+        <div class="si-text">Trở thành chuyên gia trong lĩnh vực của mình</div>
+        <div class="si-sub">Career · Học tập</div>
+      </div>
+      <div class="suggest-item" onclick="setSuggest('Có sức khoẻ tốt và năng lượng mỗi ngày','Cơ thể khoẻ mạnh, đầu óc minh mẫn')">
+        <div class="si-text">Có sức khoẻ tốt và năng lượng mỗi ngày</div>
+        <div class="si-sub">Health · Gym</div>
+      </div>
+      <div class="suggest-item" onclick="setSuggest('Tự do tài chính — tiền làm việc cho mình','Không lo lắng về tiền bạc')">
+        <div class="si-text">Tự do tài chính — tiền làm việc cho mình</div>
+        <div class="si-sub">Finance</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mô tả -->
+  <div>
+    <div class="fl">Mô tả thêm <span style="color:rgba(196,168,130,.5);font-size:9px">(tuỳ chọn)</span></div>
+    <input class="inp" id="dream-desc" type="text" placeholder="Tại sao ước mơ này quan trọng với bạn?" oninput="updatePV()">
+  </div>
+
+  <!-- Area -->
+  <div>
+    <div class="fl">Thuộc lĩnh vực</div>
+    <div class="area-grid">
+      <div class="area-opt sel" onclick="pickArea(this,'#534AB7')"><div class="ao-icon">📚</div><div class="ao-name">Study</div></div>
+      <div class="area-opt" onclick="pickArea(this,'#4A7C59')"><div class="ao-icon">💪</div><div class="ao-name">Health</div></div>
+      <div class="area-opt" onclick="pickArea(this,'#185FA5')"><div class="ao-icon">🏋️</div><div class="ao-name">Gym</div></div>
+      <div class="area-opt" onclick="pickArea(this,'#BA541C')"><div class="ao-icon">💰</div><div class="ao-name">Tài chính</div></div>
+      <div class="area-opt" onclick="pickArea(this,'#7A1010')"><div class="ao-icon">🌱</div><div class="ao-name">Personal</div></div>
+      <div class="area-opt" onclick="pickArea(this,'#5C3317')"><div class="ao-icon">💼</div><div class="ao-name">Công việc</div></div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div>
+    <div class="fl">Timeline dự kiến</div>
+    <div class="timeline-chips">
+      <div class="tc" onclick="selTC(this)">3 tháng</div>
+      <div class="tc" onclick="selTC(this)">6 tháng</div>
+      <div class="tc sel" onclick="selTC(this)">1 năm</div>
+      <div class="tc" onclick="selTC(this)">2 năm</div>
+      <div class="tc" onclick="selTC(this)">5 năm+</div>
+      <div class="tc" onclick="selTC(this)">Dài hạn</div>
+    </div>
+  </div>
+
+  <button class="btn-save" id="btn-save" disabled onclick="location.href='dreams.html'">Lưu ước mơ ✦</button>
+  <button class="btn-cancel" onclick="history.back()">Huỷ</button>
+</div>
+</div>
+<script>
+var curColor='#534AB7';
+function updatePV(){
+  var n=document.getElementById('dream-name').value.trim();
+  var d=document.getElementById('dream-desc').value.trim();
+  document.getElementById('pv-name').textContent=n||'Ước mơ của bạn...';
+  document.getElementById('pv-desc').textContent=d||'Mô tả thêm...';
+  document.getElementById('btn-save').disabled=n.length===0;
+  document.getElementById('btn-save').style.opacity=n.length>0?'1':'.35';
+}
+function setSuggest(name,desc){
+  document.getElementById('dream-name').value=name;
+  document.getElementById('dream-desc').value=desc;
+  updatePV();
+}
+function pickArea(el,c){
+  document.querySelectorAll('.area-opt').forEach(function(e){e.classList.remove('sel')});
+  el.classList.add('sel');
+  curColor=c;
+  var dark=c.replace(/[^#]/g,function(m){return Math.max(0,parseInt(m,16)-30).toString(16)});
+  document.getElementById('preview-card').style.background='linear-gradient(135deg,'+c+'cc,'+c+')';
+}
+function selTC(el){
+  document.querySelectorAll('.tc').forEach(function(t){t.classList.remove('sel')});
+  el.classList.add('sel');
+}
+</script>
+</body>
+</html>
