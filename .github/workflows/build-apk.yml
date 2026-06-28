@@ -1,0 +1,54 @@
+name: Build APK
+
+on:
+  push:
+    branches: [claude/hopeful-hopper-rqjr0s, main]
+    paths:
+      - 'App/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: stable
+          cache: true
+
+      - name: Flutter pub get
+        working-directory: App
+        run: flutter pub get
+
+      - name: Build debug APK
+        working-directory: App
+        run: flutter build apk --debug
+
+      - name: Build release APK
+        working-directory: App
+        run: flutter build apk --release --no-shrink
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pace-debug
+          path: App/build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 7
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pace-release
+          path: App/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7
