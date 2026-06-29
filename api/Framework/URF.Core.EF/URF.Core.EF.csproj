@@ -17,8 +17,8 @@
     <None Include="icon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\URF.Core.Abstractions\URF.Core.Abstractions.csproj" />
