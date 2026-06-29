@@ -3,8 +3,10 @@ using System.Runtime.Serialization;
 
 namespace URF.Core.EF.Trackable.Entities
 {
-    public class Language : Category
+    public class Language : BaseEntity
     {
+        public string Name { get; set; }
+        public string Description { get; set; }
         public string Code { get; set; }
         public string Icon { get; set; }
 
