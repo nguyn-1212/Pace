@@ -24,7 +24,7 @@ namespace Pace.Api.Controllers
 
             // Finance
             var txThisMonth = await _db.Transactions
-                .Where(t => !t.IsDelete && t.UserId == uid && t.TransactionDate >= monthStart)
+                .Where(t => t.IsDelete != true && t.UserId == uid && t.TransactionDate >= monthStart)
                 .ToListAsync();
 
             var income = txThisMonth.Where(t => t.Type == 1).Sum(t => t.Amount);
@@ -32,26 +32,26 @@ namespace Pace.Api.Controllers
 
             // Goals
             var activeGoals = await _db.Goals
-                .CountAsync(g => !g.IsDelete && g.UserId == uid && g.Status == 0);
+                .CountAsync(g => g.IsDelete != true && g.UserId == uid && g.Status == 0);
 
             // Habits — active habits + how many done today
             var activeHabits = await _db.Habits
-                .Where(h => !h.IsDelete && h.UserId == uid && h.Status == 0)
+                .Where(h => h.IsDelete != true && h.UserId == uid && h.Status == 0)
                 .Select(h => h.Id)
                 .ToListAsync();
 
             var doneTodayCount = await _db.HabitLogs
-                .CountAsync(l => !l.IsDelete && l.UserId == uid
+                .CountAsync(l => l.IsDelete != true && l.UserId == uid
                     && activeHabits.Contains(l.HabitId)
                     && l.LogDate.Date == today && l.IsCompleted);
 
             // Journal — count this month
             var journalsThisMonth = await _db.Journals
-                .CountAsync(j => !j.IsDelete && j.UserId == uid && j.JournalDate >= monthStart);
+                .CountAsync(j => j.IsDelete != true && j.UserId == uid && j.JournalDate >= monthStart);
 
             // Debts — unpaid total
             var debtOwed = await _db.Debts
-                .Where(d => !d.IsDelete && d.UserId == uid && !d.IsPaid)
+                .Where(d => d.IsDelete != true && d.UserId == uid && !d.IsPaid)
                 .SumAsync(d => (decimal?)d.Amount) ?? 0;
 
             return Ok(new

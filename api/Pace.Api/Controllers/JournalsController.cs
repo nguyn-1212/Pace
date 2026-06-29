@@ -21,7 +21,7 @@ namespace Pace.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<Journal>> Get([FromQuery] int page = 1, [FromQuery] int size = 20)
             => await _repo.Query()
-                .Where(x => !x.IsDelete && x.UserId == UserId)
+                .Where(x => x.IsDelete != true && x.UserId == UserId)
                 .OrderByDescending(x => x.JournalDate)
                 .Skip((page - 1) * size)
                 .Take(size)
@@ -31,7 +31,7 @@ namespace Pace.Api.Controllers
         public async Task<ActionResult<Journal>> Get(int id)
         {
             var item = await _repo.FindAsync(id);
-            if (item == null || item.IsDelete || item.UserId != UserId)
+            if (item == null || item.IsDelete == true || item.UserId != UserId)
                 return NotFound();
             return item;
         }
@@ -49,7 +49,7 @@ namespace Pace.Api.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] Journal item)
         {
             var existing = await _repo.FindAsync(id);
-            if (existing == null || existing.IsDelete || existing.UserId != UserId)
+            if (existing == null || existing.IsDelete == true || existing.UserId != UserId)
                 return NotFound();
             item.Id = id;
             item.UserId = UserId;
@@ -62,7 +62,7 @@ namespace Pace.Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var item = await _repo.FindAsync(id);
-            if (item == null || item.IsDelete || item.UserId != UserId)
+            if (item == null || item.IsDelete == true || item.UserId != UserId)
                 return NotFound();
             item.IsDelete = true;
             _repo.Update(item);

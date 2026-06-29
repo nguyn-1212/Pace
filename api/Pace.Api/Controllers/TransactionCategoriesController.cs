@@ -21,7 +21,7 @@ namespace Pace.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<TransactionCategory>> Get()
             => await _repo.Query()
-                .Where(x => !x.IsDelete && (x.UserId == null || x.UserId == UserId))
+                .Where(x => x.IsDelete != true && (x.UserId == null || x.UserId == UserId))
                 .OrderBy(x => x.Name)
                 .SelectAsync();
 
@@ -29,7 +29,7 @@ namespace Pace.Api.Controllers
         public async Task<ActionResult<TransactionCategory>> Get(int id)
         {
             var item = await _repo.FindAsync(id);
-            if (item == null || item.IsDelete || (item.UserId != null && item.UserId != UserId))
+            if (item == null || item.IsDelete == true || (item.UserId != null && item.UserId != UserId))
                 return NotFound();
             return item;
         }
@@ -47,7 +47,7 @@ namespace Pace.Api.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] TransactionCategory item)
         {
             var existing = await _repo.FindAsync(id);
-            if (existing == null || existing.IsDelete || existing.UserId != UserId)
+            if (existing == null || existing.IsDelete == true || existing.UserId != UserId)
                 return NotFound();
             item.Id = id;
             item.UserId = UserId;
@@ -60,7 +60,7 @@ namespace Pace.Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var item = await _repo.FindAsync(id);
-            if (item == null || item.IsDelete || item.UserId != UserId)
+            if (item == null || item.IsDelete == true || item.UserId != UserId)
                 return NotFound();
             item.IsDelete = true;
             _repo.Update(item);

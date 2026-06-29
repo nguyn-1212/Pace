@@ -32,11 +32,11 @@ namespace Pace.Api.Controllers
             var uid = UserId;
 
             var habits = await _db.Habits
-                .Where(h => !h.IsDelete && h.UserId == uid && h.Status == 0)
+                .Where(h => h.IsDelete != true && h.UserId == uid && h.Status == 0)
                 .ToListAsync();
 
             var logs = await _db.HabitLogs
-                .Where(l => !l.IsDelete && l.UserId == uid && l.LogDate.Date == today)
+                .Where(l => l.IsDelete != true && l.UserId == uid && l.LogDate.Date == today)
                 .ToListAsync();
 
             var result = habits.Select(h => new
@@ -53,7 +53,7 @@ namespace Pace.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<Habit>> Get()
             => await _repo.Query()
-                .Where(x => !x.IsDelete && x.UserId == UserId)
+                .Where(x => x.IsDelete != true && x.UserId == UserId)
                 .OrderByDescending(x => x.CreatedDate)
                 .SelectAsync();
 
@@ -61,7 +61,7 @@ namespace Pace.Api.Controllers
         public async Task<ActionResult<Habit>> Get(int id)
         {
             var item = await _repo.FindAsync(id);
-            if (item == null || item.IsDelete || item.UserId != UserId)
+            if (item == null || item.IsDelete == true || item.UserId != UserId)
                 return NotFound();
             return item;
         }
@@ -79,7 +79,7 @@ namespace Pace.Api.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] Habit item)
         {
             var existing = await _repo.FindAsync(id);
-            if (existing == null || existing.IsDelete || existing.UserId != UserId)
+            if (existing == null || existing.IsDelete == true || existing.UserId != UserId)
                 return NotFound();
             item.Id = id;
             item.UserId = UserId;
@@ -92,7 +92,7 @@ namespace Pace.Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var item = await _repo.FindAsync(id);
-            if (item == null || item.IsDelete || item.UserId != UserId)
+            if (item == null || item.IsDelete == true || item.UserId != UserId)
                 return NotFound();
             item.IsDelete = true;
             _repo.Update(item);

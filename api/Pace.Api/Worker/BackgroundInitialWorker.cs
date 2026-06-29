@@ -62,7 +62,7 @@ namespace Pace.Api.Worker
             }
 
             // Seed default transaction categories (system-wide, UserId = null)
-            var hasCategories = await db.TransactionCategories.AnyAsync(c => c.UserId == null && !c.IsDelete, stoppingToken);
+            var hasCategories = await db.TransactionCategories.AnyAsync(c => c.UserId == null && c.IsDelete != true, stoppingToken);
             if (!hasCategories)
             {
                 var now = DateTime.UtcNow;
