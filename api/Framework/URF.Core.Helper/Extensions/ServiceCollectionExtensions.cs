@@ -16,7 +16,11 @@ namespace URF.Core.Helper.Extensions
             var defaultDbProvider = options.Defaults?.DBProvider;
             if (defaultDbProvider.ToLower() == "mysql")
             {
-                services.AddDbContext<T>(m => m.UseMySql(defaultConnectionString, new MySqlServerVersion(new Version(8, 0, 11)), e => e.MigrationsAssembly(typeof(T).Assembly.FullName)));
+                services.AddDbContext<T>(m => m.UseMySql(
+                    defaultConnectionString,
+                    new MySqlServerVersion(new Version(8, 0, 11)),
+                    e => e.MigrationsAssembly(typeof(T).Assembly.FullName)
+                         .EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)));
             }         
             return services;
         }
