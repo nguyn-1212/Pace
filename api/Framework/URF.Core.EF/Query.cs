@@ -30,22 +30,22 @@ namespace URF.Core.EF
         public virtual IQuery<TEntity> OrderBy(Expression<Func<TEntity, object>> keySelector)
         {
             if (_orderedQuery == null) _orderedQuery = _query.OrderBy(keySelector);
-            else _orderedQuery.OrderBy(keySelector);
+            else _orderedQuery = _orderedQuery.OrderBy(keySelector);
             return this;
         }
 
         public virtual IQuery<TEntity> ThenBy(Expression<Func<TEntity, object>> thenBy)
-            => Set(q => q._orderedQuery.ThenBy(thenBy));
+            => Set(q => q._orderedQuery = q._orderedQuery.ThenBy(thenBy));
 
         public virtual IQuery<TEntity> OrderByDescending(Expression<Func<TEntity, object>> keySelector)
         {
             if (_orderedQuery == null) _orderedQuery = _query.OrderByDescending(keySelector);
-            else _orderedQuery.OrderByDescending(keySelector);
+            else _orderedQuery = _orderedQuery.OrderByDescending(keySelector);
             return this;
         }
 
         public virtual IQuery<TEntity> ThenByDescending(Expression<Func<TEntity, object>> thenByDescending)
-            =>Set(q => q._orderedQuery.ThenByDescending(thenByDescending));
+            => Set(q => q._orderedQuery = q._orderedQuery.ThenByDescending(thenByDescending));
 
         public virtual async Task<int> CountAsync(CancellationToken cancellationToken = default )
             => await _query.CountAsync(cancellationToken);

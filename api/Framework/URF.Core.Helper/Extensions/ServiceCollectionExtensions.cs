@@ -13,7 +13,7 @@ namespace URF.Core.Helper.Extensions
             var options = services.GetOptions<TenantSettings>(nameof(TenantSettings));
             var defaultConnectionString = options.Defaults?.ConnectionString;
             var defaultDbProvider = options.Defaults?.DBProvider;
-            if (defaultDbProvider.ToLower() == "mysql")
+            if (defaultDbProvider?.ToLower() == "mysql")
             {
                 services.AddDbContext<T>(m => m.UseMySql(
                     defaultConnectionString,
